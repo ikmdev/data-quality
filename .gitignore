@@ -1,0 +1,9 @@
+/.env
+/cli/target
+/.idea
+/cli/src/main/resources/db/.DS_Store
+/cli/src/main/resources/.DS_Store
+/cli/src/main/.DS_Store
+/cli/src/.DS_Store
+/cli/.DS_Store
+/.DS_Store

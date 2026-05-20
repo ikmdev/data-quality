@@ -1,0 +1,48 @@
+services:
+    postgres:
+        image: postgres:16
+        container_name: dq-postgres
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        ports:
+            - "${POSTGRES_PORT}:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+    pgadmin:
+        image: dpage/pgadmin4:8
+        container_name: dq-pgadmin
+        restart: unless-stopped
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+            PGADMIN_CONFIG_SERVER_MODE: "True"
+        ports:
+            - "${PGADMIN_PORT}:80"
+        depends_on:
+            - postgres
+        volumes:
+            - pgadmin_data:/var/lib/pgadmin
+
+    liquibase:
+        image: liquibase/liquibase:4.25.0-alpine
+        container_name: dq-liquibase
+        depends_on:
+            - postgres
+        volumes:
+            - ./cli/src/main/resources/db/changelog:/liquibase/changelog:ro
+        command:
+          [
+              "--url=${LIQUIBASE_URL}",
+              "--username=${LIQUIBASE_USERNAME}",
+              "--password=${LIQUIBASE_PASSWORD}",
+              "--changeLogFile=/changelog/db.changelog-master.yaml",
+              "update"
+          ]
+
+volumes:
+    postgres_data:
+    pgadmin_data:

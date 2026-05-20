@@ -1,0 +1,26 @@
+databaseChangeLog:
+    -   changeSet:
+            id: 001-create-project-table
+            author: you
+            changes:
+                -   createTable:
+                        tableName: project-1
+                        columns:
+                            -   column:
+                                    name: id
+                                    type: bigserial
+                                    constraints:
+                                        primaryKey: true
+                                        nullable: false
+                            -   column:
+                                    name: name
+                                    type: varchar(255)
+                                    constraints:
+                                        nullable: false
+                                        unique: true
+                            -   column:
+                                    name: created_atd
+                                    type: timestamp
+                                    defaultValueComputed: CURRENT_TIMESTAMP
+                                    constraints:
+                                        nullable: false
