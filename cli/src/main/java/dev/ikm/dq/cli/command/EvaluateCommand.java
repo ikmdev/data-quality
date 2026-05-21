@@ -9,8 +9,8 @@ import java.io.File;
 @CommandLine.Command(name = "evaluate", description = "Evaluate data quality rules")
 public class EvaluateCommand implements Runnable {
 
-	@CommandLine.Option(names = {"-j", "--job-name"}, description = "Name of the job")
-	private String jobName;
+	@CommandLine.Option(names = {"-j", "--run-name"}, description = "Name of the run")
+	private String runName;
 
 	@CommandLine.Option(names = {"-r", "--rubric-file"}, description = "File containing the data quality SAMs")
 	private File rubricFile;

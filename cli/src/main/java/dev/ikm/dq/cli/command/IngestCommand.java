@@ -9,13 +9,13 @@ import java.io.File;
 @CommandLine.Command(name = "ingest", description = "Ingest data into the system")
 public class IngestCommand implements Runnable {
 
-	@CommandLine.Option(names = {"-j", "--job-name"}, description = "Name of the job")
-	private String jobName;
+	@CommandLine.Option(names = {"-j", "--run-name"}, description = "Name of the run", required = true)
+	private String runName;
 
-	@CommandLine.Option(names = {"-d", "--data-set-file"}, description = "File containing the data set")
-	private File dataSetFile;
+	@CommandLine.Option(names = {"-d", "--data-file"}, description = "File containing the data", required = true)
+	private File dataFile;
 
-	@CommandLine.Option(names = {"-s", "--script-file"}, description = "File containing the ingest script")
+	@CommandLine.Option(names = {"-s", "--script-file"}, description = "File containing the ingest script", required = true)
 	private File scriptFile;
 
 	@Override
