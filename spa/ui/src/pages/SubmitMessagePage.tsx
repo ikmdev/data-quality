@@ -373,7 +373,7 @@ export default function SubmitMessagePage() {
     clearBatch()
   }
 
-  const apiEndpointUrl = `${import.meta.env.VITE_PIQI_API_BASE_URL ?? ''}/PIQI/ScoreAuditMessage`
+  const apiEndpointUrl = `${import.meta.env.VITE_PIQI_API_BASE_URL ?? ''}/api/ScoreAuditMessage`
 
   const handleNewSession = () => {
     setProviderId(generateProviderId())

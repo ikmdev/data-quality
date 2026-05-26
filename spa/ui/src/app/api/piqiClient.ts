@@ -102,7 +102,7 @@ async function postPiqiRequest(
 ): Promise<PiqiResponse> {
   let response: Response
   try {
-    response = await fetch(`${getApiBaseUrl()}/PIQI/${path}`, {
+    response = await fetch(`${getApiBaseUrl()}/api/${path}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ async function postPiqiRequest(
 async function getPiqiRequest<TResponse>(path: string): Promise<TResponse> {
   let response: Response
   try {
-    response = await fetch(`${getApiBaseUrl()}/PIQI/${path}`, {
+    response = await fetch(`${getApiBaseUrl()}/api/${path}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

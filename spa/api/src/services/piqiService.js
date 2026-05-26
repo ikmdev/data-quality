@@ -26,7 +26,7 @@ async function postToScoringApi(path, payload) {
     );
   }
 
-  const targetUrl = `${scoringApiBaseUrl}/PIQI/${path}`;
+  const targetUrl = `${scoringApiBaseUrl}/api/${path}`;
   const timeoutMs = Number.isFinite(SCORING_API_TIMEOUT_MS) && SCORING_API_TIMEOUT_MS > 0
     ? SCORING_API_TIMEOUT_MS
     : 60000;

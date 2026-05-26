@@ -28,7 +28,7 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: bodyLimit }));
 app.use(express.urlencoded({ limit: bodyLimit, extended: true }));
 
-app.use('/PIQI', piqiRoutes);
+app.use('/api', piqiRoutes);
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });

@@ -41,7 +41,7 @@ npm run build
 
 ## API Contract
 
-UI uses these backend endpoints under `${VITE_PIQI_API_BASE_URL}/PIQI`:
+UI uses these backend endpoints under `${VITE_PIQI_API_BASE_URL}/api`:
 
 - `POST /ScoreMessage`
 - `POST /ScoreAuditMessage`
