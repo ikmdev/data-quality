@@ -23,6 +23,11 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         volumes:
             - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+            interval: 5s
+            timeout: 5s
+            retries: 5
 
     redis:
         image: redis:7-alpine
@@ -37,7 +42,8 @@ services:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
             PGADMIN_CONFIG_SERVER_MODE: "True"
-            SCRIPT_NAME: /
+            PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
+            PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: "10"
         depends_on:
             - postgres
         volumes:
@@ -66,12 +72,36 @@ services:
         environment:
             SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
             SQLALCHEMY_DATABASE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-            WEBSERVER_ROOT_PATH: /superset/
-            ENABLE_PROXY_FIX: "True"
         depends_on:
-            - postgres
+            postgres:
+                condition: service_healthy
+            superset-init:
+                condition: service_completed_successfully
         volumes:
-            - superset_data:/app/superset_home
+            - superset_home:/app/superset_home
+
+
+    superset-init:
+        image: apache/superset:latest
+        container_name: dq-superset-init
+        environment:
+            SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+            SQLALCHEMY_DATABASE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+            SUPERSET_ADMIN_USERNAME: ${SUPERSET_ADMIN_USERNAME}
+            SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD}
+            SUPERSET_ADMIN_EMAIL: ${SUPERSET_ADMIN_EMAIL}
+        depends_on:
+            postgres:
+                condition: service_healthy
+        command: >
+            bash -c "
+            superset db upgrade &&
+            superset init &&
+            superset fab create-admin --username $${SUPERSET_ADMIN_USERNAME} --firstname Admin --lastname User --email $${SUPERSET_ADMIN_EMAIL} --password $${SUPERSET_ADMIN_PASSWORD} || true
+            "
+        restart: "no"
+        volumes:
+            - superset_home:/app/superset_home
 
     api:
         build:
@@ -100,4 +130,4 @@ services:
 volumes:
     postgres_data:
     pgadmin_data:
-    superset_data:
+    superset_home:

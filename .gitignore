@@ -7,8 +7,7 @@
 /cli/src/.DS_Store
 /cli/.DS_Store
 /.DS_Store
+/spa/ui/node_modules
 /spa/api/node_modules
-/spa/api/node_modules
-/spa/api/node_modules
-
-spa/ui/node_modules/
+/spa/ui/dist
+/spa/api/dist
