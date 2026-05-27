@@ -1,0 +1,111 @@
+{
+  "FormatID": "FHIR JSON",
+  "MessageId": "2ee18ee0-f67a-4694-8411-fda20e6d108d",
+  "ResourceCount": "9",
+  "AllergyCount": "0",
+  "CarePlanCount": "0",
+  "ClaimsCount": "0",
+  "ConditionCount": "0",
+  "DeviceCount": "0",
+  "DiagnosticReportCount": "0",
+  "DocumentReferenceCount": "0",
+  "EncounterCount": "1",
+  "GoalCount": "0",
+  "ImmunizationCount": "0",
+  "MedicationRequestCount": "0",
+  "MedicationStatementCount": "0",
+  "MedicationCount": "0",
+  "MedicationAdministrationCount": "0",
+  "MedicationDispenseCount": "0",
+  "ObservationCount": "1",
+  "ProcedureCount": "1",
+  "patient": {
+    "demographics": {
+      "birthSex": {
+        "codings": [
+          {
+            "system": "http://hl7.org/fhir/administrative-gender",
+            "code": "male",
+            "display": "male"
+          }
+        ],
+        "text": "male"
+      },
+      "birthDate": "2014-01-01",
+      "ethnicity": {
+        "codings": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.6.238",
+            "code": "2135-2",
+            "display": "Hispanic or Latino"
+          }
+        ],
+        "text": "Hispanic or Latino"
+      },
+      "race": {
+        "codings": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.6.238",
+            "code": "1002-5",
+            "display": "American Indian or Alaska Native"
+          }
+        ],
+        "text": "American Indian or Alaska Native"
+      }
+    },
+    "healthAssessments": [
+      {
+        "id": "86334cfd-ed48-4f15-b6a6-18008c2013fc",
+        "assessment": {
+          "codings": [
+            {
+              "system": "http://loinc.org",
+              "code": "73831-0",
+              "display": "Adolescent depression screening assessment"
+            }
+          ],
+          "text": "Adolescent depression screening assessment"
+        },
+        "effectiveDate": "2026-06-21T08:00:00.000+00:00",
+        "resultValue": {
+          "type": {
+            "text": "CE"
+          },
+          "codings": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "428181000124104",
+              "display": "Depression screening positive (finding)"
+            }
+          ],
+          "text": "Depression screening positive (finding)"
+        }
+      }
+    ],
+    "procedures": [
+      {
+        "id": "3866c1a5-f72d-4d37-add4-57fe48aff53e",
+        "procedure": {
+          "codings": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "108313002",
+              "display": "Family psychotherapy procedure (regime/therapy)"
+            }
+          ]
+        },
+        "procedureDateTime": "2026-06-21T08:00:00.000+00:00"
+      }
+    ],
+    "encounters": [
+      {
+        "encounterDateTime": "2026-06-21T08:00:00.000+00:00",
+        "encounterType": "Psychiatric interview and evaluation (procedure)",
+        "status": "finished",
+        "class": "ambulatory",
+        "startDate": "2026-06-21T08:00:00.000+00:00",
+        "endDate": "2026-06-21T08:15:00.000+00:00"
+      }
+    ]
+  }
+}

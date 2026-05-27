@@ -1,0 +1,81 @@
+{
+    "dataTypeLibrary": [
+        {
+            "Code":"CD",
+            "Name":"Coded",
+            "IsCoded":true,
+            "IsNumeric":false,
+            "IsRange":false
+        },
+        {
+            "Code":"CE",
+            "Name":"Coded Element",
+            "IsCoded":true,
+            "IsNumeric":false,
+            "IsRange":false
+        },
+        {
+            "Code":"CWE",
+            "Name":"Code With Exception",
+            "IsCoded":true,
+            "IsNumeric":false,
+            "IsRange":false
+        },
+        {
+            "Code":"FT",
+            "Name":"Free Text",
+            "IsCoded":false,
+            "IsNumeric":false,
+            "IsRange":false
+        },
+        {
+            "Code":"NM",
+            "Name":"Numeric",
+            "IsCoded":false,
+            "IsNumeric":true,
+            "IsRange":false
+        },
+        {
+            "Code":"NR",
+            "Name":"Numeric Range",
+            "IsCoded":false,
+            "IsNumeric":true,
+            "IsRange":true
+        },
+        {
+            "Code":"PQ",
+            "Name":"Physical Quantity",
+            "IsCoded":false,
+            "IsNumeric":true,
+            "IsRange":false
+        },
+        {
+            "Code":"REAL",
+            "Name":"Real Number",
+            "IsCoded":false,
+            "IsNumeric":true,
+            "IsRange":false
+        },
+        {
+            "Code":"SN",
+            "Name":"Structured Numeric",
+            "IsCoded":false,
+            "IsNumeric":true,
+            "IsRange":false
+        },
+        {
+            "Code":"ST",
+            "Name":"String",
+            "IsCoded":false,
+            "IsNumeric":false,
+            "IsRange":false
+        },
+        {
+            "Code":"TX",
+            "Name":"Text",
+            "IsCoded":false,
+            "IsNumeric":false,
+            "IsRange":false
+        }
+    ]
+}

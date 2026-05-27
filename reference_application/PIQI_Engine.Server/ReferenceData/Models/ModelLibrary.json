@@ -1,0 +1,9 @@
+{
+  "ModelLibrary": [
+    {
+      "name": "Patient Clinical Model 1.0",
+      "mnemonic": "PAT_CLINICAL_V1",
+      "filePath": "ReferenceData/Models/PAT_CLINICAL_V1.json"
+    }
+  ]
+}

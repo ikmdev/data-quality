@@ -1,0 +1,88 @@
+{
+  "FormatID": "FHIR JSON",
+  "MessageId": "0e463fc3-d1bf-4e19-882b-fad6342aa668",
+  "ResourceCount": "8",
+  "AllergyCount": "0",
+  "CarePlanCount": "0",
+  "ClaimsCount": "0",
+  "ConditionCount": "0",
+  "DeviceCount": "0",
+  "DiagnosticReportCount": "0",
+  "DocumentReferenceCount": "0",
+  "EncounterCount": "1",
+  "GoalCount": "0",
+  "ImmunizationCount": "0",
+  "MedicationRequestCount": "0",
+  "MedicationStatementCount": "0",
+  "MedicationCount": "0",
+  "MedicationAdministrationCount": "0",
+  "MedicationDispenseCount": "0",
+  "ObservationCount": "1",
+  "ProcedureCount": "0",
+  "patient": {
+    "demographics": {
+      "birthSex": {
+        "codings": [
+          {
+            "system": "http://hl7.org/fhir/administrative-gender",
+            "code": "male",
+            "display": "male"
+          }
+        ],
+        "text": "male"
+      },
+      "birthDate": "2009-01-01",
+      "ethnicity": {
+        "codings": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.6.238",
+            "code": "2135-2",
+            "display": "Hispanic or Latino"
+          }
+        ],
+        "text": "Hispanic or Latino"
+      },
+      "race": {
+        "codings": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.6.238",
+            "code": "1002-5",
+            "display": "American Indian or Alaska Native"
+          }
+        ],
+        "text": "American Indian or Alaska Native"
+      }
+    },
+    "healthAssessments": [
+      {
+        "id": "ff52b9b7-1f54-4ab9-921a-f76d4ee4618b",
+        "assessment": {
+          "codings": [
+            {
+              "system": "http://loinc.org",
+              "code": "73831-0",
+              "display": "Adolescent depression screening assessment"
+            }
+          ],
+          "text": "Adolescent depression screening assessment"
+        },
+        "resultValue": {
+          "type": {
+            "text": "ST"
+          },
+          "text": "true"
+        }
+      }
+    ],
+    "encounters": [
+      {
+        "encounterDateTime": "2026-01-02T08:00:00.000+00:00",
+        "encounterType": "Psychiatric interview and evaluation (procedure)",
+        "status": "finished",
+        "class": "ambulatory",
+        "startDate": "2026-01-02T08:00:00.000+00:00",
+        "endDate": "2026-01-02T08:15:00.000+00:00"
+      }
+    ]
+  }
+}

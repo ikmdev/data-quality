@@ -1,0 +1,3438 @@
+{
+    "ValueLibrary": [
+        {
+            "mnemonic": "LAB_RESULT_STATUS",
+            "codeList": [
+                {
+                    "dataCode": "A",
+                    "dataText": "Some, but not all, results available"
+                },
+                {
+                    "dataCode": "C",
+                    "dataText": "Correction to results"
+                },
+                {
+                    "dataCode": "F",
+                    "dataText": "Final results; results stored and verified. Can only be changed with a corrected result."
+                },
+                {
+                    "dataCode": "I",
+                    "dataText": "No results available; specimen received, procedure incomplete"
+                },
+                {
+                    "dataCode": "O",
+                    "dataText": "Order received; specimen not yet received"
+                },
+                {
+                    "dataCode": "P",
+                    "dataText": "Preliminary: A verified early result is available, final results not yet obtained"
+                },
+                {
+                    "dataCode": "R",
+                    "dataText": "Results stored; not yet verified"
+                },
+                {
+                    "dataCode": "S",
+                    "dataText": "No results available; procedure scheduled, but not done"
+                },
+                {
+                    "dataCode": "X",
+                    "dataText": "No results available; Order canceled."
+                },
+                {
+                    "dataCode": "Y",
+                    "dataText": "No order on record for this test. (Used only on queries)"
+                },
+                {
+                    "dataCode": "Z",
+                    "dataText": "No record of this patient. (Used only on queries)"
+                }
+            ]
+        },
+        {
+            "mnemonic": "UCUM",
+            "codeList": [
+                {
+                    "dataCode": "%",
+                    "dataText": "percent"
+                },
+                {
+                    "dataCode": "%{abnormal}",
+                    "dataText": "percent abnormal"
+                },
+                {
+                    "dataCode": "%{activity}",
+                    "dataText": "percent activity"
+                },
+                {
+                    "dataCode": "%{aggregation}",
+                    "dataText": "percent aggregation"
+                },
+                {
+                    "dataCode": "%{at_60_min}",
+                    "dataText": "percent at 60 minute"
+                },
+                {
+                    "dataCode": "%{bacteria}",
+                    "dataText": "percent of bacteria"
+                },
+                {
+                    "dataCode": "%{basal_activity}",
+                    "dataText": "percent basal activity"
+                },
+                {
+                    "dataCode": "%{baseline}",
+                    "dataText": "percent of baseline"
+                },
+                {
+                    "dataCode": "%{binding}",
+                    "dataText": "percent binding"
+                },
+                {
+                    "dataCode": "%{blockade}",
+                    "dataText": "percent blockade"
+                },
+                {
+                    "dataCode": "%{blocked}",
+                    "dataText": "percent blocked"
+                },
+                {
+                    "dataCode": "%{bound}",
+                    "dataText": "percent bound"
+                },
+                {
+                    "dataCode": "%{breakdown}",
+                    "dataText": "percent breakdown"
+                },
+                {
+                    "dataCode": "%{cells}",
+                    "dataText": "percent of cells"
+                },
+                {
+                    "dataCode": "%{deficient}",
+                    "dataText": "percent deficient"
+                },
+                {
+                    "dataCode": "%{dose}",
+                    "dataText": "percent dose"
+                },
+                {
+                    "dataCode": "%{excretion}",
+                    "dataText": "percent excretion"
+                },
+                {
+                    "dataCode": "%{Hb}",
+                    "dataText": "percent hemoglobin"
+                },
+                {
+                    "dataCode": "%{hemolysis}",
+                    "dataText": "percent hemolysis"
+                },
+                {
+                    "dataCode": "%{index}",
+                    "dataText": "percent index"
+                },
+                {
+                    "dataCode": "%{inhibition}",
+                    "dataText": "percent inhibition"
+                },
+                {
+                    "dataCode": "%{loss_AChR}",
+                    "dataText": "percent  loss of acetylcholine receptor"
+                },
+                {
+                    "dataCode": "%{loss}",
+                    "dataText": "percent loss"
+                },
+                {
+                    "dataCode": "%{lysis}",
+                    "dataText": "percent lysis"
+                },
+                {
+                    "dataCode": "%{normal}",
+                    "dataText": "percent normal"
+                },
+                {
+                    "dataCode": "%{penetration}",
+                    "dataText": "percent  penetration"
+                },
+                {
+                    "dataCode": "%{pooled_plasma}",
+                    "dataText": "percent normal pooled plasma"
+                },
+                {
+                    "dataCode": "%{positive}",
+                    "dataText": "percent positive"
+                },
+                {
+                    "dataCode": "%{RBCs}",
+                    "dataText": "percent of red blood cells"
+                },
+                {
+                    "dataCode": "%{reactive}",
+                    "dataText": "percent reactive"
+                },
+                {
+                    "dataCode": "%{recovery}",
+                    "dataText": "percent recovery"
+                },
+                {
+                    "dataCode": "%{reference}",
+                    "dataText": "percent reference"
+                },
+                {
+                    "dataCode": "%{relative}",
+                    "dataText": "relative percent"
+                },
+                {
+                    "dataCode": "%{residual}",
+                    "dataText": "percent residual"
+                },
+                {
+                    "dataCode": "%{response}",
+                    "dataText": "percent response"
+                },
+                {
+                    "dataCode": "%{saturation}",
+                    "dataText": "percent saturation"
+                },
+                {
+                    "dataCode": "%{total}",
+                    "dataText": "percent total"
+                },
+                {
+                    "dataCode": "%{uptake}",
+                    "dataText": "percent uptake"
+                },
+                {
+                    "dataCode": "%{viable}",
+                    "dataText": "percent viable"
+                },
+                {
+                    "dataCode": "%{vol}",
+                    "dataText": "percent by volume"
+                },
+                {
+                    "dataCode": "%{WBCs}",
+                    "dataText": "percent of white blood cells"
+                },
+                {
+                    "dataCode": "/(12.h)",
+                    "dataText": "per twelve hour"
+                },
+                {
+                    "dataCode": "/[arb'U]",
+                    "dataText": "per arbitrary unit"
+                },
+                {
+                    "dataCode": "/[HPF]",
+                    "dataText": "per high power field"
+                },
+                {
+                    "dataCode": "/[IU]",
+                    "dataText": "per international unit"
+                },
+                {
+                    "dataCode": "/[LPF]",
+                    "dataText": "per low power field"
+                },
+                {
+                    "dataCode": "/{entity}",
+                    "dataText": "per entity"
+                },
+                {
+                    "dataCode": "/{OIF}",
+                    "dataText": "per oil immersion field"
+                },
+                {
+                    "dataCode": "/10*10",
+                    "dataText": "per 10 billion  "
+                },
+                {
+                    "dataCode": "/10*12",
+                    "dataText": "per trillion "
+                },
+                {
+                    "dataCode": "/10*12{RBCs}",
+                    "dataText": "per trillion red blood cells"
+                },
+                {
+                    "dataCode": "/10*3",
+                    "dataText": "per thousand"
+                },
+                {
+                    "dataCode": "/10*3{RBCs}",
+                    "dataText": "per thousand red blood cells"
+                },
+                {
+                    "dataCode": "/10*4{RBCs}",
+                    "dataText": "per 10 thousand red blood cells"
+                },
+                {
+                    "dataCode": "/10*6",
+                    "dataText": "per million"
+                },
+                {
+                    "dataCode": "/10*9",
+                    "dataText": "per billion"
+                },
+                {
+                    "dataCode": "/100",
+                    "dataText": "per 100"
+                },
+                {
+                    "dataCode": "/100{cells}",
+                    "dataText": "per 100 cells"
+                },
+                {
+                    "dataCode": "/100{neutrophils}",
+                    "dataText": "per 100 neutrophils"
+                },
+                {
+                    "dataCode": "/100{spermatozoa}",
+                    "dataText": "per 100 spermatozoa"
+                },
+                {
+                    "dataCode": "/100{WBCs}",
+                    "dataText": "per 100 white blood cells"
+                },
+                {
+                    "dataCode": "/a",
+                    "dataText": "per year"
+                },
+                {
+                    "dataCode": "/cm[H2O]",
+                    "dataText": "per centimeter of water"
+                },
+                {
+                    "dataCode": "/d",
+                    "dataText": "per day"
+                },
+                {
+                    "dataCode": "/dL",
+                    "dataText": "per deciliter"
+                },
+                {
+                    "dataCode": "/g",
+                    "dataText": "per gram"
+                },
+                {
+                    "dataCode": "/g{creat}",
+                    "dataText": "per gram of creatinine"
+                },
+                {
+                    "dataCode": "/g{Hb}",
+                    "dataText": "per gram of hemoglobin"
+                },
+                {
+                    "dataCode": "/g{tot_nit}",
+                    "dataText": "per gram of total nitrogen"
+                },
+                {
+                    "dataCode": "/g{tot_prot}",
+                    "dataText": "per gram of total protein"
+                },
+                {
+                    "dataCode": "/g{wet_tis}",
+                    "dataText": "per gram of wet tissue"
+                },
+                {
+                    "dataCode": "/h",
+                    "dataText": "per hour"
+                },
+                {
+                    "dataCode": "/kg",
+                    "dataText": "per kilogram"
+                },
+                {
+                    "dataCode": "/kg{body_wt}",
+                    "dataText": "per kilogram of body weight"
+                },
+                {
+                    "dataCode": "/L",
+                    "dataText": "per liter"
+                },
+                {
+                    "dataCode": "/m2",
+                    "dataText": "per square meter"
+                },
+                {
+                    "dataCode": "/m3",
+                    "dataText": "per cubic meter"
+                },
+                {
+                    "dataCode": "/mg",
+                    "dataText": "per milligram"
+                },
+                {
+                    "dataCode": "/min",
+                    "dataText": "per minute"
+                },
+                {
+                    "dataCode": "/mL",
+                    "dataText": "per milliliter"
+                },
+                {
+                    "dataCode": "/mm",
+                    "dataText": "per millimeter"
+                },
+                {
+                    "dataCode": "/mmol{creat}",
+                    "dataText": "per millimole of creatinine"
+                },
+                {
+                    "dataCode": "/mo",
+                    "dataText": "per month"
+                },
+                {
+                    "dataCode": "/s",
+                    "dataText": "per second"
+                },
+                {
+                    "dataCode": "/U",
+                    "dataText": "per enzyme unit"
+                },
+                {
+                    "dataCode": "/uL",
+                    "dataText": "per microliter"
+                },
+                {
+                    "dataCode": "/wk",
+                    "dataText": "per week"
+                },
+                {
+                    "dataCode": "[APL'U]",
+                    "dataText": "IgA anticardiolipin unit**"
+                },
+                {
+                    "dataCode": "[APL'U]/mL",
+                    "dataText": "IgA anticardiolipin unit per milliliter**"
+                },
+                {
+                    "dataCode": "[arb'U]",
+                    "dataText": "arbitrary unit"
+                },
+                {
+                    "dataCode": "[arb'U]/mL",
+                    "dataText": "arbitrary unit per milliliter"
+                },
+                {
+                    "dataCode": "[AU]",
+                    "dataText": "allergy unit"
+                },
+                {
+                    "dataCode": "[bdsk'U]",
+                    "dataText": "Bodansky unit"
+                },
+                {
+                    "dataCode": "[beth'U]",
+                    "dataText": "Bethesda unit"
+                },
+                {
+                    "dataCode": "[CFU]",
+                    "dataText": "colony forming unit"
+                },
+                {
+                    "dataCode": "[CFU]/L",
+                    "dataText": "colony forming unit per liter"
+                },
+                {
+                    "dataCode": "[CFU]/mL",
+                    "dataText": "colony forming unit per milliliter"
+                },
+                {
+                    "dataCode": "[Ch]",
+                    "dataText": "French (catheter gauge) "
+                },
+                {
+                    "dataCode": "[cin_i]",
+                    "dataText": "cubic inch (international)"
+                },
+                {
+                    "dataCode": "[degF]",
+                    "dataText": "degree Fahrenheit"
+                },
+                {
+                    "dataCode": "[diop]",
+                    "dataText": "diopter"
+                },
+                {
+                    "dataCode": "[dr_av]",
+                    "dataText": "dram  (US and British)"
+                },
+                {
+                    "dataCode": "[drp]",
+                    "dataText": "drop (1/12 milliliter)"
+                },
+                {
+                    "dataCode": "[foz_us]",
+                    "dataText": "fluid ounce (US)"
+                },
+                {
+                    "dataCode": "[ft_i]",
+                    "dataText": "foot (international)"
+                },
+                {
+                    "dataCode": "[ft_us]/[ft_us]",
+                    "dataText": "feet (US) per feet (US)"
+                },
+                {
+                    "dataCode": "[gal_us]",
+                    "dataText": "gallon (US)"
+                },
+                {
+                    "dataCode": "[GPL'U]",
+                    "dataText": "IgG anticardiolipin unit**"
+                },
+                {
+                    "dataCode": "[GPL'U]/mL",
+                    "dataText": "IgG anticardiolipin unit per milliliter**"
+                },
+                {
+                    "dataCode": "[HPF]",
+                    "dataText": "high power field"
+                },
+                {
+                    "dataCode": "[in_i'H2O]",
+                    "dataText": "inch (international) of water"
+                },
+                {
+                    "dataCode": "[in_i]",
+                    "dataText": "inch (international)"
+                },
+                {
+                    "dataCode": "[in_us]",
+                    "dataText": "inches (US)"
+                },
+                {
+                    "dataCode": "[IU]",
+                    "dataText": "international unit"
+                },
+                {
+                    "dataCode": "[IU]/(2.h)",
+                    "dataText": "international unit per 2 hour"
+                },
+                {
+                    "dataCode": "[IU]/(24.h)",
+                    "dataText": "international unit per 24 hour"
+                },
+                {
+                    "dataCode": "[IU]/10*9{RBCs}",
+                    "dataText": "international unit per billion red blood cells"
+                },
+                {
+                    "dataCode": "[IU]/d",
+                    "dataText": "international unit per day"
+                },
+                {
+                    "dataCode": "[IU]/dL",
+                    "dataText": "international unit per deciliter"
+                },
+                {
+                    "dataCode": "[IU]/g",
+                    "dataText": "international unit per gram"
+                },
+                {
+                    "dataCode": "[IU]/g{Hb}",
+                    "dataText": "international unit per gram of hemoglobin"
+                },
+                {
+                    "dataCode": "[IU]/h",
+                    "dataText": "international unit per hour"
+                },
+                {
+                    "dataCode": "[IU]/kg",
+                    "dataText": "international unit per kilogram"
+                },
+                {
+                    "dataCode": "[IU]/kg/d",
+                    "dataText": "international unit per kilogram per day"
+                },
+                {
+                    "dataCode": "[IU]/L",
+                    "dataText": "international unit per liter"
+                },
+                {
+                    "dataCode": "[IU]/L{37Cel}",
+                    "dataText": "international unit per liter at 37 degrees Celsius"
+                },
+                {
+                    "dataCode": "[IU]/mg{creat}",
+                    "dataText": "international unit per milligram of creatinine"
+                },
+                {
+                    "dataCode": "[IU]/min",
+                    "dataText": "international unit per minute"
+                },
+                {
+                    "dataCode": "[IU]/mL",
+                    "dataText": "international unit per milliliter"
+                },
+                {
+                    "dataCode": "[ka'U]",
+                    "dataText": "King Armstrong unit"
+                },
+                {
+                    "dataCode": "[knk'U]",
+                    "dataText": "Kunkel unit"
+                },
+                {
+                    "dataCode": "[lb_av]",
+                    "dataText": "pound (US and British)"
+                },
+                {
+                    "dataCode": "[LPF]",
+                    "dataText": "low power field"
+                },
+                {
+                    "dataCode": "[mclg'U]",
+                    "dataText": "Maclagan unit"
+                },
+                {
+                    "dataCode": "[MET].min/wk",
+                    "dataText": "metabolic equivalent minute per week"
+                },
+                {
+                    "dataCode": "[mi_i]",
+                    "dataText": "mile (international)"
+                },
+                {
+                    "dataCode": "[MPL'U]",
+                    "dataText": "IgM anticardiolipin unit**"
+                },
+                {
+                    "dataCode": "[MPL'U]/mL",
+                    "dataText": "IgM anticardiolipin unit per milliliter**"
+                },
+                {
+                    "dataCode": "[oz_av]",
+                    "dataText": "ounce (US and British)"
+                },
+                {
+                    "dataCode": "[oz_tr]",
+                    "dataText": "Troy ounce"
+                },
+                {
+                    "dataCode": "[pH]",
+                    "dataText": "pH"
+                },
+                {
+                    "dataCode": "[ppb]",
+                    "dataText": "part per billion"
+                },
+                {
+                    "dataCode": "[ppm]",
+                    "dataText": "part per million"
+                },
+                {
+                    "dataCode": "[ppm]{v/v}",
+                    "dataText": "part per million in volume per volume"
+                },
+                {
+                    "dataCode": "[ppth]",
+                    "dataText": "part per thousand"
+                },
+                {
+                    "dataCode": "[pptr]",
+                    "dataText": "part per trillion"
+                },
+                {
+                    "dataCode": "[psi]",
+                    "dataText": "pound per square inch"
+                },
+                {
+                    "dataCode": "[pt_us]",
+                    "dataText": "pint (US)"
+                },
+                {
+                    "dataCode": "[qt_us]",
+                    "dataText": "quart (US)"
+                },
+                {
+                    "dataCode": "[sft_i]",
+                    "dataText": "square foot (international)"
+                },
+                {
+                    "dataCode": "[sin_i]",
+                    "dataText": "square inch (international)"
+                },
+                {
+                    "dataCode": "[syd_i]",
+                    "dataText": "square yard (international)"
+                },
+                {
+                    "dataCode": "[tb'U]",
+                    "dataText": "tuberculin unit"
+                },
+                {
+                    "dataCode": "[tbs_us]",
+                    "dataText": "tablespoon (US)"
+                },
+                {
+                    "dataCode": "[todd'U]",
+                    "dataText": "Todd unit"
+                },
+                {
+                    "dataCode": "[tsp_us]",
+                    "dataText": "teaspoon (US)"
+                },
+                {
+                    "dataCode": "[yd_i]",
+                    "dataText": "yard (international)"
+                },
+                {
+                    "dataCode": "{#}",
+                    "dataText": "number"
+                },
+                {
+                    "dataCode": "{#}/[HPF]",
+                    "dataText": "number per high power field"
+                },
+                {
+                    "dataCode": "{#}/[LPF]",
+                    "dataText": "number per low power field"
+                },
+                {
+                    "dataCode": "{#}/{platelet}",
+                    "dataText": "molecule per platelet"
+                },
+                {
+                    "dataCode": "{#}/a",
+                    "dataText": "number per annum (year)"
+                },
+                {
+                    "dataCode": "{#}/d",
+                    "dataText": "number per day"
+                },
+                {
+                    "dataCode": "{#}/g",
+                    "dataText": "number per gram"
+                },
+                {
+                    "dataCode": "{#}/L",
+                    "dataText": "number per liter"
+                },
+                {
+                    "dataCode": "{#}/min",
+                    "dataText": "number per minute"
+                },
+                {
+                    "dataCode": "{#}/mL",
+                    "dataText": "number per milliliter"
+                },
+                {
+                    "dataCode": "{#}/uL",
+                    "dataText": "number per microliter"
+                },
+                {
+                    "dataCode": "{#}/wk",
+                    "dataText": "number per week"
+                },
+                {
+                    "dataCode": "{absorbance}",
+                    "dataText": "absorbance"
+                },
+                {
+                    "dataCode": "{activity}",
+                    "dataText": "activity"
+                },
+                {
+                    "dataCode": "{AHF'U}",
+                    "dataText": "American Hospital Formulary unit"
+                },
+                {
+                    "dataCode": "{APS'U}",
+                    "dataText": "IgA antiphosphatidylserine unit "
+                },
+                {
+                    "dataCode": "{ARU}",
+                    "dataText": "aspirin response unit"
+                },
+                {
+                    "dataCode": "{beats}/min",
+                    "dataText": "heart beats per minute"
+                },
+                {
+                    "dataCode": "{binding_index}",
+                    "dataText": "binding index"
+                },
+                {
+                    "dataCode": "{breaths}/min",
+                    "dataText": "breaths per minute"
+                },
+                {
+                    "dataCode": "{CAE'U}",
+                    "dataText": "complement activity enzyme unit"
+                },
+                {
+                    "dataCode": "{CAG_repeats}",
+                    "dataText": "CAG trinucleotide repeats"
+                },
+                {
+                    "dataCode": "{cells}",
+                    "dataText": "cells"
+                },
+                {
+                    "dataCode": "{cells}/[HPF]",
+                    "dataText": "cells per high power field"
+                },
+                {
+                    "dataCode": "{cells}/uL",
+                    "dataText": "cells per microliter"
+                },
+                {
+                    "dataCode": "{CH100'U}",
+                    "dataText": "complement CH100 unit"
+                },
+                {
+                    "dataCode": "{clock_time}",
+                    "dataText": "clock time e.g 12:30PM"
+                },
+                {
+                    "dataCode": "{copies}",
+                    "dataText": "copies"
+                },
+                {
+                    "dataCode": "{copies}/mL",
+                    "dataText": "copies per milliliter"
+                },
+                {
+                    "dataCode": "{copies}/ug",
+                    "dataText": "copies per microgram"
+                },
+                {
+                    "dataCode": "{count}",
+                    "dataText": "count"
+                },
+                {
+                    "dataCode": "{CPM}",
+                    "dataText": "counts per minute"
+                },
+                {
+                    "dataCode": "{CPM}/10*3{cell}",
+                    "dataText": "counts per minute per thousand cells"
+                },
+                {
+                    "dataCode": "{Ct_value}",
+                    "dataText": "Cycle threshold value"
+                },
+                {
+                    "dataCode": "{delta_OD}",
+                    "dataText": "change in (delta) optical density"
+                },
+                {
+                    "dataCode": "{dilution}",
+                    "dataText": "dilution"
+                },
+                {
+                    "dataCode": "{Ehrlich'U}",
+                    "dataText": "Ehrlich unit"
+                },
+                {
+                    "dataCode": "{Ehrlich'U}/(2.h)",
+                    "dataText": "Ehrlich unit per 2 hour"
+                },
+                {
+                    "dataCode": "{Ehrlich'U}/100.g",
+                    "dataText": "Ehrlich unit per 100 gram"
+                },
+                {
+                    "dataCode": "{Ehrlich'U}/d",
+                    "dataText": "Ehrlich unit per day"
+                },
+                {
+                    "dataCode": "{Ehrlich'U}/dL",
+                    "dataText": "Ehrlich unit per deciliter"
+                },
+                {
+                    "dataCode": "{EIA'U}",
+                    "dataText": "EIA unit"
+                },
+                {
+                    "dataCode": "{EIA'U}/U",
+                    "dataText": "EIA unit per enzyme unit"
+                },
+                {
+                    "dataCode": "{EIA_index}",
+                    "dataText": "EIA index"
+                },
+                {
+                    "dataCode": "{EIA_titer}",
+                    "dataText": "EIA titer"
+                },
+                {
+                    "dataCode": "{ELISA'U}",
+                    "dataText": "ELISA unit"
+                },
+                {
+                    "dataCode": "{EV}",
+                    "dataText": "EIA value"
+                },
+                {
+                    "dataCode": "{FIU}",
+                    "dataText": "fluorescent intensity unit"
+                },
+                {
+                    "dataCode": "{fraction}",
+                    "dataText": "fraction"
+                },
+                {
+                    "dataCode": "{GAA_repeats}",
+                    "dataText": "GAA trinucleotide repeats"
+                },
+                {
+                    "dataCode": "{genomes}/mL",
+                    "dataText": "genomes per milliliter"
+                },
+                {
+                    "dataCode": "{Globules}/[HPF]",
+                    "dataText": "globules (drops)  per high power field"
+                },
+                {
+                    "dataCode": "{GPS'U}",
+                    "dataText": "IgG antiphosphatidylserine unit"
+                },
+                {
+                    "dataCode": "{HA_titer}",
+                    "dataText": "influenza hemagglutination titer"
+                },
+                {
+                    "dataCode": "{IFA_index}",
+                    "dataText": "immunofluorescence assay index"
+                },
+                {
+                    "dataCode": "{IFA_titer}",
+                    "dataText": "Immunofluorescence assay titer"
+                },
+                {
+                    "dataCode": "{ImmuneComplex'U}",
+                    "dataText": "immune complex unit"
+                },
+                {
+                    "dataCode": "{index_val}",
+                    "dataText": "index value"
+                },
+                {
+                    "dataCode": "{index}",
+                    "dataText": "index value"
+                },
+                {
+                    "dataCode": "{INR}",
+                    "dataText": "international normalized ratio"
+                },
+                {
+                    "dataCode": "{ISR}",
+                    "dataText": "immune status ratio"
+                },
+                {
+                    "dataCode": "{JDF'U}",
+                    "dataText": "Juvenile Diabetes Foundation unit"
+                },
+                {
+                    "dataCode": "{JDF'U}/L",
+                    "dataText": "Juvenile Diabetes Foundation unit per liter"
+                },
+                {
+                    "dataCode": "{KCT'U}",
+                    "dataText": "kaolin clotting time"
+                },
+                {
+                    "dataCode": "{KRONU'U}/mL",
+                    "dataText": "Kronus unit per milliliter"
+                },
+                {
+                    "dataCode": "{Log_copies}/mL",
+                    "dataText": "log (base 10) copies per milliliter"
+                },
+                {
+                    "dataCode": "{Log_IU}",
+                    "dataText": "log (base 10) international unit"
+                },
+                {
+                    "dataCode": "{Log_IU}/mL",
+                    "dataText": "log (base 10) international unit per milliliter"
+                },
+                {
+                    "dataCode": "{Log}",
+                    "dataText": "log base 10"
+                },
+                {
+                    "dataCode": "{Lyme_index_value}",
+                    "dataText": "Lyme index value"
+                },
+                {
+                    "dataCode": "{M.o.M}",
+                    "dataText": "multiple of the median"
+                },
+                {
+                    "dataCode": "{minidrop}/min",
+                    "dataText": "minidrop per minute"
+                },
+                {
+                    "dataCode": "{minidrop}/s",
+                    "dataText": "minidrop per second"
+                },
+                {
+                    "dataCode": "{mm/dd/yyyy}",
+                    "dataText": "month-day-year"
+                },
+                {
+                    "dataCode": "{MPS'U}",
+                    "dataText": "IgM antiphosphatidylserine unit"
+                },
+                {
+                    "dataCode": "{MPS'U}/mL",
+                    "dataText": "IgM antiphosphatidylserine unit per milliliter"
+                },
+                {
+                    "dataCode": "{mutation}",
+                    "dataText": "mutation"
+                },
+                {
+                    "dataCode": "{OD_unit}",
+                    "dataText": "optical density unit"
+                },
+                {
+                    "dataCode": "{Pan_Bio'U}",
+                    "dataText": "panbio unit"
+                },
+                {
+                    "dataCode": "{percentile}",
+                    "dataText": "percentile"
+                },
+                {
+                    "dataCode": "{phenotype}",
+                    "dataText": "phenotype"
+                },
+                {
+                    "dataCode": "{ratio}",
+                    "dataText": "ratio"
+                },
+                {
+                    "dataCode": "{RBC}/uL",
+                    "dataText": "red blood cell per microliter"
+                },
+                {
+                    "dataCode": "{rel_saturation}",
+                    "dataText": "relative saturation"
+                },
+                {
+                    "dataCode": "{risk}",
+                    "dataText": "risk"
+                },
+                {
+                    "dataCode": "{Rubella_virus}",
+                    "dataText": "rubella virus"
+                },
+                {
+                    "dataCode": "{s_co_ratio}",
+                    "dataText": "signal to cutoff ratio"
+                },
+                {
+                    "dataCode": "{saturation}",
+                    "dataText": "saturation"
+                },
+                {
+                    "dataCode": "{score}",
+                    "dataText": "score"
+                },
+                {
+                    "dataCode": "{shift}",
+                    "dataText": "shift"
+                },
+                {
+                    "dataCode": "{spermatozoa}/mL",
+                    "dataText": "spermatozoa per milliliter"
+                },
+                {
+                    "dataCode": "{STDV}",
+                    "dataText": "standard deviation"
+                },
+                {
+                    "dataCode": "{titer}",
+                    "dataText": "titer"
+                },
+                {
+                    "dataCode": "{TmStp}",
+                    "dataText": "time stamp"
+                },
+                {
+                    "dataCode": "{Tscore}",
+                    "dataText": "t score"
+                },
+                {
+                    "dataCode": "{TSI_index}",
+                    "dataText": "thyroid-stimulating immunoglobulin index"
+                },
+                {
+                    "dataCode": "{WBCs}",
+                    "dataText": "white blood cells"
+                },
+                {
+                    "dataCode": "{yyyy}",
+                    "dataText": "year"
+                },
+                {
+                    "dataCode": "{Zscore}",
+                    "dataText": "z score"
+                },
+                {
+                    "dataCode": "10*12/L",
+                    "dataText": "trillion per liter"
+                },
+                {
+                    "dataCode": "10*3",
+                    "dataText": "thousand"
+                },
+                {
+                    "dataCode": "10*3/L",
+                    "dataText": "thousand per liter"
+                },
+                {
+                    "dataCode": "10*3/mL",
+                    "dataText": "thousand per milliliter"
+                },
+                {
+                    "dataCode": "10*3/uL",
+                    "dataText": "thousand per microliter"
+                },
+                {
+                    "dataCode": "10*3{copies}/mL",
+                    "dataText": "thousand copies per milliliter"
+                },
+                {
+                    "dataCode": "10*3{RBCs}",
+                    "dataText": "thousand red blood cells"
+                },
+                {
+                    "dataCode": "10*4/uL",
+                    "dataText": "10 thousand per microliter"
+                },
+                {
+                    "dataCode": "10*5",
+                    "dataText": "one hundred thousand"
+                },
+                {
+                    "dataCode": "10*6",
+                    "dataText": "million"
+                },
+                {
+                    "dataCode": "10*6.[CFU]/L",
+                    "dataText": "million colony forming unit per liter"
+                },
+                {
+                    "dataCode": "10*6.[IU]",
+                    "dataText": "million international unit"
+                },
+                {
+                    "dataCode": "10*6/(24.h)",
+                    "dataText": "million per 24 hour"
+                },
+                {
+                    "dataCode": "10*6/kg",
+                    "dataText": "million per kilogram"
+                },
+                {
+                    "dataCode": "10*6/L",
+                    "dataText": "million per liter"
+                },
+                {
+                    "dataCode": "10*6/mL",
+                    "dataText": "million per milliliter"
+                },
+                {
+                    "dataCode": "10*6/uL",
+                    "dataText": "million per microliter"
+                },
+                {
+                    "dataCode": "10*8",
+                    "dataText": "100 million "
+                },
+                {
+                    "dataCode": "10*9/L",
+                    "dataText": "billion per liter"
+                },
+                {
+                    "dataCode": "10*9/mL",
+                    "dataText": "billion per milliliter"
+                },
+                {
+                    "dataCode": "10*9/uL",
+                    "dataText": "billion per microliter"
+                },
+                {
+                    "dataCode": "10.L/(min.m2)",
+                    "dataText": "10 liter per minute per square meter"
+                },
+                {
+                    "dataCode": "10.L/min",
+                    "dataText": "10 liter per minute"
+                },
+                {
+                    "dataCode": "10.uN.s/(cm5.m2)",
+                    "dataText": "10 micronewton second per centimeter to the fifth power per square meter"
+                },
+                {
+                    "dataCode": "24.h",
+                    "dataText": "24 hour"
+                },
+                {
+                    "dataCode": "A",
+                    "dataText": "ampere"
+                },
+                {
+                    "dataCode": "a",
+                    "dataText": "year"
+                },
+                {
+                    "dataCode": "A/m",
+                    "dataText": "ampere per meter"
+                },
+                {
+                    "dataCode": "ag/{cell}",
+                    "dataText": "attogram per cell"
+                },
+                {
+                    "dataCode": "atm",
+                    "dataText": "atmosphere"
+                },
+                {
+                    "dataCode": "bar",
+                    "dataText": "bar"
+                },
+                {
+                    "dataCode": "Bq",
+                    "dataText": "Becquerel"
+                },
+                {
+                    "dataCode": "cal",
+                    "dataText": "calorie"
+                },
+                {
+                    "dataCode": "Cel",
+                    "dataText": "degree Celsius"
+                },
+                {
+                    "dataCode": "cg",
+                    "dataText": "centigram"
+                },
+                {
+                    "dataCode": "cL",
+                    "dataText": "centiliter"
+                },
+                {
+                    "dataCode": "cm",
+                    "dataText": "centimeter"
+                },
+                {
+                    "dataCode": "cm/s",
+                    "dataText": "centimeter per second"
+                },
+                {
+                    "dataCode": "cm[H2O]",
+                    "dataText": "centimeter of water"
+                },
+                {
+                    "dataCode": "cm[H2O]/L/s",
+                    "dataText": "centimeter of water per liter per second"
+                },
+                {
+                    "dataCode": "cm[H2O]/s/m",
+                    "dataText": "centimeter of water per second per meter"
+                },
+                {
+                    "dataCode": "cm[Hg]",
+                    "dataText": "centimeter of mercury"
+                },
+                {
+                    "dataCode": "cm2",
+                    "dataText": "square centimeter"
+                },
+                {
+                    "dataCode": "cm2/s",
+                    "dataText": "square centimeter per second"
+                },
+                {
+                    "dataCode": "cm3",
+                    "dataText": "cubic centimeter"
+                },
+                {
+                    "dataCode": "cP",
+                    "dataText": "centipoise"
+                },
+                {
+                    "dataCode": "cSt",
+                    "dataText": "centistoke"
+                },
+                {
+                    "dataCode": "d",
+                    "dataText": "day"
+                },
+                {
+                    "dataCode": "d/(7.d)",
+                    "dataText": "day per 7 day"
+                },
+                {
+                    "dataCode": "d/wk",
+                    "dataText": "days per week"
+                },
+                {
+                    "dataCode": "daL/min",
+                    "dataText": "dekaliter per minute"
+                },
+                {
+                    "dataCode": "daL/min/m2",
+                    "dataText": "dekaliter per minute per square meter"
+                },
+                {
+                    "dataCode": "dB",
+                    "dataText": "decibel"
+                },
+                {
+                    "dataCode": "deg",
+                    "dataText": "degree (plane angle)"
+                },
+                {
+                    "dataCode": "deg/s",
+                    "dataText": "degree per second"
+                },
+                {
+                    "dataCode": "dg",
+                    "dataText": "decigram"
+                },
+                {
+                    "dataCode": "dL",
+                    "dataText": "deciliter"
+                },
+                {
+                    "dataCode": "dm",
+                    "dataText": "decimeter"
+                },
+                {
+                    "dataCode": "dm2/s2",
+                    "dataText": "square decimeter per square second"
+                },
+                {
+                    "dataCode": "dyn.s/(cm.m2)",
+                    "dataText": "dyne second per centimeter per square meter"
+                },
+                {
+                    "dataCode": "dyn.s/cm",
+                    "dataText": "dyne second per centimeter"
+                },
+                {
+                    "dataCode": "eq",
+                    "dataText": "equivalent"
+                },
+                {
+                    "dataCode": "eq/L",
+                    "dataText": "equivalent per liter"
+                },
+                {
+                    "dataCode": "eq/mL",
+                    "dataText": "equivalent per milliliter"
+                },
+                {
+                    "dataCode": "eq/mmol",
+                    "dataText": "equivalent per millimole"
+                },
+                {
+                    "dataCode": "eq/umol",
+                    "dataText": "equivalent per micromole"
+                },
+                {
+                    "dataCode": "erg",
+                    "dataText": "erg"
+                },
+                {
+                    "dataCode": "eV",
+                    "dataText": "electron Volt"
+                },
+                {
+                    "dataCode": "F",
+                    "dataText": "Farad"
+                },
+                {
+                    "dataCode": "fg",
+                    "dataText": "femtogram"
+                },
+                {
+                    "dataCode": "fL",
+                    "dataText": "femtoliter"
+                },
+                {
+                    "dataCode": "fm",
+                    "dataText": "femtometer"
+                },
+                {
+                    "dataCode": "fmol",
+                    "dataText": "femtomole"
+                },
+                {
+                    "dataCode": "fmol/g",
+                    "dataText": "femtomole per gram"
+                },
+                {
+                    "dataCode": "fmol/L",
+                    "dataText": "femtomole per liter"
+                },
+                {
+                    "dataCode": "fmol/mg",
+                    "dataText": "femtomole per milligram"
+                },
+                {
+                    "dataCode": "fmol/mg{cyt_prot}",
+                    "dataText": "femtomole per milligram of cytosol protein"
+                },
+                {
+                    "dataCode": "fmol/mg{prot}",
+                    "dataText": "femtomole per milligram of protein"
+                },
+                {
+                    "dataCode": "fmol/mL",
+                    "dataText": "femtomole per milliliter"
+                },
+                {
+                    "dataCode": "g",
+                    "dataText": "gram"
+                },
+                {
+                    "dataCode": "g.m",
+                    "dataText": "gram meter"
+                },
+                {
+                    "dataCode": "g.m/{beat}",
+                    "dataText": "gram meter per heart beat "
+                },
+                {
+                    "dataCode": "g/(100.g)",
+                    "dataText": "gram per 100 gram"
+                },
+                {
+                    "dataCode": "g/(12.h)",
+                    "dataText": "gram per 12 hour"
+                },
+                {
+                    "dataCode": "g/(24.h)",
+                    "dataText": "gram per 24 hour"
+                },
+                {
+                    "dataCode": "g/(3.d)",
+                    "dataText": "gram per 3 days"
+                },
+                {
+                    "dataCode": "g/(4.h)",
+                    "dataText": "gram per 4 hour"
+                },
+                {
+                    "dataCode": "g/(48.h)",
+                    "dataText": "gram per 48 hour"
+                },
+                {
+                    "dataCode": "g/(5.h)",
+                    "dataText": "gram per 5 hour"
+                },
+                {
+                    "dataCode": "g/(6.h)",
+                    "dataText": "gram per 6 hour"
+                },
+                {
+                    "dataCode": "g/(72.h)",
+                    "dataText": "gram per 72 hour"
+                },
+                {
+                    "dataCode": "g/(8.h){shift}",
+                    "dataText": "gram per 8 hour shift"
+                },
+                {
+                    "dataCode": "g/{specimen}",
+                    "dataText": "gram per specimen"
+                },
+                {
+                    "dataCode": "g/{total_output}",
+                    "dataText": "gram per total output"
+                },
+                {
+                    "dataCode": "g/{total_weight}",
+                    "dataText": "gram per total weight"
+                },
+                {
+                    "dataCode": "g/cm2",
+                    "dataText": "gram per square centimeter"
+                },
+                {
+                    "dataCode": "g/cm3",
+                    "dataText": "gram per cubic centimeter"
+                },
+                {
+                    "dataCode": "g/d",
+                    "dataText": "gram per day"
+                },
+                {
+                    "dataCode": "g/dL",
+                    "dataText": "gram per deciliter"
+                },
+                {
+                    "dataCode": "g/g",
+                    "dataText": "gram per gram"
+                },
+                {
+                    "dataCode": "g/g{creat}",
+                    "dataText": "gram per gram of creatinine"
+                },
+                {
+                    "dataCode": "g/g{globulin}",
+                    "dataText": "gram per gram of globulin"
+                },
+                {
+                    "dataCode": "g/g{tissue}",
+                    "dataText": "gram per gram of tissue"
+                },
+                {
+                    "dataCode": "g/h",
+                    "dataText": "gram per hour"
+                },
+                {
+                    "dataCode": "g/h/m2",
+                    "dataText": "gram per hour per square meter"
+                },
+                {
+                    "dataCode": "g/kg",
+                    "dataText": "gram per kilogram"
+                },
+                {
+                    "dataCode": "g/kg/(8.h)",
+                    "dataText": "gram per  kilogram per 8 hour "
+                },
+                {
+                    "dataCode": "g/kg/(8.h){shift}",
+                    "dataText": "gram per kilogram per 8 hour shift"
+                },
+                {
+                    "dataCode": "g/kg/d",
+                    "dataText": "gram per kilogram per day"
+                },
+                {
+                    "dataCode": "g/kg/h",
+                    "dataText": "gram per kilogram per hour"
+                },
+                {
+                    "dataCode": "g/kg/min",
+                    "dataText": "gram per kilogram per minute"
+                },
+                {
+                    "dataCode": "g/L",
+                    "dataText": "gram per liter"
+                },
+                {
+                    "dataCode": "g/m2",
+                    "dataText": "gram per square meter"
+                },
+                {
+                    "dataCode": "g/mg",
+                    "dataText": "gram per milligram"
+                },
+                {
+                    "dataCode": "g/min",
+                    "dataText": "gram per minute"
+                },
+                {
+                    "dataCode": "g/mL",
+                    "dataText": "gram per milliliter"
+                },
+                {
+                    "dataCode": "g/mmol",
+                    "dataText": "gram per millimole"
+                },
+                {
+                    "dataCode": "g/mol{creat}",
+                    "dataText": "gram per mole of creatinine"
+                },
+                {
+                    "dataCode": "g{creat}",
+                    "dataText": "gram of creatinine"
+                },
+                {
+                    "dataCode": "g{Hb}",
+                    "dataText": "gram of hemoglobin"
+                },
+                {
+                    "dataCode": "g{total_nit}",
+                    "dataText": "gram of total nitrogen"
+                },
+                {
+                    "dataCode": "g{total_prot}",
+                    "dataText": "gram of total protein"
+                },
+                {
+                    "dataCode": "g{wet_tissue}",
+                    "dataText": "gram of wet tissue"
+                },
+                {
+                    "dataCode": "Gy",
+                    "dataText": "Gray"
+                },
+                {
+                    "dataCode": "H",
+                    "dataText": "Henry"
+                },
+                {
+                    "dataCode": "h",
+                    "dataText": "hour"
+                },
+                {
+                    "dataCode": "h/d",
+                    "dataText": "hour per day"
+                },
+                {
+                    "dataCode": "h/wk",
+                    "dataText": "hour per week"
+                },
+                {
+                    "dataCode": "Hz",
+                    "dataText": "Hertz"
+                },
+                {
+                    "dataCode": "J",
+                    "dataText": "joule"
+                },
+                {
+                    "dataCode": "J/L",
+                    "dataText": "joule per liter"
+                },
+                {
+                    "dataCode": "K",
+                    "dataText": "degree Kelvin"
+                },
+                {
+                    "dataCode": "K/W",
+                    "dataText": "degree Kelvin per Watt"
+                },
+                {
+                    "dataCode": "k[IU]/L",
+                    "dataText": "kilo international unit per liter"
+                },
+                {
+                    "dataCode": "k[IU]/mL",
+                    "dataText": "kilo international unit per milliliter"
+                },
+                {
+                    "dataCode": "kat",
+                    "dataText": "katal"
+                },
+                {
+                    "dataCode": "kat/kg",
+                    "dataText": "katal per kilogram"
+                },
+                {
+                    "dataCode": "kat/L",
+                    "dataText": "katal per liter"
+                },
+                {
+                    "dataCode": "kcal",
+                    "dataText": "kilocalorie"
+                },
+                {
+                    "dataCode": "kcal/(24.h)",
+                    "dataText": "kilocalorie per 24 hour"
+                },
+                {
+                    "dataCode": "kcal/[oz_av]",
+                    "dataText": "kilocalorie per ounce (US & British)"
+                },
+                {
+                    "dataCode": "kcal/d",
+                    "dataText": "kilocalorie per day"
+                },
+                {
+                    "dataCode": "kcal/h",
+                    "dataText": "kilocalorie per hour"
+                },
+                {
+                    "dataCode": "kcal/kg/(24.h)",
+                    "dataText": "kilocalorie per kilogram per 24 hour"
+                },
+                {
+                    "dataCode": "kg",
+                    "dataText": "kilogram"
+                },
+                {
+                    "dataCode": "kg.m/s",
+                    "dataText": "kilogram meter per second"
+                },
+                {
+                    "dataCode": "kg/(s.m2)",
+                    "dataText": "kilogram per second per square meter"
+                },
+                {
+                    "dataCode": "kg/h",
+                    "dataText": "kilogram per hour"
+                },
+                {
+                    "dataCode": "kg/L",
+                    "dataText": "kilogram per liter"
+                },
+                {
+                    "dataCode": "kg/m2",
+                    "dataText": "kilogram per square meter"
+                },
+                {
+                    "dataCode": "kg/m3",
+                    "dataText": "kilogram per cubic meter"
+                },
+                {
+                    "dataCode": "kg/min",
+                    "dataText": "kilogram per minute"
+                },
+                {
+                    "dataCode": "kg/mol",
+                    "dataText": "kilogram per mole"
+                },
+                {
+                    "dataCode": "kg/s",
+                    "dataText": "kilogram per second"
+                },
+                {
+                    "dataCode": "kL",
+                    "dataText": "kiloliter"
+                },
+                {
+                    "dataCode": "km",
+                    "dataText": "kilometer"
+                },
+                {
+                    "dataCode": "kPa",
+                    "dataText": "kilopascal"
+                },
+                {
+                    "dataCode": "ks",
+                    "dataText": "kilosecond"
+                },
+                {
+                    "dataCode": "kU",
+                    "dataText": "kilo enzyme unit"
+                },
+                {
+                    "dataCode": "kU/g",
+                    "dataText": "kilo enzyme unit per gram"
+                },
+                {
+                    "dataCode": "kU/L",
+                    "dataText": "kilo enzyme unit per liter"
+                },
+                {
+                    "dataCode": "kU/L{class}",
+                    "dataText": "kilo enzyme unit per liter class"
+                },
+                {
+                    "dataCode": "kU/mL",
+                    "dataText": "kilo enzyme unit per milliliter"
+                },
+                {
+                    "dataCode": "L",
+                    "dataText": "liter"
+                },
+                {
+                    "dataCode": "L/(24.h)",
+                    "dataText": "liter per 24 hour"
+                },
+                {
+                    "dataCode": "L/(8.h)",
+                    "dataText": "liter per 8 hour"
+                },
+                {
+                    "dataCode": "L/(min.m2)",
+                    "dataText": "liter per minute per square meter"
+                },
+                {
+                    "dataCode": "L/d",
+                    "dataText": "liter per day"
+                },
+                {
+                    "dataCode": "L/h",
+                    "dataText": "liter per hour"
+                },
+                {
+                    "dataCode": "L/kg",
+                    "dataText": "liter per kilogram"
+                },
+                {
+                    "dataCode": "L/L",
+                    "dataText": "liter per liter"
+                },
+                {
+                    "dataCode": "L/min",
+                    "dataText": "liter per minute"
+                },
+                {
+                    "dataCode": "L/min/m2",
+                    "dataText": "liter per minute per sqaure meter"
+                },
+                {
+                    "dataCode": "L/s",
+                    "dataText": "liter per second"
+                },
+                {
+                    "dataCode": "L/s/s2",
+                    "dataText": "liter per second per square second"
+                },
+                {
+                    "dataCode": "lm",
+                    "dataText": "lumen"
+                },
+                {
+                    "dataCode": "lm.m2",
+                    "dataText": "lumen square meter"
+                },
+                {
+                    "dataCode": "m",
+                    "dataText": "meter"
+                },
+                {
+                    "dataCode": "m/s",
+                    "dataText": "meter per second"
+                },
+                {
+                    "dataCode": "m/s2",
+                    "dataText": "meter per square second"
+                },
+                {
+                    "dataCode": "m[IU]/L",
+                    "dataText": "milli international unit per liter"
+                },
+                {
+                    "dataCode": "m[IU]/mL",
+                    "dataText": "milli  international unit per milliliter"
+                },
+                {
+                    "dataCode": "m2",
+                    "dataText": "square meter"
+                },
+                {
+                    "dataCode": "m2/s",
+                    "dataText": "square meter per second"
+                },
+                {
+                    "dataCode": "m3/s",
+                    "dataText": "cubic meter per second"
+                },
+                {
+                    "dataCode": "mA",
+                    "dataText": "milliampere"
+                },
+                {
+                    "dataCode": "mbar",
+                    "dataText": "millibar"
+                },
+                {
+                    "dataCode": "mbar.s/L",
+                    "dataText": "millibar second per liter"
+                },
+                {
+                    "dataCode": "mbar/L/s",
+                    "dataText": "millibar per liter per second"
+                },
+                {
+                    "dataCode": "meq",
+                    "dataText": "milliequivalent"
+                },
+                {
+                    "dataCode": "meq/(2.h)",
+                    "dataText": "milliequivalent per 2 hour"
+                },
+                {
+                    "dataCode": "meq/(24.h)",
+                    "dataText": "milliequivalent per 24 hour"
+                },
+                {
+                    "dataCode": "meq/(8.h)",
+                    "dataText": "milliequivalent per 8 hour"
+                },
+                {
+                    "dataCode": "meq/{specimen}",
+                    "dataText": "milliequivalent per specimen"
+                },
+                {
+                    "dataCode": "meq/{total_volume}",
+                    "dataText": "milliequivalent per total volume"
+                },
+                {
+                    "dataCode": "meq/d",
+                    "dataText": "milliequivalent per day"
+                },
+                {
+                    "dataCode": "meq/dL",
+                    "dataText": "milliequivalent per deciliter"
+                },
+                {
+                    "dataCode": "meq/g",
+                    "dataText": "milliequivalent per gram"
+                },
+                {
+                    "dataCode": "meq/g{creat}",
+                    "dataText": "milliequivalent per gram of creatinine"
+                },
+                {
+                    "dataCode": "meq/h",
+                    "dataText": "milliequivalent per hour"
+                },
+                {
+                    "dataCode": "meq/kg",
+                    "dataText": "milliequivalent per kilogram"
+                },
+                {
+                    "dataCode": "meq/kg/h",
+                    "dataText": "milliequivalent per kilogram per hour"
+                },
+                {
+                    "dataCode": "meq/L",
+                    "dataText": "milliequivalent per liter"
+                },
+                {
+                    "dataCode": "meq/m2",
+                    "dataText": "milliequivalent per square meter"
+                },
+                {
+                    "dataCode": "meq/min",
+                    "dataText": "milliequivalent per minute"
+                },
+                {
+                    "dataCode": "meq/mL",
+                    "dataText": "milliequivalent per milliliter"
+                },
+                {
+                    "dataCode": "mg",
+                    "dataText": "milligram"
+                },
+                {
+                    "dataCode": "mg/(10.h)",
+                    "dataText": "milligram per 10 hour"
+                },
+                {
+                    "dataCode": "mg/(12.h)",
+                    "dataText": "milligram per 12 hour"
+                },
+                {
+                    "dataCode": "mg/(2.h)",
+                    "dataText": "milligram per 2 hour"
+                },
+                {
+                    "dataCode": "mg/(24.h)",
+                    "dataText": "milligram per 24 hour"
+                },
+                {
+                    "dataCode": "mg/(6.h)",
+                    "dataText": "milligram per 6 hour"
+                },
+                {
+                    "dataCode": "mg/(72.h)",
+                    "dataText": "milligram per 72 hour"
+                },
+                {
+                    "dataCode": "mg/(8.h)",
+                    "dataText": "milligram per 8 hour"
+                },
+                {
+                    "dataCode": "mg/{collection}",
+                    "dataText": "milligram per collection"
+                },
+                {
+                    "dataCode": "mg/{specimen}",
+                    "dataText": "milligram per specimen"
+                },
+                {
+                    "dataCode": "mg/{total_output}",
+                    "dataText": "milligram per total output"
+                },
+                {
+                    "dataCode": "mg/{total_volume}",
+                    "dataText": "milligram per total volume"
+                },
+                {
+                    "dataCode": "mg/d",
+                    "dataText": "milligram per day"
+                },
+                {
+                    "dataCode": "mg/d/{1.73_m2}",
+                    "dataText": "milligram per day per 1.73 square meter"
+                },
+                {
+                    "dataCode": "mg/dL",
+                    "dataText": "milligram per deciliter"
+                },
+                {
+                    "dataCode": "mg/dL{RBCs}",
+                    "dataText": "milligram per deciliter of red blood cells"
+                },
+                {
+                    "dataCode": "mg/g",
+                    "dataText": "milligram per gram"
+                },
+                {
+                    "dataCode": "mg/g{creat}",
+                    "dataText": "milligram per gram of creatinine"
+                },
+                {
+                    "dataCode": "mg/g{dry_tissue}",
+                    "dataText": "milligram per gram of dry tissue"
+                },
+                {
+                    "dataCode": "mg/g{feces}",
+                    "dataText": "milligram per gram of feces"
+                },
+                {
+                    "dataCode": "mg/g{tissue}",
+                    "dataText": "milligram per gram of tissue"
+                },
+                {
+                    "dataCode": "mg/g{wet_tissue}",
+                    "dataText": "milligram per gram of wet tissue"
+                },
+                {
+                    "dataCode": "mg/h",
+                    "dataText": "milligram per hour"
+                },
+                {
+                    "dataCode": "mg/kg",
+                    "dataText": "milligram per kilogram"
+                },
+                {
+                    "dataCode": "mg/kg/(8.h)",
+                    "dataText": "milligram per kilogram per 8 hour"
+                },
+                {
+                    "dataCode": "mg/kg/d",
+                    "dataText": "milligram per kilogram per day"
+                },
+                {
+                    "dataCode": "mg/kg/h",
+                    "dataText": "milligram per kilogram per hour"
+                },
+                {
+                    "dataCode": "mg/kg/min",
+                    "dataText": "milligram per kilogram per minute"
+                },
+                {
+                    "dataCode": "mg/L",
+                    "dataText": "milligram per liter"
+                },
+                {
+                    "dataCode": "mg/L{RBCs}",
+                    "dataText": "milligram per liter of red blood cells"
+                },
+                {
+                    "dataCode": "mg/m2",
+                    "dataText": "milligram per square meter"
+                },
+                {
+                    "dataCode": "mg/m3",
+                    "dataText": "milligram per cubic meter"
+                },
+                {
+                    "dataCode": "mg/mg",
+                    "dataText": "milligram per milligram"
+                },
+                {
+                    "dataCode": "mg/mg{creat}",
+                    "dataText": "milligram per milligram of creatinine"
+                },
+                {
+                    "dataCode": "mg/min",
+                    "dataText": "milligram per minute"
+                },
+                {
+                    "dataCode": "mg/mL",
+                    "dataText": "milligram per milliliter"
+                },
+                {
+                    "dataCode": "mg/mmol",
+                    "dataText": "milligram per millimole"
+                },
+                {
+                    "dataCode": "mg/mmol{creat}",
+                    "dataText": "milligram per millimole of creatinine"
+                },
+                {
+                    "dataCode": "mg/wk",
+                    "dataText": "milligram per week"
+                },
+                {
+                    "dataCode": "mg{FEU}/L",
+                    "dataText": "milligram fibrinogen equivalent unit per liter"
+                },
+                {
+                    "dataCode": "min",
+                    "dataText": "minute"
+                },
+                {
+                    "dataCode": "min/d",
+                    "dataText": "minute per day"
+                },
+                {
+                    "dataCode": "min/wk",
+                    "dataText": "minute per week"
+                },
+                {
+                    "dataCode": "mL",
+                    "dataText": "milliliter"
+                },
+                {
+                    "dataCode": "mL/(10.h)",
+                    "dataText": "milliliter per 10 hour"
+                },
+                {
+                    "dataCode": "mL/(12.h)",
+                    "dataText": "milliliter per 12 hour"
+                },
+                {
+                    "dataCode": "mL/(2.h)",
+                    "dataText": "milliliter per 2 hour"
+                },
+                {
+                    "dataCode": "mL/(24.h)",
+                    "dataText": "milliliter per 24 hour"
+                },
+                {
+                    "dataCode": "mL/(4.h)",
+                    "dataText": "milliliter per 4 hour"
+                },
+                {
+                    "dataCode": "mL/(5.h)",
+                    "dataText": "milliliter per 5 hour"
+                },
+                {
+                    "dataCode": "mL/(6.h)",
+                    "dataText": "milliliter per 6 hour"
+                },
+                {
+                    "dataCode": "mL/(72.h)",
+                    "dataText": "milliliter per 72 hour"
+                },
+                {
+                    "dataCode": "mL/(8.h)",
+                    "dataText": "milliliter per 8 hour"
+                },
+                {
+                    "dataCode": "mL/(8.h)/kg",
+                    "dataText": "milliliter per 8 hour per kilogram"
+                },
+                {
+                    "dataCode": "mL/[sin_i]",
+                    "dataText": "milliliter per square inch (international)"
+                },
+                {
+                    "dataCode": "mL/{beat}",
+                    "dataText": "milliliter per heart beat"
+                },
+                {
+                    "dataCode": "mL/{beat}/m2",
+                    "dataText": "milliliter per heart beat per  square meter"
+                },
+                {
+                    "dataCode": "mL/cm[H2O]",
+                    "dataText": "milliliter per centimeter of water"
+                },
+                {
+                    "dataCode": "mL/d",
+                    "dataText": "milliliter per day"
+                },
+                {
+                    "dataCode": "mL/dL",
+                    "dataText": "milliliter per deciliter"
+                },
+                {
+                    "dataCode": "mL/h",
+                    "dataText": "milliliter per hour"
+                },
+                {
+                    "dataCode": "mL/kg",
+                    "dataText": "milliliter per kilogram"
+                },
+                {
+                    "dataCode": "mL/kg/(8.h)",
+                    "dataText": "milliliter per kilogram per 8 hour"
+                },
+                {
+                    "dataCode": "mL/kg/d",
+                    "dataText": "milliliter per kilogram per day"
+                },
+                {
+                    "dataCode": "mL/kg/h",
+                    "dataText": "milliliter per kilogram per hour"
+                },
+                {
+                    "dataCode": "mL/kg/min",
+                    "dataText": "milliliter per kilogram per minute"
+                },
+                {
+                    "dataCode": "mL/m2",
+                    "dataText": "milliliter per square meter"
+                },
+                {
+                    "dataCode": "mL/mbar",
+                    "dataText": "milliliter per millibar"
+                },
+                {
+                    "dataCode": "mL/min",
+                    "dataText": "milliliter per minute"
+                },
+                {
+                    "dataCode": "mL/min/{1.73_m2}",
+                    "dataText": "milliliter per minute per 1.73 square meter"
+                },
+                {
+                    "dataCode": "mL/min/m2",
+                    "dataText": "milliliter per minute per square meter"
+                },
+                {
+                    "dataCode": "mL/mm",
+                    "dataText": "milliliter per millimeter"
+                },
+                {
+                    "dataCode": "mL/s",
+                    "dataText": "milliliter per second"
+                },
+                {
+                    "dataCode": "mL{fetal_RBCs}",
+                    "dataText": "milliliter of fetal red blood cells"
+                },
+                {
+                    "dataCode": "mm",
+                    "dataText": "millimeter"
+                },
+                {
+                    "dataCode": "mm/h",
+                    "dataText": "millimeter per hour"
+                },
+                {
+                    "dataCode": "mm/min",
+                    "dataText": "millimeter per minute"
+                },
+                {
+                    "dataCode": "mm[H2O]",
+                    "dataText": "millimeter of water"
+                },
+                {
+                    "dataCode": "mm[Hg]",
+                    "dataText": "millimeter of mercury"
+                },
+                {
+                    "dataCode": "mm2",
+                    "dataText": "square millimeter"
+                },
+                {
+                    "dataCode": "mmol",
+                    "dataText": "millimole"
+                },
+                {
+                    "dataCode": "mmol/(12.h)",
+                    "dataText": "millimole per 12 hour"
+                },
+                {
+                    "dataCode": "mmol/(2.h)",
+                    "dataText": "millimole per 2 hour"
+                },
+                {
+                    "dataCode": "mmol/(24.h)",
+                    "dataText": "millimole per 24 hour"
+                },
+                {
+                    "dataCode": "mmol/(5.h)",
+                    "dataText": "millimole per 5 hour"
+                },
+                {
+                    "dataCode": "mmol/(6.h)",
+                    "dataText": "millimole per 6 hour"
+                },
+                {
+                    "dataCode": "mmol/(8.h)",
+                    "dataText": "millimole per 8 hour"
+                },
+                {
+                    "dataCode": "mmol/{ejaculate}",
+                    "dataText": "millimole per ejaculate"
+                },
+                {
+                    "dataCode": "mmol/{specimen}",
+                    "dataText": "millimole per specimen"
+                },
+                {
+                    "dataCode": "mmol/{total_vol}",
+                    "dataText": "millimole per total volume"
+                },
+                {
+                    "dataCode": "mmol/d",
+                    "dataText": "millimole per day"
+                },
+                {
+                    "dataCode": "mmol/dL",
+                    "dataText": "millimole per deciliter"
+                },
+                {
+                    "dataCode": "mmol/g",
+                    "dataText": "millimole per gram"
+                },
+                {
+                    "dataCode": "mmol/g{creat}",
+                    "dataText": "millimole per gram of creatinine"
+                },
+                {
+                    "dataCode": "mmol/h",
+                    "dataText": "millimole per hour"
+                },
+                {
+                    "dataCode": "mmol/h/mg{Hb}",
+                    "dataText": "millimole per hour per milligram of hemoglobin"
+                },
+                {
+                    "dataCode": "mmol/h/mg{prot}",
+                    "dataText": "millimole per hour per milligram of protein"
+                },
+                {
+                    "dataCode": "mmol/kg",
+                    "dataText": "millimole per kilogram"
+                },
+                {
+                    "dataCode": "mmol/kg/(8.h)",
+                    "dataText": "millimole per kilogram per 8 hour"
+                },
+                {
+                    "dataCode": "mmol/kg/d",
+                    "dataText": "millimole per kilogram per day"
+                },
+                {
+                    "dataCode": "mmol/kg/h",
+                    "dataText": "millimole per kilogram per hour"
+                },
+                {
+                    "dataCode": "mmol/kg/min",
+                    "dataText": "millimole per kilogram per minute"
+                },
+                {
+                    "dataCode": "mmol/L",
+                    "dataText": "millimole per liter"
+                },
+                {
+                    "dataCode": "mmol/L{RBCs}",
+                    "dataText": "millimole per liter of red blood cells"
+                },
+                {
+                    "dataCode": "mmol/m2",
+                    "dataText": "millimole per square meter"
+                },
+                {
+                    "dataCode": "mmol/min",
+                    "dataText": "millimole per minute"
+                },
+                {
+                    "dataCode": "mmol/mmol",
+                    "dataText": "millimole per millimole"
+                },
+                {
+                    "dataCode": "mmol/mmol{creat}",
+                    "dataText": "millimole per millmole of creatinine"
+                },
+                {
+                    "dataCode": "mmol/mmol{urea}",
+                    "dataText": "millimole per millimole of urea"
+                },
+                {
+                    "dataCode": "mmol/mol",
+                    "dataText": "millimole per mole"
+                },
+                {
+                    "dataCode": "mmol/mol{creat}",
+                    "dataText": "millimole per mole of creatinine"
+                },
+                {
+                    "dataCode": "mmol/s/L",
+                    "dataText": "millimole per second per liter"
+                },
+                {
+                    "dataCode": "mo",
+                    "dataText": "month"
+                },
+                {
+                    "dataCode": "mol",
+                    "dataText": "mole"
+                },
+                {
+                    "dataCode": "mol/kg",
+                    "dataText": "mole per kilogram"
+                },
+                {
+                    "dataCode": "mol/kg/s",
+                    "dataText": "mole per kilogram per second"
+                },
+                {
+                    "dataCode": "mol/L",
+                    "dataText": "mole per liter"
+                },
+                {
+                    "dataCode": "mol/m3",
+                    "dataText": "mole per cubic meter"
+                },
+                {
+                    "dataCode": "mol/mL",
+                    "dataText": "mole per milliliter"
+                },
+                {
+                    "dataCode": "mol/mol",
+                    "dataText": "mole per mole"
+                },
+                {
+                    "dataCode": "mol/s",
+                    "dataText": "mole per second"
+                },
+                {
+                    "dataCode": "mosm",
+                    "dataText": "milliosmole"
+                },
+                {
+                    "dataCode": "mosm/kg",
+                    "dataText": "milliosmole per kilogram"
+                },
+                {
+                    "dataCode": "mosm/L",
+                    "dataText": "milliosmole per liter"
+                },
+                {
+                    "dataCode": "mPa",
+                    "dataText": "millipascal"
+                },
+                {
+                    "dataCode": "mPa.s",
+                    "dataText": "millipascal second"
+                },
+                {
+                    "dataCode": "Ms",
+                    "dataText": "megasecond"
+                },
+                {
+                    "dataCode": "ms",
+                    "dataText": "millisecond"
+                },
+                {
+                    "dataCode": "mU/g",
+                    "dataText": "milli  enzyme unit per gram"
+                },
+                {
+                    "dataCode": "mU/g{Hb}",
+                    "dataText": "milli enzyme unit per gram of hemoglobin"
+                },
+                {
+                    "dataCode": "mU/g{prot}",
+                    "dataText": "milli enzyme unit per gram of protein"
+                },
+                {
+                    "dataCode": "mU/L",
+                    "dataText": "milli enzyme unit per liter"
+                },
+                {
+                    "dataCode": "mU/mg",
+                    "dataText": "milli enzyme unit per milligram"
+                },
+                {
+                    "dataCode": "mU/mg{creat}",
+                    "dataText": "milli enzyme unit per milligram of creatinine"
+                },
+                {
+                    "dataCode": "mU/mL",
+                    "dataText": "milli  enzyme unit per milliliter"
+                },
+                {
+                    "dataCode": "mU/mL/min",
+                    "dataText": "milli  enzyme unit per milliliter per minute"
+                },
+                {
+                    "dataCode": "mU/mmol{creat}",
+                    "dataText": "milli  enzyme unit per millimole of creatinine"
+                },
+                {
+                    "dataCode": "mU/mmol{RBCs}",
+                    "dataText": "milli  enzyme unit per millimole of red blood cells"
+                },
+                {
+                    "dataCode": "mV",
+                    "dataText": "millivolt"
+                },
+                {
+                    "dataCode": "mV/s",
+                    "dataText": "millivolt per second"
+                },
+                {
+                    "dataCode": "N",
+                    "dataText": "Newton"
+                },
+                {
+                    "dataCode": "N.cm",
+                    "dataText": "Newton centimeter"
+                },
+                {
+                    "dataCode": "N.s",
+                    "dataText": "Newton second"
+                },
+                {
+                    "dataCode": "ng",
+                    "dataText": "nanogram"
+                },
+                {
+                    "dataCode": "ng/(24.h)",
+                    "dataText": "nanogram per 24 hour"
+                },
+                {
+                    "dataCode": "ng/(8.h)",
+                    "dataText": "nanogram per 8 hour"
+                },
+                {
+                    "dataCode": "ng/10*6",
+                    "dataText": "nanogram per million"
+                },
+                {
+                    "dataCode": "ng/10*6{RBCs}",
+                    "dataText": "nanogram per million red blood cells"
+                },
+                {
+                    "dataCode": "ng/d",
+                    "dataText": "nanogram per day"
+                },
+                {
+                    "dataCode": "ng/dL",
+                    "dataText": "nanogram per deciliter"
+                },
+                {
+                    "dataCode": "ng/g",
+                    "dataText": "nanogram per gram"
+                },
+                {
+                    "dataCode": "ng/g{creat}",
+                    "dataText": "nanogram per gram of creatinine"
+                },
+                {
+                    "dataCode": "ng/h",
+                    "dataText": "nanogram per hour"
+                },
+                {
+                    "dataCode": "ng/kg",
+                    "dataText": "nanogram per kilogram"
+                },
+                {
+                    "dataCode": "ng/kg/(8.h)",
+                    "dataText": "nanogram per kilogram per 8 hour"
+                },
+                {
+                    "dataCode": "ng/kg/h",
+                    "dataText": "nanogram per kilogram per hour"
+                },
+                {
+                    "dataCode": "ng/kg/min",
+                    "dataText": "nanogram per kilogram per minute"
+                },
+                {
+                    "dataCode": "ng/L",
+                    "dataText": "nanogram per liter"
+                },
+                {
+                    "dataCode": "ng/m2",
+                    "dataText": "nanogram per square meter"
+                },
+                {
+                    "dataCode": "ng/mg",
+                    "dataText": "nanogram per milligram"
+                },
+                {
+                    "dataCode": "ng/mg/h",
+                    "dataText": "nanogram per milligram per hour"
+                },
+                {
+                    "dataCode": "ng/mg{creat}",
+                    "dataText": "nanogram per milligram of creatinine"
+                },
+                {
+                    "dataCode": "ng/mg{prot}",
+                    "dataText": "nanogram per milligram of protein"
+                },
+                {
+                    "dataCode": "ng/min",
+                    "dataText": "nanogram per minute"
+                },
+                {
+                    "dataCode": "ng/mL",
+                    "dataText": "nanogram per millliiter"
+                },
+                {
+                    "dataCode": "ng/mL/h",
+                    "dataText": "nanogram per milliliter per hour"
+                },
+                {
+                    "dataCode": "ng/mL{RBCs}",
+                    "dataText": "nanogram per milliliter of red blood cells"
+                },
+                {
+                    "dataCode": "ng/s",
+                    "dataText": "nanogram per second"
+                },
+                {
+                    "dataCode": "ng/U",
+                    "dataText": "nanogram per enzyme unit"
+                },
+                {
+                    "dataCode": "ng{FEU}/mL",
+                    "dataText": "nanogram fibrinogen equivalent unit per milliliter "
+                },
+                {
+                    "dataCode": "nkat",
+                    "dataText": "nanokatal"
+                },
+                {
+                    "dataCode": "nL",
+                    "dataText": "nanoliter"
+                },
+                {
+                    "dataCode": "nm",
+                    "dataText": "nanometer"
+                },
+                {
+                    "dataCode": "nm/s/L",
+                    "dataText": "nanometer per second per liter"
+                },
+                {
+                    "dataCode": "nmol",
+                    "dataText": "nanomole"
+                },
+                {
+                    "dataCode": "nmol/(24.h)",
+                    "dataText": "nanomole per 24 hour"
+                },
+                {
+                    "dataCode": "nmol/d",
+                    "dataText": "nanomole per day"
+                },
+                {
+                    "dataCode": "nmol/dL",
+                    "dataText": "nanomole per deciliter"
+                },
+                {
+                    "dataCode": "nmol/dL{GF}",
+                    "dataText": "nanomole per deciliter of glomerular filtrate"
+                },
+                {
+                    "dataCode": "nmol/g",
+                    "dataText": "nanomole per gram"
+                },
+                {
+                    "dataCode": "nmol/g{creat}",
+                    "dataText": "nanomole per gram of creatinine"
+                },
+                {
+                    "dataCode": "nmol/g{dry_wt}",
+                    "dataText": "nanomole per gram of dry weight"
+                },
+                {
+                    "dataCode": "nmol/h/L",
+                    "dataText": "nanomole per hour per liter"
+                },
+                {
+                    "dataCode": "nmol/h/mg{prot}",
+                    "dataText": "nanomole per hour per milligram of protein"
+                },
+                {
+                    "dataCode": "nmol/h/mL",
+                    "dataText": "nanomole per hour per milliliter"
+                },
+                {
+                    "dataCode": "nmol/L",
+                    "dataText": "nanomole per liter"
+                },
+                {
+                    "dataCode": "nmol/L/mmol{creat}",
+                    "dataText": "nanomole per liter per millimole of creatinine"
+                },
+                {
+                    "dataCode": "nmol/L{RBCs}",
+                    "dataText": "nanomole per liter of red blood cells"
+                },
+                {
+                    "dataCode": "nmol/m/mg{prot}",
+                    "dataText": "nanomole per meter per milligram of protein"
+                },
+                {
+                    "dataCode": "nmol/mg",
+                    "dataText": "nanomole per milligram"
+                },
+                {
+                    "dataCode": "nmol/mg/h",
+                    "dataText": "nanomole per milligram per hour"
+                },
+                {
+                    "dataCode": "nmol/mg{creat}",
+                    "dataText": "nanomole per milligram of creatinine"
+                },
+                {
+                    "dataCode": "nmol/mg{prot}/h",
+                    "dataText": "nanomole per milligram of protein per hour"
+                },
+                {
+                    "dataCode": "nmol/min",
+                    "dataText": "nanomole per minute"
+                },
+                {
+                    "dataCode": "nmol/min/10*6{cells}",
+                    "dataText": "nanomole per minute per million cells"
+                },
+                {
+                    "dataCode": "nmol/min/mg{Hb}",
+                    "dataText": "nanomole per minute per milligram of hemoglobin"
+                },
+                {
+                    "dataCode": "nmol/min/mg{prot}",
+                    "dataText": "nanomole per minute per milligram of protein"
+                },
+                {
+                    "dataCode": "nmol/min/mg{protein}",
+                    "dataText": "nanomole per minute per milligram protein"
+                },
+                {
+                    "dataCode": "nmol/min/mL",
+                    "dataText": "nanomole per minute per milliliter"
+                },
+                {
+                    "dataCode": "nmol/mL",
+                    "dataText": "nanomole per milliliter"
+                },
+                {
+                    "dataCode": "nmol/mL/h",
+                    "dataText": "nanomole per milliliter per hour"
+                },
+                {
+                    "dataCode": "nmol/mL/min",
+                    "dataText": "nanomole per milliliter per minute"
+                },
+                {
+                    "dataCode": "nmol/mmol",
+                    "dataText": "nanomole per millimole"
+                },
+                {
+                    "dataCode": "nmol/mol",
+                    "dataText": "nanomole per mole"
+                },
+                {
+                    "dataCode": "nmol/mol{creat}",
+                    "dataText": "nanomole per mole creatinine"
+                },
+                {
+                    "dataCode": "nmol/nmol",
+                    "dataText": "nanomole per nanomole"
+                },
+                {
+                    "dataCode": "nmol/s",
+                    "dataText": "nanomole per second"
+                },
+                {
+                    "dataCode": "nmol/s/L",
+                    "dataText": "nanomole per second per liter"
+                },
+                {
+                    "dataCode": "nmol/umol{creat}",
+                    "dataText": "nanomole per micromole  of creatinine"
+                },
+                {
+                    "dataCode": "nmol{ATP}",
+                    "dataText": "nanomole of ATP "
+                },
+                {
+                    "dataCode": "nmol{BCE}",
+                    "dataText": "nanomole bone collagen equivalent"
+                },
+                {
+                    "dataCode": "nmol{BCE}/L",
+                    "dataText": "nanomole bone collagen equivalent per liter"
+                },
+                {
+                    "dataCode": "ns",
+                    "dataText": "nanosecond"
+                },
+                {
+                    "dataCode": "nU/{RBC}",
+                    "dataText": "nanoenzyme unit per red blood cell"
+                },
+                {
+                    "dataCode": "nU/mL",
+                    "dataText": "nanoenzyme unit per milliliter"
+                },
+                {
+                    "dataCode": "Ohm",
+                    "dataText": "Ohm"
+                },
+                {
+                    "dataCode": "Ohm.m",
+                    "dataText": "Ohm meter"
+                },
+                {
+                    "dataCode": "osm",
+                    "dataText": "osmole"
+                },
+                {
+                    "dataCode": "osm/kg",
+                    "dataText": "osmole per kilogram"
+                },
+                {
+                    "dataCode": "osm/L",
+                    "dataText": "osmole per liter"
+                },
+                {
+                    "dataCode": "Pa",
+                    "dataText": "Pascal"
+                },
+                {
+                    "dataCode": "pA",
+                    "dataText": "picoampere"
+                },
+                {
+                    "dataCode": "pg",
+                    "dataText": "picogram"
+                },
+                {
+                    "dataCode": "pg/{cell}",
+                    "dataText": "picogram per cell"
+                },
+                {
+                    "dataCode": "pg/{RBC}",
+                    "dataText": "picogram per red blood cell"
+                },
+                {
+                    "dataCode": "pg/dL",
+                    "dataText": "picogram per deciliter"
+                },
+                {
+                    "dataCode": "pg/L",
+                    "dataText": "picogram per liter"
+                },
+                {
+                    "dataCode": "pg/mg",
+                    "dataText": "picogram per milligram"
+                },
+                {
+                    "dataCode": "pg/mg{creat}",
+                    "dataText": "picogram per milligram of creatinine"
+                },
+                {
+                    "dataCode": "pg/mL",
+                    "dataText": "picogram per milliliter"
+                },
+                {
+                    "dataCode": "pg/mL{sLT}",
+                    "dataText": "picogram per milliliter sulfidoleukotrienes"
+                },
+                {
+                    "dataCode": "pg/mm",
+                    "dataText": "picogram per millimeter"
+                },
+                {
+                    "dataCode": "pkat",
+                    "dataText": "picokatal"
+                },
+                {
+                    "dataCode": "pL",
+                    "dataText": "picoliter"
+                },
+                {
+                    "dataCode": "pm",
+                    "dataText": "picometer"
+                },
+                {
+                    "dataCode": "pmol",
+                    "dataText": "picomole"
+                },
+                {
+                    "dataCode": "pmol/(24.h)",
+                    "dataText": "picomole per 24 hour"
+                },
+                {
+                    "dataCode": "pmol/{RBC}",
+                    "dataText": "picomole per red blood cell"
+                },
+                {
+                    "dataCode": "pmol/d",
+                    "dataText": "picomole per day"
+                },
+                {
+                    "dataCode": "pmol/dL",
+                    "dataText": "picomole per deciliter"
+                },
+                {
+                    "dataCode": "pmol/g",
+                    "dataText": "picomole per gram"
+                },
+                {
+                    "dataCode": "pmol/h/mg{prot}",
+                    "dataText": "picomole per hour per milligram of protein"
+                },
+                {
+                    "dataCode": "pmol/H/mg{protein}",
+                    "dataText": "picomole per hour per milligram protein"
+                },
+                {
+                    "dataCode": "pmol/h/mL",
+                    "dataText": "picomole per hour per milliliter "
+                },
+                {
+                    "dataCode": "pmol/L",
+                    "dataText": "picomole per liter"
+                },
+                {
+                    "dataCode": "pmol/mg{prot}",
+                    "dataText": "picomole per milligram of protein"
+                },
+                {
+                    "dataCode": "pmol/min",
+                    "dataText": "picomole per minute"
+                },
+                {
+                    "dataCode": "pmol/min/mg{prot}",
+                    "dataText": "picomole per minute per milligram of protein"
+                },
+                {
+                    "dataCode": "pmol/mL",
+                    "dataText": "picomole per milliliter"
+                },
+                {
+                    "dataCode": "pmol/mmol{creat}",
+                    "dataText": "picomole per millimole of creatinine"
+                },
+                {
+                    "dataCode": "pmol/umol",
+                    "dataText": "picomole per micromole"
+                },
+                {
+                    "dataCode": "pmol/umol{creat}",
+                    "dataText": "picomole per micromole of creatinine"
+                },
+                {
+                    "dataCode": "ps",
+                    "dataText": "picosecond"
+                },
+                {
+                    "dataCode": "pT",
+                    "dataText": "picotesla"
+                },
+                {
+                    "dataCode": "S",
+                    "dataText": "Siemens"
+                },
+                {
+                    "dataCode": "s",
+                    "dataText": "second"
+                },
+                {
+                    "dataCode": "s/{control}",
+                    "dataText": "second per control"
+                },
+                {
+                    "dataCode": "Sv",
+                    "dataText": "Sievert"
+                },
+                {
+                    "dataCode": "T",
+                    "dataText": "Tesla"
+                },
+                {
+                    "dataCode": "t",
+                    "dataText": "metric ton"
+                },
+                {
+                    "dataCode": "U",
+                    "dataText": "enzyme unit"
+                },
+                {
+                    "dataCode": "U/(10.g){feces}",
+                    "dataText": "enzyme unit per 10 gram of feces"
+                },
+                {
+                    "dataCode": "U/(12.h)",
+                    "dataText": "enzyme unit per 12 hour"
+                },
+                {
+                    "dataCode": "U/(2.h)",
+                    "dataText": "enzyme unit per 2 hour"
+                },
+                {
+                    "dataCode": "U/(24.h)",
+                    "dataText": "enzyme unit per 24 hour"
+                },
+                {
+                    "dataCode": "U/10",
+                    "dataText": "enzyme unit per 10"
+                },
+                {
+                    "dataCode": "U/10*10",
+                    "dataText": "enzyme unit per 10 billion"
+                },
+                {
+                    "dataCode": "U/10*10{cells}",
+                    "dataText": "enzyme unit per 10 billion cells"
+                },
+                {
+                    "dataCode": "U/10*12",
+                    "dataText": "enzyme unit per trillion"
+                },
+                {
+                    "dataCode": "U/10*12{RBCs}",
+                    "dataText": "enzyme unit per trillion red blood cells"
+                },
+                {
+                    "dataCode": "U/10*6",
+                    "dataText": "enzyme unit per million"
+                },
+                {
+                    "dataCode": "U/10*9",
+                    "dataText": "enzyme unit per billion"
+                },
+                {
+                    "dataCode": "U/d",
+                    "dataText": "enzyme unit per day"
+                },
+                {
+                    "dataCode": "U/dL",
+                    "dataText": "enzyme unit per deciliter"
+                },
+                {
+                    "dataCode": "U/g",
+                    "dataText": "enzyme unit per gram"
+                },
+                {
+                    "dataCode": "U/g{creat}",
+                    "dataText": "enzyme unit per gram of creatinine"
+                },
+                {
+                    "dataCode": "U/g{Hb}",
+                    "dataText": "enzyme unit per gram of hemoglobin"
+                },
+                {
+                    "dataCode": "U/g{protein}",
+                    "dataText": "enzyme unit per gram of protein"
+                },
+                {
+                    "dataCode": "U/h",
+                    "dataText": "enzyme unit per hour"
+                },
+                {
+                    "dataCode": "U/kg{Hb}",
+                    "dataText": "enzyme unit per kilogram of hemoglobin"
+                },
+                {
+                    "dataCode": "U/L",
+                    "dataText": "enzyme unit per liter"
+                },
+                {
+                    "dataCode": "U/min",
+                    "dataText": "enzyme unit per minute"
+                },
+                {
+                    "dataCode": "U/mL",
+                    "dataText": "enzyme unit per milliliter"
+                },
+                {
+                    "dataCode": "U/mL{RBCs}",
+                    "dataText": "enzyme unit per milliliter of red blood cells"
+                },
+                {
+                    "dataCode": "U/mmol{creat}",
+                    "dataText": "enzyme unit per millimole of creatinine"
+                },
+                {
+                    "dataCode": "U/s",
+                    "dataText": "enzyme unit per second"
+                },
+                {
+                    "dataCode": "u[IU]",
+                    "dataText": "micro international unit"
+                },
+                {
+                    "dataCode": "u[IU]/L",
+                    "dataText": "microinternational unit per liter"
+                },
+                {
+                    "dataCode": "u[IU]/mL",
+                    "dataText": "micro international unit per milliliter"
+                },
+                {
+                    "dataCode": "U{25Cel}/L",
+                    "dataText": "enzyme unit per liter at 25 deg Celsius "
+                },
+                {
+                    "dataCode": "U{37Cel}/L",
+                    "dataText": "enzyme unit per liter at 37 deg Celsius"
+                },
+                {
+                    "dataCode": "ueq",
+                    "dataText": "microequivalent"
+                },
+                {
+                    "dataCode": "ueq/L",
+                    "dataText": "microequivalent per liter"
+                },
+                {
+                    "dataCode": "ueq/mL",
+                    "dataText": "microequivalent per milliliter"
+                },
+                {
+                    "dataCode": "ug",
+                    "dataText": "microgram"
+                },
+                {
+                    "dataCode": "ug/(100.g)",
+                    "dataText": "microgram per 100 gram"
+                },
+                {
+                    "dataCode": "ug/(24.h)",
+                    "dataText": "microgram per 24 hour"
+                },
+                {
+                    "dataCode": "ug/(8.h)",
+                    "dataText": "microgram per 8 hour"
+                },
+                {
+                    "dataCode": "ug/[sft_i]",
+                    "dataText": "microgram per square foot (international)"
+                },
+                {
+                    "dataCode": "ug/{specimen}",
+                    "dataText": "microgram per specimen"
+                },
+                {
+                    "dataCode": "ug/d",
+                    "dataText": "microgram per day"
+                },
+                {
+                    "dataCode": "ug/dL",
+                    "dataText": "microgram per deciliter"
+                },
+                {
+                    "dataCode": "ug/dL{RBCs}",
+                    "dataText": "microgram per deciliter of red blood cells"
+                },
+                {
+                    "dataCode": "ug/g",
+                    "dataText": "microgram per gram"
+                },
+                {
+                    "dataCode": "ug/g{creat}",
+                    "dataText": "microgram per gram of creatinine"
+                },
+                {
+                    "dataCode": "ug/g{dry_tissue}",
+                    "dataText": "microgram per gram of dry tissue"
+                },
+                {
+                    "dataCode": "ug/g{dry_wt}",
+                    "dataText": "microgram per gram of dry weight"
+                },
+                {
+                    "dataCode": "ug/g{feces}",
+                    "dataText": "microgram  per gram of feces"
+                },
+                {
+                    "dataCode": "ug/g{hair}",
+                    "dataText": "microgram per gram of hair"
+                },
+                {
+                    "dataCode": "ug/g{Hb}",
+                    "dataText": "microgram per gram of hemoglobin"
+                },
+                {
+                    "dataCode": "ug/g{tissue}",
+                    "dataText": "microgram per gram of tissue"
+                },
+                {
+                    "dataCode": "ug/h",
+                    "dataText": "microgram per hour"
+                },
+                {
+                    "dataCode": "ug/kg",
+                    "dataText": "microgram per kilogram"
+                },
+                {
+                    "dataCode": "ug/kg/(8.h)",
+                    "dataText": "microgram per kilogram per 8 hour"
+                },
+                {
+                    "dataCode": "ug/kg/d",
+                    "dataText": "microgram per kilogram per day"
+                },
+                {
+                    "dataCode": "ug/kg/h",
+                    "dataText": "microgram per kilogram per hour"
+                },
+                {
+                    "dataCode": "ug/kg/min",
+                    "dataText": "microgram per kilogram per minute"
+                },
+                {
+                    "dataCode": "ug/L",
+                    "dataText": "microgram per liter"
+                },
+                {
+                    "dataCode": "ug/L/(24.h)",
+                    "dataText": "microgram per liter per 24 hour"
+                },
+                {
+                    "dataCode": "ug/L{RBCs}",
+                    "dataText": "microgram per liter of red blood cells"
+                },
+                {
+                    "dataCode": "ug/m2",
+                    "dataText": "microgram per square meter"
+                },
+                {
+                    "dataCode": "ug/m3",
+                    "dataText": "microgram per cubic meter"
+                },
+                {
+                    "dataCode": "ug/mg",
+                    "dataText": "microgram per milligram"
+                },
+                {
+                    "dataCode": "ug/mg{creat}",
+                    "dataText": "microgram per milligram of creatinine"
+                },
+                {
+                    "dataCode": "ug/min",
+                    "dataText": "microgram per minute"
+                },
+                {
+                    "dataCode": "ug/mL",
+                    "dataText": "microgram per milliliter"
+                },
+                {
+                    "dataCode": "ug/mL{class}",
+                    "dataText": "microgram per milliliter class"
+                },
+                {
+                    "dataCode": "ug/mL{eqv}",
+                    "dataText": "microgram per milliliter equivalent"
+                },
+                {
+                    "dataCode": "ug/mmol",
+                    "dataText": "microgram per millimole"
+                },
+                {
+                    "dataCode": "ug/mmol{creat}",
+                    "dataText": "microgram per millimole of creatinine"
+                },
+                {
+                    "dataCode": "ug/ng",
+                    "dataText": "microgram per nanogram"
+                },
+                {
+                    "dataCode": "ug{FEU}/mL",
+                    "dataText": "microgram fibrinogen equivalent unit per milliliter"
+                },
+                {
+                    "dataCode": "ukat",
+                    "dataText": "microkatal"
+                },
+                {
+                    "dataCode": "uL",
+                    "dataText": "microliter"
+                },
+                {
+                    "dataCode": "uL/(2.h)",
+                    "dataText": "microliter per 2 hour"
+                },
+                {
+                    "dataCode": "uL/h",
+                    "dataText": "microliter per hour"
+                },
+                {
+                    "dataCode": "um",
+                    "dataText": "micrometer"
+                },
+                {
+                    "dataCode": "um/s",
+                    "dataText": "microns per second"
+                },
+                {
+                    "dataCode": "umol",
+                    "dataText": "micromole"
+                },
+                {
+                    "dataCode": "umol/(2.h)",
+                    "dataText": "micromole per 2 hour"
+                },
+                {
+                    "dataCode": "umol/(24.h)",
+                    "dataText": "micromole per 24 hour"
+                },
+                {
+                    "dataCode": "umol/(8.h)",
+                    "dataText": "micromole per 8 hour"
+                },
+                {
+                    "dataCode": "umol/10*6{RBC}",
+                    "dataText": "micromole per million red blood cell"
+                },
+                {
+                    "dataCode": "umol/d",
+                    "dataText": "micromole per day"
+                },
+                {
+                    "dataCode": "umol/dL",
+                    "dataText": "micromole per deciliter"
+                },
+                {
+                    "dataCode": "umol/dL{GF}",
+                    "dataText": "micromole per deciliter of glomerular filtrate"
+                },
+                {
+                    "dataCode": "umol/g",
+                    "dataText": "micromole per gram"
+                },
+                {
+                    "dataCode": "umol/g{creat}",
+                    "dataText": "micromole per gram of creatinine"
+                },
+                {
+                    "dataCode": "umol/g{Hb}",
+                    "dataText": "micromole per gram of hemoglobin"
+                },
+                {
+                    "dataCode": "umol/h",
+                    "dataText": "micromole per hour"
+                },
+                {
+                    "dataCode": "umol/kg",
+                    "dataText": "micromole per kilogram"
+                },
+                {
+                    "dataCode": "umol/kg{feces}",
+                    "dataText": "micromole per kilogram of feces"
+                },
+                {
+                    "dataCode": "umol/L",
+                    "dataText": "micromole per liter"
+                },
+                {
+                    "dataCode": "umol/L/h",
+                    "dataText": "micromole per liter per hour"
+                },
+                {
+                    "dataCode": "umol/L{RBCs}",
+                    "dataText": "micromole per liter of red blood cells"
+                },
+                {
+                    "dataCode": "umol/mg",
+                    "dataText": "micromole per milligram"
+                },
+                {
+                    "dataCode": "umol/mg{creat}",
+                    "dataText": "micromole per milligram of creatinine"
+                },
+                {
+                    "dataCode": "umol/min",
+                    "dataText": "micromole per minute"
+                },
+                {
+                    "dataCode": "umol/min/g",
+                    "dataText": "micromole per minute per gram"
+                },
+                {
+                    "dataCode": "umol/min/g{mucosa}",
+                    "dataText": "micromole per minute per gram of mucosa"
+                },
+                {
+                    "dataCode": "umol/min/g{prot}",
+                    "dataText": "micromole per minute per gram of protein"
+                },
+                {
+                    "dataCode": "umol/min/L",
+                    "dataText": "micromole per minute per liter"
+                },
+                {
+                    "dataCode": "umol/mL",
+                    "dataText": "micromole per milliliter"
+                },
+                {
+                    "dataCode": "umol/mL/min",
+                    "dataText": "micromole per milliliter per minute"
+                },
+                {
+                    "dataCode": "umol/mmol",
+                    "dataText": "micromole per millimole"
+                },
+                {
+                    "dataCode": "umol/mmol{creat}",
+                    "dataText": "micromole per millimole of creatinine"
+                },
+                {
+                    "dataCode": "umol/mol",
+                    "dataText": "micromole per mole"
+                },
+                {
+                    "dataCode": "umol/mol{creat}",
+                    "dataText": "micromole per mole of creatinine"
+                },
+                {
+                    "dataCode": "umol/mol{Hb}",
+                    "dataText": "micromole per mole of hemoglobin"
+                },
+                {
+                    "dataCode": "umol/umol",
+                    "dataText": "micromole per micromole"
+                },
+                {
+                    "dataCode": "umol/umol{creat}",
+                    "dataText": "micromole per micromole of creatinine"
+                },
+                {
+                    "dataCode": "umol{BCE}/mol",
+                    "dataText": "micromole bone collagen equivalent per mole"
+                },
+                {
+                    "dataCode": "uOhm",
+                    "dataText": "microOhm"
+                },
+                {
+                    "dataCode": "us",
+                    "dataText": "microsecond"
+                },
+                {
+                    "dataCode": "uU/g",
+                    "dataText": "micro enzyme unit per gram"
+                },
+                {
+                    "dataCode": "uU/L",
+                    "dataText": "micro enzyme unit per liter"
+                },
+                {
+                    "dataCode": "uU/mL",
+                    "dataText": "micro enzyme unit per milliliter"
+                },
+                {
+                    "dataCode": "uV",
+                    "dataText": "microvolt"
+                },
+                {
+                    "dataCode": "V",
+                    "dataText": "volt"
+                },
+                {
+                    "dataCode": "Wb",
+                    "dataText": "Weber"
+                },
+                {
+                    "dataCode": "wk",
+                    "dataText": "week"
+                },
+                {
+                    "dataCode": "nmol/mg{prot}",
+                    "dataText": "nanomole per milligram of protein"
+                },
+                {
+                    "dataCode": "nmol/mmol{creat}",
+                    "dataText": "nanomole per millimole of creatinine"
+                }
+            ]
+        }
+    ]
+}

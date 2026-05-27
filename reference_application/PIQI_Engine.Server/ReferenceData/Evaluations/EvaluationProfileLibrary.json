@@ -1,0 +1,19 @@
+{
+  "EvaluationProfileLibrary": [
+    {
+      "name": "USCDI v3",
+      "mnemonic": "USCDI_V3",
+      "filePath": "ReferenceData/Evaluations/USCDI_V3.json"
+    },
+    {
+      "name": "USCDI v2",
+      "mnemonic": "USCDI_V2",
+      "filePath": "ReferenceData/Evaluations/USCDI_V2.json"
+    },
+	{
+      "name": "USCDI v3.1",
+      "mnemonic": "USCDI_V31",
+      "filePath": "ReferenceData/Evaluations/USCDI_v3_1.json"
+    }
+  ]
+}

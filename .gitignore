@@ -11,3 +11,13 @@
 /spa/api/node_modules
 /spa/ui/dist
 /spa/api/dist
+/reference_application/PIQI.Components/bin
+/reference_application/PIQI.Components/obj
+/reference_application/PIQI.CustomSAMs/bin
+/reference_application/PIQI.CustomSAMs/obj
+/reference_application/PIQI.Data/bin
+/reference_application/PIQI.Data/obj
+/reference_application/PIQI.Service.Test/bin
+/reference_application/PIQI.Service.Test/obj
+/reference_application/PIQI_Engine.Server/bin
+/reference_application/PIQI_Engine.Server/obj

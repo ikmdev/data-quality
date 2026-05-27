@@ -12,6 +12,7 @@ services:
             - ui
             - pgadmin
             - superset
+            - piqi
 
     postgres:
         image: postgres:16
@@ -80,7 +81,6 @@ services:
         volumes:
             - superset_home:/app/superset_home
 
-
     superset-init:
         image: apache/superset:latest
         container_name: dq-superset-init
@@ -103,6 +103,19 @@ services:
         volumes:
             - superset_home:/app/superset_home
 
+    piqi:
+        build:
+            context: ./reference_application
+            dockerfile: Dockerfile
+        container_name: piqi-engine
+        restart: unless-stopped
+        environment:
+            - ASPNETCORE_ENVIRONMENT=${PIQI_ENVIRONMENT_NAME}
+            - ASPNETCORE_HTTP_PORTS=${PIQI_ENGINE_PORT:-8080}
+            - Database__Type=${PIQI_DB_TYPE}
+        depends_on:
+            - postgres
+
     api:
         build:
             context: ./spa/api
@@ -117,6 +130,7 @@ services:
         depends_on:
             - postgres
             - redis
+            - piqi
 
     ui:
         build:

@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <PublishSingleFile>true</PublishSingleFile>
+	  <SelfContained>false</SelfContained>
+	  <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+	  <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+	  <PublishTrimmed>false</PublishTrimmed>
+	  <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PIQI.Components\PIQI.Components.csproj" />
+  </ItemGroup>
+
+	<Target Name="CopyToPlugins" AfterTargets="Build">
+		<!-- Ensure the Plugins directory exists -->
+		<MakeDir Directories="..\PIQI_Engine.Server\Plugins" />
+		<!-- Copy the DLL -->
+		<Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="..\PIQI_Engine.Server\Plugins\" />
+		<!-- Optionally copy the PDB for debugging -->
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="..\PIQI_Engine.Server\Plugins\" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+	</Target>
+
+	<Target Name="PublishToPlugins" AfterTargets="Publish">
+		<MakeDir Directories="..\PIQI_Engine.Server\Plugins" />
+		<Copy SourceFiles="$(PublishDir)PIQI.CustomSAMs.dll" DestinationFolder="..\PIQI_Engine.Server\Plugins\" />
+	</Target>
+
+	<ItemGroup>
+		<Content Include="Plugins\**\*.*">
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>

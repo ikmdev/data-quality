@@ -1,0 +1,15 @@
+﻿.swagger-ui .topbar {
+    background: #a3d5ff; /* Old browsers fallback */
+    background: -moz-linear-gradient(left, #a3d5ff 0%, #1a3b70 60%); /* FF3.6+ */
+    background: -webkit-linear-gradient(left, #a3d5ff 0%, #1a3b70 60%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left, #a3d5ff 0%, #1a3b70 60%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left, #a3d5ff 0%, #1a3b70 60%); /* IE10+ */
+    background: linear-gradient(to right, #a3d5ff 0%, #1a3b70 60%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a3d5ff', endColorstr='#1a3b70',GradientType=0 ); /* IE6-9 */
+}
+
+.swagger-ui .information-container {
+    display: flex;
+    align-items: center;
+}
+
