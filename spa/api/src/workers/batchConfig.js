@@ -55,7 +55,7 @@ function loadBatchConfig() {
   try {
     if (process.env.BATCH_CONFIG_JSON) {
       const parsed = JSON.parse(process.env.BATCH_CONFIG_JSON);
-      return { ...DEFAULT_BATCH_CONFIG, ...parsed };
+      return {...DEFAULT_BATCH_CONFIG, ...parsed};
     }
   } catch (err) {
     console.warn('Failed to parse BATCH_CONFIG_JSON, using defaults:', err.message);

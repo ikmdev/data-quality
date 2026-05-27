@@ -1,6 +1,11 @@
 {
   "EvaluationProfileLibrary": [
     {
+      "name": "Basic VA Lab",
+      "mnemonic": "Basic_VA_Lab",
+      "filePath": "ReferenceData/Evaluations/DIA_Basic_VA_Lab.json"
+    },
+    {
       "name": "USCDI v3",
       "mnemonic": "USCDI_V3",
       "filePath": "ReferenceData/Evaluations/USCDI_V3.json"

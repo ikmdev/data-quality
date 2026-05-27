@@ -1,31 +1,11 @@
 const pool = require('../db');
 
 let batchTableEnsured = false;
-const scoringApiBaseUrl = (process.env.PIQI_SCORING_API_BASE_URL || 'http://localhost:5025').replace(/\/$/, '');
+const scoringApiBaseUrl = (process.env.SPA_PIQI_URL || 'http://localhost:5025').replace(/\/$/, '');
 const BATCH_INSERT_CHUNK_SIZE = 500;
-const SCORING_API_TIMEOUT_MS = Number.parseInt(process.env.PIQI_SCORING_API_TIMEOUT_MS || '60000', 10);
-
-function isSelfScoringApiTarget(baseUrl) {
-  try {
-    const target = new URL(baseUrl);
-    const localPort = String(process.env.PORT || 5025);
-    const targetPort = target.port || (target.protocol === 'https:' ? '443' : '80');
-
-    // If scoring API points to this same process port on localhost/0.0.0.0, fail fast.
-    const loopbackHosts = new Set(['localhost', '127.0.0.1', '0.0.0.0']);
-    return loopbackHosts.has(target.hostname) && targetPort === localPort;
-  } catch (_err) {
-    return false;
-  }
-}
+const SCORING_API_TIMEOUT_MS = Number.parseInt(process.env.SPA_PIQI_SCORING_API_TIMEOUT_MS || '60000', 10);
 
 async function postToScoringApi(path, payload) {
-  if (isSelfScoringApiTarget(scoringApiBaseUrl)) {
-    throw new Error(
-      `PIQI_SCORING_API_BASE_URL (${scoringApiBaseUrl}) points to this API service. Configure it to the external scoring service base URL.`
-    );
-  }
-
   const targetUrl = `${scoringApiBaseUrl}/api/${path}`;
   const timeoutMs = Number.isFinite(SCORING_API_TIMEOUT_MS) && SCORING_API_TIMEOUT_MS > 0
     ? SCORING_API_TIMEOUT_MS

@@ -1,0 +1,12 @@
+2026-05-27 15:40:01.794 -04:00 [WRN] Failed to determine the https port for redirect.
+2026-05-27 15:46:21.803 -04:00 [ERR] PiqiRequestAsync: File for evaluation rubric is invalid or missing.
+System.Exception: File for evaluation rubric is invalid or missing.
+   at PIQI_Engine.Server.Engines.ReferenceDataEngine.LoadEvaluationRubric(String evaluationRubricMnemonic, IFormFile evaluation) in /Users/aks8m/code/ikm/data-quality/reference_application/PIQI_Engine.Server/Engines/ReferenceDataEngine.cs:line 354
+   at PIQI_Engine.Server.Engines.ReferenceDataEngine.LoadRefData(String EvaluationRubricMnemonic, IFormFile evaluation) in /Users/aks8m/code/ikm/data-quality/reference_application/PIQI_Engine.Server/Engines/ReferenceDataEngine.cs:line 71
+   at PIQI_Engine.Server.Engines.PIQIEngine.PiqiRequestAsync(PIQIRequest piqiRequest, Boolean auditMode, IFormFile evaluation) in /Users/aks8m/code/ikm/data-quality/reference_application/PIQI_Engine.Server/Engines/PIQIEngine.cs:line 106
+2026-05-27 15:48:40.408 -04:00 [WRN] Failed to determine the https port for redirect.
+2026-05-27 15:49:08.526 -04:00 [WRN] Failed to determine the https port for redirect.
+2026-05-27 15:49:44.808 -04:00 [WRN] Failed to determine the https port for redirect.
+2026-05-27 15:50:56.931 -04:00 [WRN] Failed to determine the https port for redirect.
+2026-05-27 15:55:54.990 -04:00 [WRN] Failed to determine the https port for redirect.
+2026-05-27 16:10:20.416 -04:00 [WRN] Failed to determine the https port for redirect.
