@@ -16,11 +16,11 @@
     <div class="paste-section">
         <h2>📋 Paste Spreadsheet Row</h2>
         <div class="form-group">
-            <label for="spreadsheetInput">Paste a row from your spreadsheet here (including data row only, no
+            <label for="spreadsheetInput">Paste one or more rows from your spreadsheet here (including data row only, no
                 header):</label>
             <textarea id="spreadsheetInput"
                       placeholder="Paste your spreadsheet row here (tab-separated values)"></textarea>
-            <div class="helper-text">Copy a single row from your spreadsheet and paste it here. The data should be
+            <div class="helper-text">Copy one or more rows from your spreadsheet and paste it here. The data should be
                 tab-separated.
             </div>
         </div>
@@ -47,7 +47,7 @@
         </fieldset>
 
         <fieldset class="form-section">
-            <legend>Setup</legend>
+            <legend>Configure PIQI Evaluation</legend>
             <div class="form-group">
                 <label for="runName">Evaluation Run Name</label>
                 <input type="text" id="runName" placeholder="Run Name (required)" required>
@@ -72,29 +72,25 @@
                 <label for="dataSourceID">Data Source ID:</label>
                 <input type="text" id="dataSourceID" disabled required>
             </div>
-        </fieldset>
-
-        <fieldset class="form-section">
-            <legend>Payload</legend>
             <div class="form-group">
                 <label for="messageData">Formatted Spreadsheet Data (JSON):</label>
                 <textarea id="messageData" class="json-output" required></textarea>
-                <div class="helper-text">This will be automatically populated when you convert a spreadsheet row, or you
+                <div class="helper-text">This will be automatically populated when you convert spreadsheet rows, or you
                     can manually enter JSON here.
                 </div>
             </div>
         </fieldset>
 
         <div class="button-group">
-            <button type="submit" class="submit-btn">Submit Request</button>
-            <button type="button" class="preview-btn" onclick="previewRequest()">Preview Request Body</button>
+            <button type="submit" class="submit-btn">Submit Evaluation</button>
+            <button type="button" class="preview-btn" onclick="previewRequest()">Preview Evaluation Body</button>
             <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
         </div>
-        <div class="loading" id="loading">Sending request...</div>
+        <div class="loading" id="loading">Sending evaluation...</div>
     </form>
 
     <div class="preview-section" id="previewSection">
-        <div class="preview-header">Preview of Request Body (with escaped messageData):</div>
+        <div class="preview-header">Preview of Evaluation Body(ies) (with escaped messageData):</div>
         <div class="preview-content" id="previewContent"></div>
     </div>
 
@@ -109,9 +105,8 @@
     </div>
 </div>
 
+<!--Page-specific functions for index.html-->
 <script>
-    // Page-specific functions for index.html
-
     // Generate a random session ID
     function generateSessionID() {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -132,70 +127,29 @@
 
     });
 
-    const COLUMN_MAP = {
-        0: 'UniqueID', 1: 'LongAccessionNumberUID', 2: 'LabChemTestSID', 3: 'LabChemTestName',
-        4: 'LabChemTestUrgencySID', 5: 'Urgency', 6: 'LabChemResultValue', 7: 'LabChemResultNumericValue',
-        8: 'TopographySID', 9: 'Topography', 10: 'AccessionInstitutionSID', 11: 'AccessioningInstitution',
-        12: 'OrderingInstitutionSID', 13: 'OrderingInstutionName', 14: 'CollectingInstitutionSID',
-        15: 'CollectingInstitutionName', 16: 'LOINCSID', 17: 'LOINC', 18: 'Units',
-        19: 'Abnormal', 20: 'RefHigh', 21: 'RefLow'
-    };
-
-    // function convertSpreadsheetToJSON() {
-    //     const input = document.getElementById('spreadsheetInput').value.trim();
-    //     if (!input) {
-    //         showStatus('Please paste a spreadsheet row first.', 'error');
-    //         return;
-    //     }
-    //     try {
-    //         const values = input.split('\t');
-    //         if (values.length < 22) {
-    //             showStatus('Warning: Expected 22 columns, but found ' + values.length + '.', 'error');
-    //         }
-    //         const unitsValue = values[18] || '';
-    //         const abFlagValue = values[19] || '';
-    //         const labResult = {
-    //             test: {codings: [], text: values[3] || ''},
-    //             performingSite: {text: values[11] || ''},
-    //             specimenType: {text: values[9] || ''},
-    //             abnormalFlag: {
-    //                 codings: abFlagValue ? [{code: abFlagValue, system: 'AbFlag'}] : [],
-    //                 text: values[19] || ''
-    //             },
-    //             referenceRange: {text: (values[21] || '') + ' - ' + (values[20] || '')},
-    //             resultValue: {text: values[6] || '', type: {text: 'PQ'}},
-    //             resultUnit: {
-    //                 codings: unitsValue ? [{code: unitsValue, display: unitsValue, system: 'UCUM'}] : [],
-    //                 text: unitsValue
-    //             }
-    //         };
-    //         if (values[17]) {
-    //             labResult.test.codings.push({
-    //                 code: values[17], display: values[3] || '', system: '2.16.840.1.113883.6.1'
-    //             });
-    //         }
-    //         if (values[21]) labResult.referenceRange.lowValue = values[21];
-    //         if (values[20]) labResult.referenceRange.highValue = values[20];
-    //         labResult.interpretation = values[19] ? {
-    //             codings: [{code: values[19], system: '2.16.840.1.113883.5.83'}], text: values[19]
-    //         } : {
-    //             codings: [{code: 'N', system: '2.16.840.1.113883.5.83'}], text: 'N'
-    //         };
-    //         const uniqueID = values[0] || '';
-    //         const messageData = {
-    //             messageId: uniqueID, formatID: '', useCaseID: '',
-    //             patient: {labResults: [labResult], id: uniqueID},
-    //             dataSourceID: document.getElementById('dataSourceID').value,
-    //             dataProviderID: document.getElementById('dataProviderID').value,
-    //             messageID: uniqueID
-    //         };
-    //         document.getElementById('messageData').value = JSON.stringify(messageData, null, 2);
-    //         showStatus('✓ Successfully converted spreadsheet row to JSON!', 'success');
-    //         document.getElementById('messageData').scrollIntoView({behavior: 'smooth', block: 'center'});
-    //     } catch (error) {
-    //         showStatus('Error converting spreadsheet data: ' + error.message, 'error');
-    //     }
-    // }
+    // Spreadsheet Column Map (0-indexed, tab-separated):
+    // 0:  UniqueID
+    // 1:  LongAccessionNumberUID
+    // 2:  LabChemTestSID
+    // 3:  LabChemTestName
+    // 4:  LabChemTestUrgencySID
+    // 5:  Urgency
+    // 6:  LabChemResultValue
+    // 7:  LabChemResultNumericValue
+    // 8:  TopographySID
+    // 9:  Topography
+    // 10: AccessionInstitutionSID
+    // 11: AccessioningInstitution
+    // 12: OrderingInstitutionSID
+    // 13: OrderingInstutionName
+    // 14: CollectingInstitutionSID
+    // 15: CollectingInstitutionName
+    // 16: LOINCSID
+    // 17: LOINC
+    // 18: Units
+    // 19: Abnormal
+    // 20: RefHigh
+    // 21: RefLow
 
     function convertSpreadsheetToJSON() {
         const input = document.getElementById('spreadsheetInput').value.trim();

@@ -208,17 +208,62 @@ function formatJSONWithFailedHighlight(obj, indent = 0) {
 // Request preview
 // ---------------------------------------------------------------------------
 
+// async function previewRequest() {
+//     const previewSection = document.getElementById('previewSection');
+//     const previewContent = document.getElementById('previewContent');
+//
+//     try {
+//         const requestBody = await Promise.resolve(buildRequestBody());
+//         previewContent.textContent = JSON.stringify(requestBody, null, 2);
+//         previewSection.classList.add('show');
+//         previewSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+//     } catch (error) {
+//         previewContent.textContent = 'Error: ' + error.message;
+//         previewSection.classList.add('show');
+//     }
+// }
+
 async function previewRequest() {
     const previewSection = document.getElementById('previewSection');
     const previewContent = document.getElementById('previewContent');
 
     try {
-        const requestBody = await Promise.resolve(buildRequestBody());
-        previewContent.textContent = JSON.stringify(requestBody, null, 2);
+        const messageDataStr = document.getElementById('messageData').value;
+        let messageDataParsed;
+
+        try {
+            messageDataParsed = JSON.parse(messageDataStr);
+        } catch (parseError) {
+            throw new Error('Invalid JSON in Message Data field: ' + parseError.message);
+        }
+
+        // Check if it's an array
+        const messages = Array.isArray(messageDataParsed) ? messageDataParsed : [messageDataParsed];
+
+        let previewHTML = '';
+
+        messages.forEach((msg, index) => {
+            const requestBody = {
+                dataProviderID: document.getElementById('dataProviderID').value,
+                dataSourceID: document.getElementById('dataSourceID').value,
+                messageID: msg.messageID || msg.messageId || '',
+                piqiModelMnemonic: document.getElementById('piqiModelMnemonic').value,
+                evaluationRubricMnemonic: document.getElementById('evaluationRubricMnemonic').value,
+                messageData: JSON.stringify(msg)
+            };
+
+            previewHTML += `<div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">`;
+            previewHTML += `<h4 style="margin-top: 0;">Evaluation ${index + 1} of ${messages.length}</h4>`;
+            previewHTML += `<pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">${JSON.stringify(requestBody, null, 2)}</pre>`;
+            previewHTML += `</div>`;
+        });
+
+        previewContent.innerHTML = previewHTML;
         previewSection.classList.add('show');
-        previewSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+        previewSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
     } catch (error) {
-        previewContent.textContent = 'Error: ' + error.message;
+        previewContent.innerHTML = `<div style="color: #d32f2f; padding: 10px;">Error: ${error.message}</div>`;
         previewSection.classList.add('show');
     }
 }
