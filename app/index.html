@@ -141,57 +141,134 @@
         19: 'Abnormal', 20: 'RefHigh', 21: 'RefLow'
     };
 
+    // function convertSpreadsheetToJSON() {
+    //     const input = document.getElementById('spreadsheetInput').value.trim();
+    //     if (!input) {
+    //         showStatus('Please paste a spreadsheet row first.', 'error');
+    //         return;
+    //     }
+    //     try {
+    //         const values = input.split('\t');
+    //         if (values.length < 22) {
+    //             showStatus('Warning: Expected 22 columns, but found ' + values.length + '.', 'error');
+    //         }
+    //         const unitsValue = values[18] || '';
+    //         const abFlagValue = values[19] || '';
+    //         const labResult = {
+    //             test: {codings: [], text: values[3] || ''},
+    //             performingSite: {text: values[11] || ''},
+    //             specimenType: {text: values[9] || ''},
+    //             abnormalFlag: {
+    //                 codings: abFlagValue ? [{code: abFlagValue, system: 'AbFlag'}] : [],
+    //                 text: values[19] || ''
+    //             },
+    //             referenceRange: {text: (values[21] || '') + ' - ' + (values[20] || '')},
+    //             resultValue: {text: values[6] || '', type: {text: 'PQ'}},
+    //             resultUnit: {
+    //                 codings: unitsValue ? [{code: unitsValue, display: unitsValue, system: 'UCUM'}] : [],
+    //                 text: unitsValue
+    //             }
+    //         };
+    //         if (values[17]) {
+    //             labResult.test.codings.push({
+    //                 code: values[17], display: values[3] || '', system: '2.16.840.1.113883.6.1'
+    //             });
+    //         }
+    //         if (values[21]) labResult.referenceRange.lowValue = values[21];
+    //         if (values[20]) labResult.referenceRange.highValue = values[20];
+    //         labResult.interpretation = values[19] ? {
+    //             codings: [{code: values[19], system: '2.16.840.1.113883.5.83'}], text: values[19]
+    //         } : {
+    //             codings: [{code: 'N', system: '2.16.840.1.113883.5.83'}], text: 'N'
+    //         };
+    //         const uniqueID = values[0] || '';
+    //         const messageData = {
+    //             messageId: uniqueID, formatID: '', useCaseID: '',
+    //             patient: {labResults: [labResult], id: uniqueID},
+    //             dataSourceID: document.getElementById('dataSourceID').value,
+    //             dataProviderID: document.getElementById('dataProviderID').value,
+    //             messageID: uniqueID
+    //         };
+    //         document.getElementById('messageData').value = JSON.stringify(messageData, null, 2);
+    //         showStatus('✓ Successfully converted spreadsheet row to JSON!', 'success');
+    //         document.getElementById('messageData').scrollIntoView({behavior: 'smooth', block: 'center'});
+    //     } catch (error) {
+    //         showStatus('Error converting spreadsheet data: ' + error.message, 'error');
+    //     }
+    // }
+
     function convertSpreadsheetToJSON() {
         const input = document.getElementById('spreadsheetInput').value.trim();
         if (!input) {
-            showStatus('Please paste a spreadsheet row first.', 'error');
+            showStatus('Please paste spreadsheet rows first.', 'error');
             return;
         }
+
         try {
-            const values = input.split('\t');
-            if (values.length < 22) {
-                showStatus('Warning: Expected 22 columns, but found ' + values.length + '.', 'error');
-            }
-            const unitsValue = values[18] || '';
-            const abFlagValue = values[19] || '';
-            const labResult = {
-                test: {codings: [], text: values[3] || ''},
-                performingSite: {text: values[11] || ''},
-                specimenType: {text: values[9] || ''},
-                abnormalFlag: {
-                    codings: abFlagValue ? [{code: abFlagValue, system: 'AbFlag'}] : [],
-                    text: values[19] || ''
-                },
-                referenceRange: {text: (values[21] || '') + ' - ' + (values[20] || '')},
-                resultValue: {text: values[6] || '', type: {text: 'PQ'}},
-                resultUnit: {
-                    codings: unitsValue ? [{code: unitsValue, display: unitsValue, system: 'UCUM'}] : [],
-                    text: unitsValue
+            // Split by newlines to handle multiple rows
+            const lines = input.split('\n').filter(line => line.trim().length > 0);
+            const messages = [];
+
+            lines.forEach((line, lineIndex) => {
+                const values = line.split('\t');
+
+                if (values.length < 22) {
+                    console.warn(`Row ${lineIndex + 1}: Expected 22 columns, but found ${values.length}`);
                 }
-            };
-            if (values[17]) {
-                labResult.test.codings.push({
-                    code: values[17], display: values[3] || '', system: '2.16.840.1.113883.6.1'
-                });
-            }
-            if (values[21]) labResult.referenceRange.lowValue = values[21];
-            if (values[20]) labResult.referenceRange.highValue = values[20];
-            labResult.interpretation = values[19] ? {
-                codings: [{code: values[19], system: '2.16.840.1.113883.5.83'}], text: values[19]
-            } : {
-                codings: [{code: 'N', system: '2.16.840.1.113883.5.83'}], text: 'N'
-            };
-            const uniqueID = values[0] || '';
-            const messageData = {
-                messageId: uniqueID, formatID: '', useCaseID: '',
-                patient: {labResults: [labResult], id: uniqueID},
-                dataSourceID: document.getElementById('dataSourceID').value,
-                dataProviderID: document.getElementById('dataProviderID').value,
-                messageID: uniqueID
-            };
-            document.getElementById('messageData').value = JSON.stringify(messageData, null, 2);
-            showStatus('✓ Successfully converted spreadsheet row to JSON!', 'success');
+
+                const unitsValue = values[18] || '';
+                const abFlagValue = values[19] || '';
+                const labResult = {
+                    test: {codings: [], text: values[3] || ''},
+                    performingSite: {text: values[11] || ''},
+                    specimenType: {text: values[9] || ''},
+                    abnormalFlag: {
+                        codings: abFlagValue ? [{code: abFlagValue, system: 'AbFlag'}] : [],
+                        text: values[19] || ''
+                    },
+                    referenceRange: {text: (values[21] || '') + ' - ' + (values[20] || '')},
+                    resultValue: {text: values[6] || '', type: {text: 'PQ'}},
+                    resultUnit: {
+                        codings: unitsValue ? [{code: unitsValue, display: unitsValue, system: 'UCUM'}] : [],
+                        text: unitsValue
+                    }
+                };
+
+                if (values[17]) {
+                    labResult.test.codings.push({
+                        code: values[17], display: values[3] || '', system: '2.16.840.1.113883.6.1'
+                    });
+                }
+
+                if (values[21]) labResult.referenceRange.lowValue = values[21];
+                if (values[20]) labResult.referenceRange.highValue = values[20];
+
+                labResult.interpretation = values[19] ? {
+                    codings: [{code: values[19], system: '2.16.840.1.113883.5.83'}], text: values[19]
+                } : {
+                    codings: [{code: 'N', system: '2.16.840.1.113883.5.83'}], text: 'N'
+                };
+
+                const uniqueID = values[0] || '';
+                const messageData = {
+                    messageId: uniqueID,
+                    formatID: '',
+                    useCaseID: '',
+                    patient: {labResults: [labResult], id: uniqueID},
+                    dataSourceID: document.getElementById('dataSourceID').value,
+                    dataProviderID: document.getElementById('dataProviderID').value,
+                    messageID: uniqueID
+                };
+
+                messages.push(messageData);
+            });
+
+            // Store as JSON array
+            document.getElementById('messageData').value = JSON.stringify(messages, null, 2);
+
+            showStatus(`✓ Successfully converted ${messages.length} spreadsheet row(s) to JSON!`, 'success');
             document.getElementById('messageData').scrollIntoView({behavior: 'smooth', block: 'center'});
+
         } catch (error) {
             showStatus('Error converting spreadsheet data: ' + error.message, 'error');
         }
