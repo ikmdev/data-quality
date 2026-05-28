@@ -699,3 +699,16 @@ button {
 .modal-close-footer-btn:hover {
     background-color: #545b62;
 }
+
+.form-section {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: #fafafa;
+}
+
+.form-section legend {
+    font-weight: 600;
+    padding: 0 8px;
+}

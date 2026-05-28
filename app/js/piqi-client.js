@@ -19,28 +19,28 @@ function escapeHtml(text) {
 
 function syntaxHighlightJson(json) {
     if (!json) return '';
-    
+
     json = escapeHtml(json);
-    
+
     json = json.replace(/&quot;([^&]*?)&quot;:\s?/g, '<span class="json-key">&quot;$1&quot;</span>: ');
     json = json.replace(/:\s?&quot;([^&]*?)&quot;/g, ': <span class="json-string">&quot;$1&quot;</span>');
     json = json.replace(/:\s?([0-9.]+)([,\n])/g, ': <span class="json-number">$1</span>$2');
     json = json.replace(/:\s?(true|false)([,\n])/g, ': <span class="json-boolean">$1</span>$2');
     json = json.replace(/:\s?(null)([,\n])/g, ': <span class="json-null">$1</span>$2');
     json = json.replace(/([\[\]{}:,])/g, '<span class="json-punctuation">$1</span>');
-    
+
     return json;
 }
 
 function openValueModal(content) {
     const modal = document.getElementById('valueModal');
     const jsonDisplay = document.getElementById('jsonDisplay');
-    
+
     if (!modal) {
         console.error('Modal element not found');
         return;
     }
-    
+
     // Try to parse and pretty-print the content
     let formatted = content;
     try {
@@ -50,10 +50,10 @@ function openValueModal(content) {
         // Not JSON, use as-is
         formatted = content;
     }
-    
+
     const displayContent = syntaxHighlightJson(formatted);
     jsonDisplay.innerHTML = displayContent;
-    
+
     modal.classList.add('show');
     modal.focus();
 }
@@ -68,13 +68,13 @@ function closeValueModal() {
 function copyToClipboard() {
     const jsonDisplay = document.getElementById('jsonDisplay');
     const text = jsonDisplay.textContent;
-    
+
     navigator.clipboard.writeText(text).then(() => {
         const copyBtn = document.getElementById('modalCopyBtn');
         const origText = copyBtn.textContent;
         copyBtn.textContent = '✓ Copied!';
         copyBtn.classList.add('copied');
-        
+
         setTimeout(() => {
             copyBtn.textContent = origText;
             copyBtn.classList.remove('copied');
@@ -216,7 +216,7 @@ async function previewRequest() {
         const requestBody = await Promise.resolve(buildRequestBody());
         previewContent.textContent = JSON.stringify(requestBody, null, 2);
         previewSection.classList.add('show');
-        previewSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        previewSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
     } catch (error) {
         previewContent.textContent = 'Error: ' + error.message;
         previewSection.classList.add('show');
@@ -551,13 +551,13 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
     responseSection.classList.remove('show');
 
     try {
-        const apiUrl = document.getElementById('apiUrl').value;
+        const piqiUrl = document.getElementById('piqiUrl').value;
         const requestBody = await Promise.resolve(buildRequestBody());
 
-        console.log('Sending request to:', apiUrl);
+        console.log('Sending request to:', piqiUrl);
         console.log('Request body:', requestBody);
 
-        const response = await fetch(apiUrl, {
+        const response = await fetch(piqiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -584,22 +584,99 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
                 document.getElementById('formattedResponseContainer').innerHTML = '<p>Response is not JSON format</p>';
                 responseContent.textContent = responseData;
             }
+
+            // ===== NEW: Save to Postgres via PostgREST =====
+            console.log('Saving to database...');
+            try {
+                const saveResult = await fetch('http://postgrest.localhost/piqi_evaluation_run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
+                        run_name: document.getElementById('runName').value,
+                        status: "started",
+                        total_records: 1,
+                        total_completed: 1,
+                        total_failed: 0,
+                    })
+                });
+
+
+
+                if (saveResult.ok) {
+                    console.log('✓ Successfully saved to database');
+                    responseHeader.innerHTML += ' | ✓ Saved to Database';
+                } else {
+                    console.warn('⚠ Failed to save to database:', saveResult.status);
+                    responseHeader.innerHTML += ' | ⚠ Save to database failed';
+                }
+            } catch (dbError) {
+                console.warn('⚠ Database save error:', dbError);
+                responseHeader.innerHTML += ' | ⚠ Database connection error';
+            }
+            // ===== END NEW CODE =====
+
+
         } else {
             responseHeader.innerHTML = '<span class="error">✗ Error (Status: ' + response.status + ')</span>';
             document.getElementById('formattedResponseContainer').innerHTML = '';
             responseContent.textContent = typeof responseData === 'object' ? JSON.stringify(responseData, null, 2) : responseData;
         }
 
-        responseSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        responseSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 
     } catch (error) {
         responseSection.classList.add('show');
         responseHeader.innerHTML = '<span class="error">✗ Error</span>';
         document.getElementById('formattedResponseContainer').innerHTML = '';
         responseContent.textContent = error.message;
-        responseSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        responseSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
     } finally {
         submitBtn.disabled = false;
         loading.classList.remove('show');
     }
 });
+
+async function startEvaluationRun() {
+    try {
+        const baseName = document.getElementById('runName').value;
+        // 1. Append a timestamp to guarantee uniqueness during the demo
+        const uniqueRunName = `${baseName} - ${new Date().toLocaleTimeString()}`;
+
+        const saveResult = await fetch('http://postgrest.localhost/piqi_evaluation_run', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+                run_name: uniqueRunName,
+                status: "started",
+                total_records: 1,
+                total_completed: 1,
+                total_failed: 0,
+            })
+        });
+
+        // 2. Catch database errors (like constraints) before parsing
+        if (!saveResult.ok) {
+            const errorDetails = await saveResult.json();
+            console.error("Database rejected the insert:", errorDetails);
+            return null; // Or show an alert to the user
+        }
+
+        // 3. PostgREST returns representations as an array of objects
+        const [newRunRecord] = await saveResult.json();
+
+        console.log("Success! Created Run ID:", newRunRecord.id);
+
+        // Return the ID so you can use it for your Queue/Results inserts
+        return newRunRecord.id;
+
+    } catch (error) {
+        // Catches network errors (like the PostgREST container being down)
+        console.error("Network or Fetch Error:", error);
+    }
+}
