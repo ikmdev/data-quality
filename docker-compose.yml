@@ -78,10 +78,11 @@ services:
         image: apache/superset:latest
         container_name: dq-superset
         restart: unless-stopped
+        ports:
+            - "8088:8088"
         environment:
             SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
             SQLALCHEMY_DATABASE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-            WEBSERVER_ROOT_URL: ${APP_BASE_URL}/superset
         depends_on:
             postgres:
                 condition: service_healthy
@@ -99,7 +100,6 @@ services:
             SUPERSET_ADMIN_USERNAME: ${SUPERSET_ADMIN_USERNAME}
             SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD}
             SUPERSET_ADMIN_EMAIL: ${SUPERSET_ADMIN_EMAIL}
-            WEBSERVER_ROOT_URL: ${APP_BASE_URL}/superset
         depends_on:
             postgres:
                 condition: service_healthy
