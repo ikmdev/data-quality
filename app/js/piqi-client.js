@@ -139,6 +139,44 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+// Toggle evaluation section visibility
+function toggleEvaluation(evalId) {
+    const content = document.getElementById(evalId);
+    const toggle = document.getElementById(evalId + '-toggle');
+
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        toggle.textContent = '−';
+    } else {
+        content.style.display = 'none';
+        toggle.textContent = '+';
+    }
+}
+
+// Expand all evaluation sections
+function expandAllEvaluations(count) {
+    for (let i = 0; i < count; i++) {
+        const content = document.getElementById('eval-' + i);
+        const toggle = document.getElementById('eval-' + i + '-toggle');
+        if (content) {
+            content.style.display = 'block';
+            toggle.textContent = '−';
+        }
+    }
+}
+
+// Collapse all evaluation sections
+function collapseAllEvaluations(count) {
+    for (let i = 0; i < count; i++) {
+        const content = document.getElementById('eval-' + i);
+        const toggle = document.getElementById('eval-' + i + '-toggle');
+        if (content) {
+            content.style.display = 'none';
+            toggle.textContent = '+';
+        }
+    }
+}
+
 // ---------------------------------------------------------------------------
 // JSON formatting helpers
 // ---------------------------------------------------------------------------
@@ -208,21 +246,6 @@ function formatJSONWithFailedHighlight(obj, indent = 0) {
 // Request preview
 // ---------------------------------------------------------------------------
 
-// async function previewRequest() {
-//     const previewSection = document.getElementById('previewSection');
-//     const previewContent = document.getElementById('previewContent');
-//
-//     try {
-//         const requestBody = await Promise.resolve(buildRequestBody());
-//         previewContent.textContent = JSON.stringify(requestBody, null, 2);
-//         previewSection.classList.add('show');
-//         previewSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-//     } catch (error) {
-//         previewContent.textContent = 'Error: ' + error.message;
-//         previewSection.classList.add('show');
-//     }
-// }
-
 async function previewRequest() {
     const previewSection = document.getElementById('previewSection');
     const previewContent = document.getElementById('previewContent');
@@ -260,7 +283,7 @@ async function previewRequest() {
 
         previewContent.innerHTML = previewHTML;
         previewSection.classList.add('show');
-        previewSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        previewSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 
     } catch (error) {
         previewContent.innerHTML = `<div style="color: #d32f2f; padding: 10px;">Error: ${error.message}</div>`;
@@ -581,7 +604,6 @@ function toggleAuditedMessage() {
 // ---------------------------------------------------------------------------
 // Form submission (shared)
 // ---------------------------------------------------------------------------
-
 document.getElementById('apiForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -590,6 +612,7 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
     const responseSection = document.getElementById('responseSection');
     const responseHeader = document.getElementById('responseHeader');
     const responseContent = document.getElementById('responseContent');
+    const formattedContainer = document.getElementById('formattedResponseContainer');
 
     submitBtn.disabled = true;
     loading.classList.add('show');
@@ -597,85 +620,182 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
 
     try {
         const piqiUrl = document.getElementById('piqiUrl').value;
-        const requestBody = await Promise.resolve(buildRequestBody());
+        const messageDataStr = document.getElementById('messageData').value;
 
-        console.log('Sending request to:', piqiUrl);
-        console.log('Request body:', requestBody);
-
-        const response = await fetch(piqiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
-
-        let responseData;
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-            responseData = await response.json();
-        } else {
-            responseData = await response.text();
+        let messageDataParsed;
+        try {
+            messageDataParsed = JSON.parse(messageDataStr);
+        } catch (parseError) {
+            throw new Error('Invalid JSON in Message Data field: ' + parseError.message);
         }
 
-        responseSection.classList.add('show');
-        if (response.ok) {
-            responseHeader.innerHTML = '<span class="success">✓ Success (Status: ' + response.status + ')</span>';
+        // Check if it's an array
+        const messages = Array.isArray(messageDataParsed) ? messageDataParsed : [messageDataParsed];
 
-            if (typeof responseData === 'object') {
-                displayFormattedResponse(responseData);
-                responseContent.textContent = JSON.stringify(responseData, null, 2);
-            } else {
-                document.getElementById('formattedResponseContainer').innerHTML = '<p>Response is not JSON format</p>';
-                responseContent.textContent = responseData;
-            }
+        let successCount = 0;
+        let failCount = 0;
+        let allResults = [];
+        let formattedHTML = '';
 
-            // ===== NEW: Save to Postgres via PostgREST =====
-            console.log('Saving to database...');
+        // Process each message individually
+        for (let i = 0; i < messages.length; i++) {
+            const msg = messages[i];
+            const requestBody = {
+                dataProviderID: document.getElementById('dataProviderID').value,
+                dataSourceID: document.getElementById('dataSourceID').value,
+                messageID: msg.messageID || msg.messageId || '',
+                piqiModelMnemonic: document.getElementById('piqiModelMnemonic').value,
+                evaluationRubricMnemonic: document.getElementById('evaluationRubricMnemonic').value,
+                messageData: JSON.stringify(msg)
+            };
+
             try {
-                const saveResult = await fetch('http://localhost/postgrest/piqi_evaluation_run', {
+                console.log(`Sending evaluation ${i + 1} of ${messages.length} to:`, piqiUrl);
+                console.log('Request body:', requestBody);
+
+                const response = await fetch(piqiUrl, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        run_name: document.getElementById('runName').value,
-                        status: "started",
-                        total_records: 1,
-                        total_completed: 1,
-                        total_failed: 0,
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
-
-
-                if (saveResult.ok) {
-                    console.log('✓ Successfully saved to database');
-                    responseHeader.innerHTML += ' | ✓ Saved to Database';
+                let responseData;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    responseData = await response.json();
                 } else {
-                    console.warn('⚠ Failed to save to database:', saveResult.status);
-                    responseHeader.innerHTML += ' | ⚠ Save to database failed';
+                    responseData = await response.text();
                 }
-            } catch (dbError) {
-                console.warn('⚠ Database save error:', dbError);
-                responseHeader.innerHTML += ' | ⚠ Database connection error';
+
+                if (response.ok) {
+                    successCount++;
+
+                    // Build collapsible formatted HTML for this evaluation
+                    formattedHTML += `<div style="margin-bottom: 20px; border: 2px solid #4caf50; border-radius: 8px; background: #f1f8f4;">`;
+                    formattedHTML += `<div style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleEvaluation('eval-${i}')">`;
+                    formattedHTML += `<h3 style="margin: 0; color: #2e7d32;">✓ Evaluation ${i + 1} of ${messages.length} - Success (Message ID: ${requestBody.messageID || 'N/A'})</h3>`;
+                    formattedHTML += `<button type="button" style="background: none; border: none; font-size: 24px; cursor: pointer;" id="eval-${i}-toggle">+</button>`;
+                    formattedHTML += `</div>`;
+                    formattedHTML += `<div id="eval-${i}" style="display: none; padding: 0 15px 15px 15px;">`;
+
+                    if (typeof responseData === 'object') {
+                        formattedHTML += '<div class="formatted-response">';
+                        if (responseData.scoringData) {
+                            if (responseData.scoringData.messageResults) {
+                                formattedHTML += formatMessageResults(responseData.scoringData.messageResults);
+                            }
+                            if (responseData.scoringData.dataClassResults) {
+                                formattedHTML += formatDataClassResults(responseData.scoringData.dataClassResults, responseData.auditedMessage);
+                            }
+                        }
+                        if (responseData.auditedMessage) {
+                            formattedHTML += formatAuditedMessage(responseData.auditedMessage);
+                        }
+                        formattedHTML += '</div>';
+                    } else {
+                        formattedHTML += `<p>Response is not JSON format</p>`;
+                    }
+
+                    formattedHTML += `</div></div>`;
+
+                    allResults.push({
+                        index: i + 1,
+                        success: true,
+                        messageID: requestBody.messageID,
+                        data: responseData
+                    });
+
+                    // Save to database via PostgREST
+                    try {
+                        const saveResult = await fetch('http://localhost/postgrest/piqi_evaluation_run', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Prefer': 'return=representation'
+                            },
+                            body: JSON.stringify({
+                                run_name: document.getElementById('runName').value,
+                                message_id: requestBody.messageID,
+                                model_mnemonic: requestBody.piqiModelMnemonic,
+                                rubric_mnemonic: requestBody.evaluationRubricMnemonic,
+                                status: 'completed',
+                                result_data: JSON.stringify(responseData)
+                            })
+                        });
+
+                        if (!saveResult.ok) {
+                            console.warn(`⚠ Failed to save evaluation ${i + 1} to database:`, saveResult.status);
+                        }
+                    } catch (dbError) {
+                        console.warn(`⚠ Database save error for evaluation ${i + 1}:`, dbError);
+                    }
+
+                } else {
+                    failCount++;
+
+                    formattedHTML += `<div style="margin-bottom: 20px; border: 2px solid #f44336; border-radius: 8px; background: #ffebee;">`;
+                    formattedHTML += `<div style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleEvaluation('eval-${i}')">`;
+                    formattedHTML += `<h3 style="margin: 0; color: #c62828;">✗ Evaluation ${i + 1} of ${messages.length} - Failed (Status: ${response.status}, Message ID: ${requestBody.messageID || 'N/A'})</h3>`;
+                    formattedHTML += `<button type="button" style="background: none; border: none; font-size: 24px; cursor: pointer;" id="eval-${i}-toggle">+</button>`;
+                    formattedHTML += `</div>`;
+                    formattedHTML += `<div id="eval-${i}" style="padding: 0 15px 15px 15px;">`;
+                    formattedHTML += `<pre style="background: #fff; padding: 10px; border-radius: 4px; overflow-x: auto;">${typeof responseData === 'object' ? JSON.stringify(responseData, null, 2) : responseData}</pre>`;
+                    formattedHTML += `</div></div>`;
+
+                    allResults.push({
+                        index: i + 1,
+                        success: false,
+                        messageID: requestBody.messageID,
+                        error: typeof responseData === 'object' ? JSON.stringify(responseData) : responseData
+                    });
+                }
+
+            } catch (error) {
+                failCount++;
+
+                formattedHTML += `<div style="margin-bottom: 20px; border: 2px solid #ff9800; border-radius: 8px; background: #fff3e0;">`;
+                formattedHTML += `<div style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleEvaluation('eval-${i}')">`;
+                formattedHTML += `<h3 style="margin: 0; color: #e65100;">⚠ Evaluation ${i + 1} of ${messages.length} - Error (Message ID: ${requestBody.messageID || 'N/A'})</h3>`;
+                formattedHTML += `<button type="button" style="background: none; border: none; font-size: 24px; cursor: pointer;" id="eval-${i}-toggle">+</button>`;
+                formattedHTML += `</div>`;
+                formattedHTML += `<div id="eval-${i}" style="padding: 0 15px 15px 15px;">`;
+                formattedHTML += `<p><strong>Error:</strong> ${error.message}</p>`;
+                formattedHTML += `</div></div>`;
+
+                allResults.push({
+                    index: i + 1,
+                    success: false,
+                    messageID: requestBody.messageID,
+                    error: error.message
+                });
             }
-            // ===== END NEW CODE =====
-
-
-        } else {
-            responseHeader.innerHTML = '<span class="error">✗ Error (Status: ' + response.status + ')</span>';
-            document.getElementById('formattedResponseContainer').innerHTML = '';
-            responseContent.textContent = typeof responseData === 'object' ? JSON.stringify(responseData, null, 2) : responseData;
         }
+
+        // Show overall results
+        responseSection.classList.add('show');
+        responseHeader.innerHTML = `<span class="success">✓ Completed ${messages.length} evaluation(s): ${successCount} succeeded, ${failCount} failed</span>`;
+
+        if (successCount > 0) {
+            responseHeader.innerHTML += ' | ✓ Saved to Database';
+        }
+
+        // Add collapse/expand all buttons
+        const toggleButtonsHTML = `    <div style="margin: 15px 0; display: flex; gap: 10px;">
+        <button type="button" onclick="expandAllEvaluations(${messages.length})" style="padding: 8px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer;">Expand All</button>
+        <button type="button" onclick="collapseAllEvaluations(${messages.length})" style="padding: 8px 16px; background: #757575; color: white; border: none; border-radius: 4px; cursor: pointer;">Collapse All</button>
+    </div>`;
+
+        formattedContainer.innerHTML = toggleButtonsHTML + formattedHTML;
+        responseContent.textContent = JSON.stringify(allResults, null, 2);
 
         responseSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 
     } catch (error) {
         responseSection.classList.add('show');
         responseHeader.innerHTML = '<span class="error">✗ Error</span>';
-        document.getElementById('formattedResponseContainer').innerHTML = '';
+        formattedContainer.innerHTML = '';
         responseContent.textContent = error.message;
         responseSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
     } finally {
@@ -683,45 +803,3 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
         loading.classList.remove('show');
     }
 });
-
-async function startEvaluationRun() {
-    try {
-        const baseName = document.getElementById('runName').value;
-        // 1. Append a timestamp to guarantee uniqueness during the demo
-        const uniqueRunName = `${baseName} - ${new Date().toLocaleTimeString()}`;
-
-        const saveResult = await fetch('http://localhost/postgrest/piqi_evaluation_run', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify({
-                run_name: uniqueRunName,
-                status: "started",
-                total_records: 1,
-                total_completed: 1,
-                total_failed: 0,
-            })
-        });
-
-        // 2. Catch database errors (like constraints) before parsing
-        if (!saveResult.ok) {
-            const errorDetails = await saveResult.json();
-            console.error("Database rejected the insert:", errorDetails);
-            return null; // Or show an alert to the user
-        }
-
-        // 3. PostgREST returns representations as an array of objects
-        const [newRunRecord] = await saveResult.json();
-
-        console.log("Success! Created Run ID:", newRunRecord.id);
-
-        // Return the ID so you can use it for your Queue/Results inserts
-        return newRunRecord.id;
-
-    } catch (error) {
-        // Catches network errors (like the PostgREST container being down)
-        console.error("Network or Fetch Error:", error);
-    }
-}
