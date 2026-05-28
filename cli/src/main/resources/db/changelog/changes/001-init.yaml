@@ -215,43 +215,48 @@ databaseChangeLog:
                         sql: DROP ROLE IF EXISTS web_anon;
 
     -   changeSet:
-            id: grant-postgrest-permissions-to-piqi-tables
+            id: grant-web-anon-permissions-tables-sequences
+            author: cli-app
+            changes:
+                -   sql:
+                        dbms: postgresql
+                        splitStatements: true
+                        sql: |
+                            GRANT USAGE ON SCHEMA public TO web_anon;
+                            
+                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_run TO web_anon;
+                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_queue TO web_anon;
+                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_assessment_results TO web_anon;
+                            
+                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_evaluation_run_id_seq TO web_anon;
+                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_evaluation_queue_id_seq TO web_anon;
+                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_assessment_results_id_seq TO web_anon;
+
+            rollback:
+                -   sql:
+                        dbms: postgresql
+                        splitStatements: true
+                        sql: |
+                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_evaluation_run_id_seq FROM web_anon;
+                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_evaluation_queue_id_seq FROM web_anon;
+                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_assessment_results_id_seq FROM web_anon;
+                            
+                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_run FROM web_anon;
+                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_queue FROM web_anon;
+                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_assessment_results FROM web_anon;
+                            
+                            REVOKE USAGE ON SCHEMA public FROM web_anon;
+    -   changeSet:
+            id: grant-web-anon-to-dq-user
             author: cli-app
             changes:
                 -   sql:
                         dbms: postgresql
                         sql: >
-                            -- 2. Basic schema usage
-                            GRANT USAGE ON SCHEMA public TO web_anon;
-                            
-                            -- 3. Read/write permissions on target tables
-                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_run TO web_anon;
-                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_queue TO web_anon;
-                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_assessment_results TO web_anon;
-                            
-                            -- Assuming piqi_scores is created in an earlier changeset not shown
-                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_scores TO web_anon;
-                            
-                            -- 4. Permissions on the auto-generated BIGSERIAL sequences
-                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_evaluation_run_id_seq TO web_anon;
-                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_evaluation_queue_id_seq TO web_anon;
-                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_assessment_results_id_seq TO web_anon;
-                            
-                            -- Assuming piqi_scores uses a SERIAL/BIGSERIAL identity
-                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_scores_id_seq TO web_anon;
+                            -- Allow the PostgREST connection user to switch to the web_anon role
+                            GRANT web_anon TO dq;
 
             rollback:
                 -   sql:
                         dbms: postgresql
-                        sql: >
-                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_evaluation_run_id_seq FROM web_anon;
-                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_evaluation_queue_id_seq FROM web_anon;
-                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_assessment_results_id_seq FROM web_anon;
-                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_scores_id_seq FROM web_anon;
-                            
-                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_run FROM web_anon;
-                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_queue FROM web_anon;
-                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_assessment_results FROM web_anon;
-                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_scores FROM web_anon;
-                            
-                            REVOKE USAGE ON SCHEMA public FROM web_anon;
+                        sql: REVOKE web_anon FROM dq;

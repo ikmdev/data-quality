@@ -588,7 +588,7 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
             // ===== NEW: Save to Postgres via PostgREST =====
             console.log('Saving to database...');
             try {
-                const saveResult = await fetch('http://postgrest.localhost/piqi_evaluation_run', {
+                const saveResult = await fetch('http://localhost/postgrest/piqi_evaluation_run', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -645,7 +645,7 @@ async function startEvaluationRun() {
         // 1. Append a timestamp to guarantee uniqueness during the demo
         const uniqueRunName = `${baseName} - ${new Date().toLocaleTimeString()}`;
 
-        const saveResult = await fetch('http://postgrest.localhost/piqi_evaluation_run', {
+        const saveResult = await fetch('http://localhost/postgrest/piqi_evaluation_run', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -33,13 +33,16 @@ services:
         image: postgrest/postgrest:v12.2.0
         container_name: postgrest
         depends_on:
-            - liquibase
+            postgres:
+                condition: service_started
+            liquibase:
+                condition: service_completed_successfully
         environment:
             PGRST_DB_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
             PGRST_DB_SCHEMA: ${PGRST_DB_SCHEMA}
             PGRST_DB_ANON_ROLE: ${PGRST_DB_ANON_ROLE}
             PGRST_SERVER_PORT: ${PGRST_SERVER_PORT}
-            PGRST_SERVER_CORS_ALLOWED_ORIGINS: "*"
+            PGRST_SERVER_CORS_ALLOWED_ORIGINS: ${APP_BASE_URL}
             PGRST_SERVER_PROXY_URI: ${APP_BASE_URL}/postgrest
 
     pgadmin:
@@ -131,6 +134,8 @@ services:
             dockerfile: Dockerfile
         container_name: dq-app
         restart: unless-stopped
+        volumes:
+            - ./app:/usr/share/nginx/html
         depends_on:
             - piqi
 
