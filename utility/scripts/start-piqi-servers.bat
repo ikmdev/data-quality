@@ -1,0 +1,14 @@
+@echo off
+setlocal
+
+echo Starting PIQI Engine Server...
+start "PIQI Engine Server" cmd /k "dotnet run --project C:\Users\rott\Documents\GitHub\PIQIRubricTestingRI\PIQI_Engine.Server\PIQI_Engine.Server.csproj"
+
+echo Starting FHIR Converter API...
+start "FHIR Converter API" cmd /k "dotnet run --project C:\Users\rott\Documents\GitHub\FHIR-Converter\src\Microsoft.Health.Fhir.Liquid.Converter.Api\Microsoft.Health.Fhir.Liquid.Converter.Api.csproj"
+
+echo Starting Postgres Server...
+start "Postgres" "C:\Program Files\PostgreSQL\18\bin\pg_ctl.exe" start -D "C:\postgresdata"
+
+echo All servers launched.
+exit /b

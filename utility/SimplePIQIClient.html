@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIQI MessageAudit Submission Client</title>
+    <link rel="stylesheet" href="piqi-client.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>PIQI MessageAudit Submission Client</h1>
+
+        <!-- Paste JSON Section -->
+        <div class="paste-section">
+            <h2>📋 Paste JSON Message</h2>
+            <div class="form-group">
+                <label for="inputContentType">Pasted Content Type:</label>
+                <select id="inputContentType" required>
+                    <option value="PIQI">PIQI JSON</option>
+                    <option value="FHIR">FHIR JSON</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="piqiJsonInput">Paste your PIQI-formatted JSON message here:</label>
+                <textarea id="piqiJsonInput" class="json-output"
+                    placeholder="Paste your PIQI or FHIR JSON message here..."></textarea>
+            </div>
+        </div>
+
+        <form id="apiForm">
+            <div class="api-url-group">
+                <div class="form-group">
+                    <label for="apiUrl">PIQI Validation API URL:</label>
+                    <input type="text" id="apiUrl" value="http://localhost:5025/PIQI/ScoreAuditMessage" required>
+                </div>
+                <div class="form-group">
+                    <label for="fhirConversionApiUrl">FHIR Conversion API URL:</label>
+                    <input type="text" id="fhirConversionApiUrl" value="http://localhost:5001/convertToPiqi" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="piqiModelMnemonic">PIQI Model Mnemonic:</label>
+                <select id="piqiModelMnemonic" required>
+                    <option value="PAT_CLINICAL_V1">PAT_CLINICAL_V1</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="evaluationRubricMnemonic">Evaluation Rubric Mnemonic:</label>
+                <select id="evaluationRubricMnemonic" required>
+                    <option value="USCDI_V3">USCDI_V3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dataProviderID">Data Provider ID:</label>
+                <input type="text" id="dataProviderID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dataSourceID">Data Source ID:</label>
+                <input type="text" id="dataSourceID" required>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="submit-btn">Submit Request</button>
+                <button type="button" class="preview-btn" onclick="previewRequest()">Preview Request Body</button>
+                <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
+            </div>
+
+            <div class="loading" id="loading">
+                Sending request...
+            </div>
+        </form>
+
+        <div class="preview-section" id="previewSection">
+            <div class="preview-header">Preview of Request Body (with escaped messageData):</div>
+            <div class="preview-content" id="previewContent"></div>
+        </div>
+
+        <div class="response-section" id="responseSection">
+            <div class="response-header" id="responseHeader"></div>
+            <div id="formattedResponseContainer"></div>
+            <button class="toggle-raw-btn" id="toggleRawBtn" onclick="toggleRawResponse()">Show Raw JSON
+                Response</button>
+            <div class="raw-response" id="rawResponse">
+                <h3>Raw JSON Response:</h3>
+                <div class="response-content" id="responseContent"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Page-specific functions for SimplePIQIClient.html
+
+        // Generate a random session ID
+        function generateSessionID() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let sessionID = '';
+            for (let i = 0; i < 32; i++) {
+                sessionID += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return 'Session ID ' + sessionID;
+        }
+
+        function generateMessageID() {
+            if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+                return window.crypto.randomUUID();
+            }
+
+            const randomPart = Math.random().toString(36).slice(2, 10);
+            return 'msg-' + Date.now() + '-' + randomPart;
+        }
+
+        // Initialize session IDs on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const sessionID = generateSessionID();
+            document.getElementById('dataProviderID').value = sessionID;
+            document.getElementById('dataSourceID').value = sessionID;
+        });
+
+        async function convertFhirToPiqi(fhirParsedMessage) {
+            const conversionApiUrl = document.getElementById('fhirConversionApiUrl').value;
+
+            if (window.location.protocol === 'https:' && conversionApiUrl.startsWith('http://')) {
+                throw new Error('Blocked by browser security: this page is served over HTTPS and cannot call an HTTP conversion endpoint. Use an HTTPS conversion URL (for example, https://localhost:5001/convertToPiqi) and ensure CORS is enabled on the conversion API.');
+            }
+
+            const conversionRequestBody = {
+                InputDataString: JSON.stringify(fhirParsedMessage, null, 2),
+                RootTemplateName: 'BundleJSON',
+                OutputFormat: 'json',
+                IncludeTraceInfo: false,
+                CorrelationId: 'rest-client-001'
+            };
+
+            async function callConversionApi(url, method) {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(conversionRequestBody)
+                });
+
+                let data;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+
+                return { response, data };
+            }
+
+            const candidateUrls = conversionApiUrl.endsWith('/')
+                ? [conversionApiUrl, conversionApiUrl.slice(0, -1)]
+                : [conversionApiUrl, conversionApiUrl + '/'];
+            const candidateMethods = ['POST', 'PUT'];
+
+            let lastAttemptError = null;
+            let successfulConversionData = null;
+
+            for (const method of candidateMethods) {
+                for (const url of candidateUrls) {
+                    const attempt = await callConversionApi(url, method);
+                    if (attempt.response.ok) {
+                        successfulConversionData = attempt.data;
+                        break;
+                    }
+
+                    const errorText = typeof attempt.data === 'object'
+                        ? JSON.stringify(attempt.data)
+                        : attempt.data;
+
+                    lastAttemptError = {
+                        status: attempt.response.status,
+                        method: method,
+                        url: url,
+                        errorText: errorText
+                    };
+
+                    if (attempt.response.status !== 405) {
+                        throw new Error('FHIR conversion failed (Status: ' + attempt.response.status + ', Method: ' + method + ', URL: ' + url + '): ' + errorText);
+                    }
+                }
+
+                if (successfulConversionData !== null) {
+                    break;
+                }
+            }
+
+            if (successfulConversionData === null) {
+                throw new Error('FHIR conversion failed with 405 Method Not Allowed. Tried methods POST and PUT at ' + candidateUrls.join(' and ') + '. Last attempt was ' + lastAttemptError.method + ' ' + lastAttemptError.url + '.');
+            }
+
+            const conversionData = successfulConversionData;
+
+            if (typeof conversionData === 'string') {
+                try {
+                    return JSON.parse(conversionData);
+                } catch (parseError) {
+                    throw new Error('FHIR conversion API returned non-JSON text.');
+                }
+            }
+
+            if (conversionData && typeof conversionData === 'object') {
+                if (conversionData.Result !== undefined) {
+                    if (typeof conversionData.Result === 'string') {
+                        return JSON.parse(conversionData.Result);
+                    }
+                    return conversionData.Result;
+                }
+
+                if (conversionData.result !== undefined) {
+                    if (typeof conversionData.result === 'string') {
+                        return JSON.parse(conversionData.result);
+                    }
+                    return conversionData.result;
+                }
+
+                if (conversionData.messageData) {
+                    if (typeof conversionData.messageData === 'string') {
+                        return JSON.parse(conversionData.messageData);
+                    }
+                    return conversionData.messageData;
+                }
+
+                if (conversionData.OutputDataString && typeof conversionData.OutputDataString === 'string') {
+                    return JSON.parse(conversionData.OutputDataString);
+                }
+
+                if (conversionData.outputDataString && typeof conversionData.outputDataString === 'string') {
+                    return JSON.parse(conversionData.outputDataString);
+                }
+
+                return conversionData;
+            }
+
+            throw new Error('FHIR conversion API returned an unexpected response format.');
+        }
+
+        // Build request body using PIQI JSON directly or by converting FHIR JSON first
+        async function buildRequestBody() {
+            const messageDataStr = document.getElementById('piqiJsonInput').value;
+            const inputContentType = document.getElementById('inputContentType').value;
+
+            let parsedInput;
+            try {
+                parsedInput = JSON.parse(messageDataStr);
+            } catch (parseError) {
+                throw new Error('Invalid JSON in pasted message: ' + parseError.message);
+            }
+
+            const messageDataParsed = inputContentType === 'FHIR'
+                ? await convertFhirToPiqi(parsedInput)
+                : parsedInput;
+
+            let messageID = messageDataParsed.messageID || messageDataParsed.messageId || '';
+            if (inputContentType === 'FHIR' && !messageID) {
+                messageID = generateMessageID();
+            }
+
+            return {
+                dataProviderID: document.getElementById('dataProviderID').value,
+                dataSourceID: document.getElementById('dataSourceID').value,
+                messageID: messageID,
+                piqiModelMnemonic: document.getElementById('piqiModelMnemonic').value,
+                evaluationRubricMnemonic: document.getElementById('evaluationRubricMnemonic').value,
+                messageData: JSON.stringify(messageDataParsed)
+            };
+        }
+
+        function clearForm() {
+            if (confirm('Are you sure you want to clear the form?')) {
+                document.getElementById('apiForm').reset();
+                document.getElementById('piqiJsonInput').value = '';
+                document.getElementById('responseSection').classList.remove('show');
+                document.getElementById('previewSection').classList.remove('show');
+            }
+        }
+    </script>
+    <script src="piqi-config.js"></script>
+    <script src="piqi-client.js"></script>
+
+    <!-- Value Modal Dialog -->
+    <div id="valueModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h2 class="modal-title">Attribute Value</h2>
+                <button class="modal-close-btn" onclick="closeValueModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="json-display" id="jsonDisplay"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-copy-btn" id="modalCopyBtn" onclick="copyToClipboard()">Copy to Clipboard</button>
+                <button class="modal-close-footer-btn" onclick="closeValueModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
