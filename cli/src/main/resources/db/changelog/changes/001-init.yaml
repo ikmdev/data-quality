@@ -18,15 +18,24 @@ databaseChangeLog:
                                     type: VARCHAR(100)
                                     constraints:
                                         nullable: false
-                                        unique: true
                             -   column:
-                                    name: status
-                                    type: VARCHAR(20)
-                                    defaultValue: INGESTING
+                                    name: piqi_model_mnemonic
+                                    type: VARCHAR(100)
                                     constraints:
                                         nullable: false
                             -   column:
-                                    name: total_records
+                                    name: evaluation_rubric_mnemonic
+                                    type: VARCHAR(100)
+                                    constraints:
+                                        nullable: false
+                            -   column:
+                                    name: status
+                                    type: VARCHAR(20)
+                                    defaultValue: IN_PROGRESS
+                                    constraints:
+                                        nullable: false
+                            -   column:
+                                    name: total_evaluations
                                     type: BIGINT
                                     defaultValueNumeric: 0
                             -   column:
@@ -119,19 +128,19 @@ databaseChangeLog:
                         sql: DROP INDEX IF EXISTS idx_piqi_queue_pending;
 
     -   changeSet:
-            id: create-piqi-assessment-results-table
+            id: create-piqi-evaluation-results-table
             author: cli-app
             changes:
                 # 3. The Clinical Evaluation Results Table
                 -   createTable:
-                        tableName: piqi_assessment_results
+                        tableName: piqi_evaluation_results
                         columns:
                             -   column:
                                     name: id
                                     type: BIGSERIAL
                                     constraints:
                                         primaryKey: true
-                                        primaryKeyName: pk_piqi_assessment_results
+                                        primaryKeyName: pk_piqi_evaluation_results
                             -   column:
                                     name: run_id
                                     type: BIGINT
@@ -140,14 +149,6 @@ databaseChangeLog:
                                         foreignKeyName: fk_results_to_run
                                         references: piqi_evaluation_run(id)
                                         deleteCascade: true
-                            -   column:
-                                    name: row_num
-                                    type: INTEGER
-                            -   column:
-                                    name: message_id
-                                    type: TEXT
-                                    constraints:
-                                        nullable: false
                             -   column:
                                     name: data_class
                                     type: VARCHAR(50)
@@ -182,7 +183,7 @@ databaseChangeLog:
 
                 -   createIndex:
                         indexName: idx_piqi_results_run_status
-                        tableName: piqi_assessment_results
+                        tableName: piqi_evaluation_results
                         columns:
                             -   column:
                                     name: run_id
@@ -191,7 +192,7 @@ databaseChangeLog:
 
             rollback:
                 -   dropTable:
-                        tableName: piqi_assessment_results
+                        tableName: piqi_evaluation_results
 
     -   changeSet:
             id: create-postgrest-web-anon-role
@@ -226,11 +227,11 @@ databaseChangeLog:
                             
                             GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_run TO web_anon;
                             GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_queue TO web_anon;
-                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_assessment_results TO web_anon;
+                            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_results TO web_anon;
                             
                             GRANT USAGE, SELECT ON SEQUENCE public.piqi_evaluation_run_id_seq TO web_anon;
                             GRANT USAGE, SELECT ON SEQUENCE public.piqi_evaluation_queue_id_seq TO web_anon;
-                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_assessment_results_id_seq TO web_anon;
+                            GRANT USAGE, SELECT ON SEQUENCE public.piqi_evaluation_results_id_seq TO web_anon;
 
             rollback:
                 -   sql:
@@ -239,11 +240,11 @@ databaseChangeLog:
                         sql: |
                             REVOKE USAGE, SELECT ON SEQUENCE public.piqi_evaluation_run_id_seq FROM web_anon;
                             REVOKE USAGE, SELECT ON SEQUENCE public.piqi_evaluation_queue_id_seq FROM web_anon;
-                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_assessment_results_id_seq FROM web_anon;
+                            REVOKE USAGE, SELECT ON SEQUENCE public.piqi_evaluation_results_id_seq FROM web_anon;
                             
                             REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_run FROM web_anon;
                             REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_queue FROM web_anon;
-                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_assessment_results FROM web_anon;
+                            REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.piqi_evaluation_results FROM web_anon;
                             
                             REVOKE USAGE ON SCHEMA public FROM web_anon;
     -   changeSet:

@@ -357,7 +357,7 @@ function formatMessageResults(messageResults) {
     return html;
 }
 
-function formatDataClassResults(dataClassResults, auditedMessage) {
+async function formatDataClassResults(runId, dataClassResults, auditedMessage) {
     if (!dataClassResults || !Array.isArray(dataClassResults) || dataClassResults.length === 0) {
         return '';
     }
@@ -400,7 +400,7 @@ function formatDataClassResults(dataClassResults, auditedMessage) {
         'Medical Devices': 'medicalDevices'
     };
 
-    activeResults.forEach(result => {
+    for (const result of activeResults) {
         const className = result.dataClassName || 'Unknown';
         const dataPath = dataClassPaths[className];
 
@@ -424,7 +424,7 @@ function formatDataClassResults(dataClassResults, auditedMessage) {
             html += '</thead>';
             html += '<tbody>';
 
-            assessmentItems.forEach(item => {
+            for (const item of assessmentItems) {
                 const statusClass = getStatusClass(item.status);
                 const attrValueDisplay = item.attributeValue || 'N/A';
                 html += '<tr>';
@@ -439,7 +439,25 @@ function formatDataClassResults(dataClassResults, auditedMessage) {
                 html += '<td class="reason-text">' + (item.reason || '-') + '</td>';
                 html += '<td class="effect-text">' + (item.effect || 'N/A') + '</td>';
                 html += '</tr>';
-            });
+
+                // Write Evaluation Result
+                if (runId) {
+                    const savedData = await saveEvaluationResult(
+                        runId,
+                        result.dataClassName,
+                        item.attributeName,
+                        item.attributeValue,
+                        item.assessment,
+                        item.status,
+                        item.reason,
+                        item.effect);
+
+                    if (savedData) {
+                        // You can now access savedData.id or savedData.created_at if you need them for the UI
+                        console.log("Successfully recorded attribute check at", savedData.created_at);
+                    }
+                }
+            }
 
             html += '</tbody>';
             html += '</table>';
@@ -449,7 +467,7 @@ function formatDataClassResults(dataClassResults, auditedMessage) {
         }
 
         html += '</div>';
-    });
+    }
 
     return html;
 }
@@ -637,6 +655,13 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
         let allResults = [];
         let formattedHTML = '';
 
+        // Write Evaluation Run
+        let runId = await startEvaluationRun(
+            document.getElementById('runName').value,
+            document.getElementById('piqiModelMnemonic').value,
+            document.getElementById('evaluationRubricMnemonic').value,
+            messages.length);
+
         // Process each message individually
         for (let i = 0; i < messages.length; i++) {
             const msg = messages[i];
@@ -651,8 +676,8 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
 
             try {
                 console.log(`Sending evaluation ${i + 1} of ${messages.length} to:`, piqiUrl);
-                console.log('Request body:', requestBody);
 
+                // Send data to PIQI Engine for evaluation
                 const response = await fetch(piqiUrl, {
                     method: 'POST',
                     headers: {
@@ -687,7 +712,7 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
                                 formattedHTML += formatMessageResults(responseData.scoringData.messageResults);
                             }
                             if (responseData.scoringData.dataClassResults) {
-                                formattedHTML += formatDataClassResults(responseData.scoringData.dataClassResults, responseData.auditedMessage);
+                                formattedHTML += formatDataClassResults(runId, responseData.scoringData.dataClassResults, responseData.auditedMessage);
                             }
                         }
                         if (responseData.auditedMessage) {
@@ -706,31 +731,6 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
                         messageID: requestBody.messageID,
                         data: responseData
                     });
-
-                    // Save to database via PostgREST
-                    try {
-                        const saveResult = await fetch('http://localhost/postgrest/piqi_evaluation_run', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Prefer': 'return=representation'
-                            },
-                            body: JSON.stringify({
-                                run_name: document.getElementById('runName').value,
-                                message_id: requestBody.messageID,
-                                model_mnemonic: requestBody.piqiModelMnemonic,
-                                rubric_mnemonic: requestBody.evaluationRubricMnemonic,
-                                status: 'completed',
-                                result_data: JSON.stringify(responseData)
-                            })
-                        });
-
-                        if (!saveResult.ok) {
-                            console.warn(`⚠ Failed to save evaluation ${i + 1} to database:`, saveResult.status);
-                        }
-                    } catch (dbError) {
-                        console.warn(`⚠ Database save error for evaluation ${i + 1}:`, dbError);
-                    }
 
                 } else {
                     failCount++;
@@ -792,6 +792,16 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
 
         responseSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 
+        const status = failCount > 0 ? 'FAILED' : 'COMPLETE';
+        if (runId) {
+            await finishEvaluationRun(
+                runId,
+                status,
+                successCount,
+                failCount);
+        }
+
+
     } catch (error) {
         responseSection.classList.add('show');
         responseHeader.innerHTML = '<span class="error">✗ Error</span>';
@@ -803,3 +813,114 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
         loading.classList.remove('show');
     }
 });
+
+// status = 'IN_PROGRESS' | 'COMPLETED' | 'FAILED'
+async function startEvaluationRun(name, modelMnemonic, rubricMnemonic, totalEvaluations) {
+    try {
+        const saveRunResult = await fetch('http://localhost/postgrest/piqi_evaluation_run', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation' // This tells Postgres to hand the row back
+            },
+            body: JSON.stringify({
+                run_name: name,
+                piqi_model_mnemonic: modelMnemonic,
+                evaluation_rubric_mnemonic: rubricMnemonic,
+                total_evaluations: totalEvaluations,
+                status: 'IN_PROGRESS'
+            })
+        });
+
+        if (!saveRunResult.ok) {
+            const error = await saveRunResult.json();
+            console.error("Run Insert Failed:", error);
+            return null; // Return null so your app knows to stop
+        }
+
+        // Extract the newly created row
+        const [newRun] = await saveRunResult.json();
+        console.log("Success! Run created with ID:", newRun.id);
+
+        // Return the ID directly to whatever called this function
+        return newRun.id;
+
+    } catch (error) {
+        console.error("Network or API error:", error);
+        return null;
+    }
+}
+
+async function finishEvaluationRun(runId, finalStatus, completedCount = 0, failedCount = 0) {
+    try {
+        // Notice the URL syntax: ?id=eq.123
+        // This is PostgREST's way of writing "WHERE id = 123"
+        const updateResult = await fetch(`http://localhost/postgrest/piqi_evaluation_run?id=eq.${runId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation' // Tell Postgres to hand back the updated row
+            },
+            body: JSON.stringify({
+                status: finalStatus,
+                total_completed: completedCount,
+                total_failed: failedCount,
+                // Automatically stamp the finish time using the browser's ISO clock
+                completed_at: new Date().toISOString()
+            })
+        });
+
+        if (!updateResult.ok) {
+            const error = await updateResult.json();
+            console.error(`Failed to update Run ID ${runId}:`, error);
+            return null;
+        }
+
+        // Extract the fully updated row from the database response
+        const [updatedRun] = await updateResult.json();
+        console.log(`Success! Run ${runId} finalized with status: ${updatedRun.status}`);
+
+        return updatedRun;
+
+    } catch (error) {
+        console.error("Network or API error during update:", error);
+        return null;
+    }
+}
+
+async function saveEvaluationResult(runId, dataClass, attributeName, attributeValue, assessment, status, reason, effect) {
+    try {
+        const response = await fetch('http://localhost/postgrest/piqi_evaluation_results', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+                run_id: runId,                   // REQUIRED
+                data_class: dataClass,           // REQUIRED
+                attribute_name: attributeName,   // REQUIRED
+                attribute_value: attributeValue,
+                assessment: assessment,
+                status: status,
+                reason: reason,
+                effect: effect
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            console.error("Database Insert Rejected:", error);
+            return null;
+        }
+
+        const [savedRow] = await response.json();
+        console.log(`Result saved successfully with ID: ${savedRow.id}`);
+
+        return savedRow;
+
+    } catch (error) {
+        console.error("Network or API error while saving result:", error);
+        return null;
+    }
+}
