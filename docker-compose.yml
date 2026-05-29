@@ -17,6 +17,8 @@ services:
         image: postgres:16
         container_name: dq-postgres
         restart: unless-stopped
+        ports:
+            - "${POSTGRES_PORT:-5432}:5432"
         environment:
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_USER: ${POSTGRES_USER}
@@ -78,7 +80,9 @@ services:
           ]
 
     superset:
-        image: apache/superset:latest
+        build:
+            context: .
+            dockerfile: Dockerfile.superset
         container_name: dq-superset
         restart: unless-stopped
         ports:
@@ -95,7 +99,9 @@ services:
             - superset_home:/app/superset_home
 
     superset-init:
-        image: apache/superset:latest
+        build:
+            context: .
+            dockerfile: Dockerfile.superset
         container_name: dq-superset-init
         environment:
             SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}

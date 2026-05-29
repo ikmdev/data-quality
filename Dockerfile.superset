@@ -1,0 +1,14 @@
+FROM apache/superset:latest
+
+# Switch to root for write permissions
+USER root
+
+# 1. Restore 'pip' inside the isolated virtual environment
+RUN /app/.venv/bin/python -m ensurepip --default-pip
+
+# 2. Install the driver using the newly restored pip
+# (The absolute path guarantees it installs where Superset can see it)
+RUN /app/.venv/bin/pip install --no-cache-dir psycopg2-binary
+
+# Switch back to the standard user
+USER superset

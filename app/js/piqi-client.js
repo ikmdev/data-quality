@@ -712,7 +712,7 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
                                 formattedHTML += formatMessageResults(responseData.scoringData.messageResults);
                             }
                             if (responseData.scoringData.dataClassResults) {
-                                formattedHTML += formatDataClassResults(runId, responseData.scoringData.dataClassResults, responseData.auditedMessage);
+                                formattedHTML += await formatDataClassResults(runId, responseData.scoringData.dataClassResults, responseData.auditedMessage);
                             }
                         }
                         if (responseData.auditedMessage) {
