@@ -115,7 +115,7 @@ databaseChangeLog:
 
                 -   sql:
                         dbms: postgresql
-                        sql: >
+                        sql: |
                             CREATE INDEX idx_piqi_queue_pending 
                             ON public.piqi_evaluation_queue (run_id, id) 
                             WHERE status = 'PENDING';
@@ -149,6 +149,9 @@ databaseChangeLog:
                                         foreignKeyName: fk_results_to_run
                                         references: piqi_evaluation_run(id)
                                         deleteCascade: true
+                            -   column:
+                                    name: message_id
+                                    type: VARCHAR(100)
                             -   column:
                                     name: data_class
                                     type: VARCHAR(50)
@@ -202,7 +205,7 @@ databaseChangeLog:
                 -   sql:
                         dbms: postgresql
                         splitStatements: false
-                        sql: >
+                        sql: |
                             DO $$
                             BEGIN
                               IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'web_anon') THEN
@@ -253,7 +256,7 @@ databaseChangeLog:
             changes:
                 -   sql:
                         dbms: postgresql
-                        sql: >
+                        sql: |
                             -- Allow the PostgREST connection user to switch to the web_anon role
                             GRANT web_anon TO dq;
 

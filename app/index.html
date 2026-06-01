@@ -64,11 +64,11 @@
                     <option value="Basic_VA_Lab">Basic VA Lab</option>
                 </select>
             </div>
-            <div class="form-group" hidden>
+            <div class="form-group">
                 <label for="dataProviderID">Data Provider ID:</label>
                 <input type="text" id="dataProviderID" disabled required>
             </div>
-            <div class="form-group" hidden>
+            <div class="form-group">
                 <label for="dataSourceID">Data Source ID:</label>
                 <input type="text" id="dataSourceID" disabled required>
             </div>
@@ -172,16 +172,20 @@
 
                 const unitsValue = values[18] || '';
                 const abFlagValue = values[19] || '';
+                const resValue = values[6] || '';
                 const labResult = {
                     test: {codings: [], text: values[3] || ''},
                     performingSite: {text: values[11] || ''},
                     specimenType: {text: values[9] || ''},
                     abnormalFlag: {
-                        codings: abFlagValue ? [{code: abFlagValue, system: 'AbFlag'}] : [],
-                        text: values[19] || ''
+                        codings: abFlagValue ? [{code: abFlagValue, display: abFlagValue, system: 'AbFlag'}] : [],
+                        text: abFlagValue
                     },
                     referenceRange: {text: (values[21] || '') + ' - ' + (values[20] || '')},
-                    resultValue: {text: values[6] || '', type: {text: 'PQ'}},
+                    resultValue: {
+                        codings: resValue ? [{ code: resValue, display: resValue, system: 'ResVal' }] : [],
+                        text: resValue
+                    },
                     resultUnit: {
                         codings: unitsValue ? [{code: unitsValue, display: unitsValue, system: 'UCUM'}] : [],
                         text: unitsValue

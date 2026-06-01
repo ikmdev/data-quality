@@ -374,6 +374,8 @@ async function formatDataClassResults(runId, dataClassResults, auditedMessage) {
         return '<p class="error">Unable to parse audited message for detailed assessment items.</p>';
     }
 
+    const messageId = parsedAuditedMessage.MessageID || parsedAuditedMessage.messageId;
+
     const activeResults = dataClassResults.filter(result => result.instanceCount > 0);
 
     if (activeResults.length === 0) {
@@ -444,6 +446,7 @@ async function formatDataClassResults(runId, dataClassResults, auditedMessage) {
                 if (runId) {
                     const savedData = await saveEvaluationResult(
                         runId,
+                        messageId,
                         result.dataClassName,
                         item.attributeName,
                         item.attributeValue,
@@ -888,7 +891,7 @@ async function finishEvaluationRun(runId, finalStatus, completedCount = 0, faile
     }
 }
 
-async function saveEvaluationResult(runId, dataClass, attributeName, attributeValue, assessment, status, reason, effect) {
+async function saveEvaluationResult(runId,messageId,  dataClass, attributeName, attributeValue, assessment, status, reason, effect) {
     try {
         const response = await fetch('http://localhost/postgrest/piqi_evaluation_results', {
             method: 'POST',
@@ -897,9 +900,10 @@ async function saveEvaluationResult(runId, dataClass, attributeName, attributeVa
                 'Prefer': 'return=representation'
             },
             body: JSON.stringify({
-                run_id: runId,                   // REQUIRED
-                data_class: dataClass,           // REQUIRED
-                attribute_name: attributeName,   // REQUIRED
+                run_id: runId,
+                message_id: messageId,
+                data_class: dataClass,
+                attribute_name: attributeName,
                 attribute_value: attributeValue,
                 assessment: assessment,
                 status: status,

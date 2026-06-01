@@ -50,6 +50,60 @@
             ]
         },
         {
+            "mnemonic": "AbFlag",
+            "codeList": [
+                {
+                    "dataCode": "H",
+                    "dataText": "High"
+                },
+                {
+                    "dataCode": "L",
+                    "dataText": "Low"
+                },
+                {
+                    "dataCode": "N",
+                    "dataText": "Normal"
+                }
+            ]
+        },
+        {
+            "mnemonic": "ResVal",
+            "codeList": [
+                {
+                    "dataCode": "POS",
+                    "dataText": "Positive"
+                },
+                {
+                    "dataCode": "NEG",
+                    "dataText": "Negative"
+                },
+                {
+                    "dataCode": "DET",
+                    "dataText": "Detected"
+                },
+                {
+                    "dataCode": "ND",
+                    "dataText": "Not Detected"
+                },
+                {
+                    "dataCode": "IND",
+                    "dataText": "Indeterminate"
+                },
+                {
+                    "dataCode": "SUS",
+                    "dataText": "Susceptible"
+                },
+                {
+                    "dataCode": "RES",
+                    "dataText": "Resistant"
+                },
+                {
+                    "dataCode": "INT",
+                    "dataText": "Intermediate"
+                }
+            ]
+        },
+        {
             "mnemonic": "UCUM",
             "codeList": [
                 {

@@ -24,3 +24,9 @@
 /reference_application/PIQI_Engine.Server/ReferenceData/.DS_Store
 /reference_application/PIQI_Engine.Server/.DS_Store
 /reference_application/.DS_Store
+nginx/.DS_Store
+utility/src/.DS_Store
+utility/.DS_Store
+piqi-pilot/.idea
+utility/node_modules/.bin
+utility/node_modules
