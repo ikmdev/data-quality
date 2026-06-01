@@ -154,7 +154,7 @@
       "samMnemonic": "ATTR_INEXTERNALLIST",
       "samNameOverride": "Result Value adheres to standard",
       "failureNameOverride": "Result Value doesn't adhere to standard",
-      "conditionalSam": "ATTR_ISPOPULATED",
+      "conditionalSam": "ATTR_ISNONNUMERIC",
       "scoringEffect": "Scoring",
       "scoringWeight": 1,
       "criticalityIndicator": false,
