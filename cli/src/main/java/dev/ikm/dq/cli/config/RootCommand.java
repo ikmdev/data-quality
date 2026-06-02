@@ -1,4 +1,4 @@
-package dev.ikm.dq.cli.command;
+package dev.ikm.dq.cli.config;
 
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
