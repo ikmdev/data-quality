@@ -258,6 +258,21 @@
       }
     },
     {
+      "mnemonic": "ATTR_ISNONNUMERIC",
+      "name": "Attribute Is Non-Numeric",
+      "FailName": "invalid non-numeric value",
+      "inputType": "ATR",
+      "prerequisiteSAMMnemonic": "ATTR_ISPOPULATED",
+      "HDQTDimensionMnemonic": "ACC_INVFMT",
+      "executionTypeMnemonic": "STANDALONE",
+      "createdDateTime": "2024-03-17T14:41:31.810",
+      "modifiedDateTime": "2025-03-24T10:47:05.323",
+      "Source": {
+        "Name": "PIQI Alliance",
+        "Mnemonic": "PIQI.ALLIANCE"
+      }
+    },
+    {
       "mnemonic": "ATTR_ISPASTDATE",
       "name": "Attribute Is Past Date",
       "FailName": "invalid past date",
