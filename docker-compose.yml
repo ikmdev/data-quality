@@ -183,7 +183,6 @@ services:
         volumes:
             # Mount the new config file (READ-ONLY)
             - ./hapi-fhir-config/application.properties:/app/config/application.properties:ro
-            - /Users/asills/Downloads/Loinc_2.72.zip:/tmp/Loinc_2.72.zip:ro
         depends_on:
             postgres:
                 condition: service_healthy
