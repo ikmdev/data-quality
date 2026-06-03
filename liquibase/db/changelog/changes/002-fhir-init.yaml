@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-hapi-schema
+      author: system-setup
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: CREATE SCHEMA IF NOT EXISTS hapi;
+      rollback:
+        - sql:
+            dbms: postgresql
+            sql: DROP SCHEMA IF EXISTS hapi CASCADE;
+
+  - changeSet:
+      id: grant-hapi-schema-permissions
+      author: system-setup
+      changes:
+        - sql:
+            dbms: postgresql
+            # Grant the user defined by the 'POSTGRES_USER' property all privileges on the new schema.
+            # The HAPI FHIR application needs this to manage its own tables.
+            sql: GRANT ALL ON SCHEMA hapi TO ${POSTGRES_USER};
+      rollback:
+        - sql:
+            dbms: postgresql
+            sql: REVOKE ALL ON SCHEMA hapi FROM ${POSTGRES_USER};

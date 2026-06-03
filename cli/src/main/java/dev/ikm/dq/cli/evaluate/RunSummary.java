@@ -1,9 +1,8 @@
 package dev.ikm.dq.cli.evaluate;
 
 import java.time.Duration;
-import java.time.Instant;
 
-public record EvaluationSummary(
+public record RunSummary(
 		String runName,
 		long totalEvaluations,
 		long totalValidEvaluations,

@@ -1,7 +1,7 @@
 /.env
 /cli/target
 /.idea
-/cli/src/main/resources/db/.DS_Store
+/liquibase/db/.DS_Store
 /cli/src/main/resources/.DS_Store
 /cli/src/main/.DS_Store
 /cli/src/.DS_Store
@@ -30,3 +30,4 @@ utility/.DS_Store
 piqi-pilot/.idea
 utility/node_modules/.bin
 utility/node_modules
+cli/logs

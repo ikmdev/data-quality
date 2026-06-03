@@ -24,7 +24,7 @@ public class DataParserService {
 	private record MessageWrapper(String id, String message) {
 	}
 
-	public Stream<PiqiRequest> parseCSVData(Path data, PiqiContext piqiContext) throws IOException {
+	public Stream<PiqiRequest> parseCSVData(Path data, RunContext runContext) throws IOException {
 		Reader reader = Files.newBufferedReader(data);
 		CSVFormat csvFormat = CSVFormat.DEFAULT
 				.builder()
@@ -39,14 +39,14 @@ public class DataParserService {
 				Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED | Spliterator.NONNULL);
 
 		return StreamSupport.stream(spliterator, false)
-				.map(csvRecord -> transformCSVToPiqiMessage(csvRecord, piqiContext))
+				.map(csvRecord -> transformCSVToPiqiMessage(csvRecord, runContext))
 				.map(messageWrapper ->
 						new PiqiRequest(
-								piqiContext.dataProviderId(),
-								piqiContext.dataSourceId(),
+								runContext.dataProviderId(),
+								runContext.dataSourceId(),
 								messageWrapper.id(),
-								piqiContext.modelMnemonic(),
-								piqiContext.rubricMnemonic(),
+								runContext.modelMnemonic(),
+								runContext.rubricMnemonic(),
 								messageWrapper.message()))
 				.onClose(() -> {
 					try {
@@ -71,7 +71,7 @@ public class DataParserService {
 	// 19: Abnormal
 	// 20: RefHigh
 	// 21: RefLow
-	private MessageWrapper transformCSVToPiqiMessage(CSVRecord csvRecord, PiqiContext piqiContext) {
+	private MessageWrapper transformCSVToPiqiMessage(CSVRecord csvRecord, RunContext runContext) {
 		final ObjectMapper objectMapper = new ObjectMapper();
 
 		String uniqueId = val(csvRecord, 0);
@@ -190,8 +190,8 @@ public class DataParserService {
 		patient.set("labResults", labResults);
 		messageData.set("patient", patient);
 
-		messageData.put("dataSourceID", piqiContext.dataSourceId());
-		messageData.put("dataProviderID", piqiContext.dataProviderId());
+		messageData.put("dataSourceID", runContext.dataSourceId());
+		messageData.put("dataProviderID", runContext.dataProviderId());
 		messageData.put("messageID", uniqueId);
 
 		return new MessageWrapper(uniqueId, messageData.toString());

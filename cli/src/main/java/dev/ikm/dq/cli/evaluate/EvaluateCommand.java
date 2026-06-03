@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
@@ -19,13 +21,13 @@ public class EvaluateCommand implements Runnable {
 	private final EvaluateService evaluateService;
 
 	@CommandLine.Option(
-			names = {"-r", "--run-name"},
+			names = {"-n", "--run-name"},
 			description = "Name of the run",
 			required = true)
 	private String runName;
 
 	@CommandLine.Option(
-			names = {"-s", "--rubric-mnemonic"},
+			names = {"-r", "--rubric-mnemonic"},
 			description = "Mnemonic of the rubric to use for evaluation",
 			required = true)
 	private String rubricMnemonic;
@@ -39,13 +41,13 @@ public class EvaluateCommand implements Runnable {
 	@CommandLine.Option(
 			names = {"-p", "--data-provider-id"},
 			description = "Identifier for the data provider (e.g., source system or team)",
-			required = true)
+			defaultValue = "")
 	private String dataProviderId;
 
 	@CommandLine.Option(
 			names = {"-s", "--data-source-id"},
 			description = "Identifier for the data source (e.g., database, table, or file)",
-			required = true)
+			defaultValue = "")
 	private String dataSourceId;
 
 	@CommandLine.Option(
@@ -59,6 +61,13 @@ public class EvaluateCommand implements Runnable {
 			description = "Output parquet file containing all evaluation result data",
 			required = true)
 	private Path outputParquet;
+
+	@CommandLine.Option(
+			names = {"--override"},
+			description = "Override existing output file if it already exists",
+			defaultValue = "false")
+	private boolean overrideOutput;
+
 
 
 	@Autowired
@@ -78,18 +87,26 @@ public class EvaluateCommand implements Runnable {
 
 		// Make sure output directory exists
 		if (outputParquet.toFile().exists()) {
-			throw new RuntimeException("Output file already exists: " + outputParquet);
+			if (!overrideOutput) {
+				throw new RuntimeException("Output file already exists: " + outputParquet);
+			} else {
+				try {
+					Files.delete(outputParquet);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
 		}
 
 		// Evaluate all data files with associated run name
-		PiqiContext piqiContext = new PiqiContext(
+		RunContext runContext = new RunContext(
 				runName,
 				rubricMnemonic,
 				modelMnemonic,
 				dataProviderId.isEmpty()? UUID.randomUUID().toString() : dataProviderId,
 				dataSourceId.isEmpty()? UUID.randomUUID().toString() : dataSourceId
 		);
-		EvaluationSummary summary = evaluateService.evaluateData(piqiContext, data, outputParquet);
+		RunSummary summary = evaluateService.performEvaluationRun(runContext, data, outputParquet);
 
 		// Log summary of evaluation run
 		LOG.info("Evaluation completed for run '{}'", runName);

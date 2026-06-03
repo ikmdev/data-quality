@@ -12,6 +12,7 @@ services:
             - pgadmin
             - superset
             - piqi
+            - fhir
 
     postgres:
         image: postgres:16
@@ -20,13 +21,14 @@ services:
         ports:
             - "${POSTGRES_PORT:-5432}:5432"
         environment:
-            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_DB: postgres
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         volumes:
-            - postgres_data_v2:/var/lib/postgresql/data
+            - ./postgres/init:/docker-entrypoint-initdb.d
+            - postgres_data:/var/lib/postgresql/data
         healthcheck:
-            test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+            test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres" ]
             interval: 5s
             timeout: 5s
             retries: 5
@@ -37,7 +39,7 @@ services:
         depends_on:
             postgres:
                 condition: service_started
-            liquibase:
+            liquibase-dq:
                 condition: service_completed_successfully
         environment:
             PGRST_DB_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -63,21 +65,63 @@ services:
         volumes:
             - pgadmin_data:/var/lib/pgadmin
 
-    liquibase:
+    liquibase-dq:
         image: liquibase/liquibase:4.25.0-alpine
-        container_name: dq-liquibase
+        container_name: dq-liquibase-dq  # Changed container name
         depends_on:
-            - postgres
+            postgres:
+                condition: service_healthy
         volumes:
-            - ./cli/src/main/resources/db/changelog:/liquibase/changelog:ro
+            - ./liquibase/db/changelog:/liquibase/changelog:ro
         command:
           [
-              "--url=${LIQUIBASE_CONN_STRING}",
-              "--username=${LIQUIBASE_USERNAME}",
-              "--password=${LIQUIBASE_PASSWORD}",
+              "--url=jdbc:postgresql://postgres:5432/dq", # This should point to your data_quality DB
+              "--username=${POSTGRES_USER}",
+              "--password=${POSTGRES_PASSWORD}",
               "--changeLogFile=/changelog/db.changelog-master.yaml",
               "update"
           ]
+
+    # ADD this NEW service to manage the fhir database
+    liquibase-fhir:
+        image: liquibase/liquibase:4.25.0-alpine
+        container_name: dq-liquibase-fhir # New container name
+        environment:
+            - JAVA_OPTS=-DPOSTGRES_USER=${POSTGRES_USER}
+        depends_on:
+            postgres:
+                condition: service_healthy
+        volumes:
+            - ./liquibase/db/changelog:/liquibase/changelog:ro
+        command:
+          [
+              "--url=jdbc:postgresql://postgres:5432/fhir", # Points to the FHIR database
+              "--username=${POSTGRES_USER}",
+              "--password=${POSTGRES_PASSWORD}",
+              "--changeLogFile=/changelog/db.changelog-fhir.yaml", # Uses a NEW master file
+              "update"
+          ]
+
+
+
+    #    liquibase:
+    #        image: liquibase/liquibase:4.25.0-alpine
+    #        container_name: dq-liquibase
+    #        # 1. Add this environment section to pass the property to Java
+    #        environment:
+    #            - JAVA_OPTS=-DPOSTGRES_USER=${POSTGRES_USER}
+    #        depends_on:
+    #            - postgres
+    #        volumes:
+    #            - ./liquibase/db/changelog:/liquibase/changelog:ro
+    #        command:
+    #          [
+    #              "--url=${LIQUIBASE_CONN_STRING}",
+    #              "--username=${LIQUIBASE_USERNAME}",
+    #              "--password=${LIQUIBASE_PASSWORD}",
+    #              "--changeLogFile=/changelog/db.changelog-master.yaml",
+    #              "update"
+    #          ]
 
     superset:
         build:
@@ -145,7 +189,28 @@ services:
         depends_on:
             - piqi
 
+    fhir:
+        image: hapiproject/hapi:latest
+        container_name: hapi-fhir
+        ports:
+            - "8181:8080"
+        # REMOVE all the HAPI_FHIR_... environment variables
+        environment:
+            - JAVA_OPTS=-Xms4g -Xmx12g
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        volumes:
+            # Mount the new config file (READ-ONLY)
+            - ./hapi-fhir-config/application.properties:/app/config/application.properties:ro
+        depends_on:
+            postgres:
+                condition: service_healthy
+            # Make fhir wait for its database to be ready
+            liquibase-fhir:
+                condition: service_completed_successfully
+        restart: unless-stopped
+
 volumes:
-    postgres_data_v2:
+    postgres_data:
     pgadmin_data:
     superset_home:

@@ -1,0 +1,6 @@
+# /Users/asills/code/ikm/data-quality/liquibase/db/changelog/db.changelog-fhir.yaml
+
+databaseChangeLog:
+  - include:
+      file: changes/002-fhir-init.yaml
+      relativeToChangelogFile: true

@@ -3,11 +3,13 @@ package dev.ikm.dq.cli.evaluate;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 @Service
 public class ParquetService implements AutoCloseable {
@@ -16,9 +18,17 @@ public class ParquetService implements AutoCloseable {
 	private PreparedStatement insertStmt;
 	private Path parquetOutputPath;
 
+
+
 	public void init(Path parquetOutputPath) throws SQLException {
 		this.parquetOutputPath = parquetOutputPath;
-		this.connection = DriverManager.getConnection("jdbc:duckdb:");
+		Path dbFile = Paths.get(System.getProperty("user.dir"), "target").resolve("evaluation_results.duckdb");
+
+		if (dbFile.toFile().exists()) {
+			dbFile.toFile().delete();
+		}
+
+		this.connection = DriverManager.getConnection("jdbc:duckdb:" + dbFile);
 		connection.setAutoCommit(false);
 
 		try (Statement st = connection.createStatement()) {
@@ -40,6 +50,12 @@ public class ParquetService implements AutoCloseable {
 		this.insertStmt = connection.prepareStatement("""
 				INSERT INTO evaluation_results VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 				""");
+	}
+
+	public void append(List<EvaluationResult> evaluationResults) throws SQLException {
+		for (EvaluationResult result : evaluationResults) {
+			append(result);
+		}
 	}
 
 	public void append(EvaluationResult result) throws SQLException {

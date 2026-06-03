@@ -677,6 +677,8 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
                 messageData: JSON.stringify(msg)
             };
 
+            console.log(requestBody);
+
             try {
                 console.log(`Sending evaluation ${i + 1} of ${messages.length} to:`, piqiUrl);
 

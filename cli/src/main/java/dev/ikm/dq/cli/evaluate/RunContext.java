@@ -1,6 +1,6 @@
 package dev.ikm.dq.cli.evaluate;
 
-public record PiqiContext(
+public record RunContext(
 		String runName,
 		String rubricMnemonic,
 		String modelMnemonic,
