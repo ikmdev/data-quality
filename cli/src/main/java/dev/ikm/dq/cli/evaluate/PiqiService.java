@@ -157,8 +157,6 @@ public class PiqiService {
                 }
             }
         }
-
-        LOG.info("Extracted {} evaluation results from PIQI Engine response.", results.size());
         return results;
     }
 

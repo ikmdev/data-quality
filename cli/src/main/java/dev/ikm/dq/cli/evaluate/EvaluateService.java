@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 public class EvaluateService {
 
 	Logger LOG = LoggerFactory.getLogger(EvaluateService.class);
-	private static AtomicLong counter = new AtomicLong(0);
+	private static final long LOG_EVERY = 10_000;
 
 	private final DatabaseService databaseService;
 	private final DataParserService dataParserService;
@@ -37,8 +37,11 @@ public class EvaluateService {
 	CompletionService<List<EvaluationResult>> completion = new ExecutorCompletionService<>(pool);
 
 	private static final int BATCH_SIZE = 25000;
-	int maxConcurrentRequests = 300;
+	int maxConcurrentRequests = 64;
 	Semaphore inFlight = new Semaphore(maxConcurrentRequests);
+	private final AtomicLong submittedCount = new AtomicLong(0);
+	private final AtomicLong completedCount = new AtomicLong(0);
+	private final AtomicLong invalidCount = new AtomicLong(0);
 
 	@Autowired
 	public EvaluateService(DatabaseService databaseService,
@@ -55,16 +58,20 @@ public class EvaluateService {
 	                                       List<Path> data,
 	                                       Path outputParquet) {
 		// Initialize evaluation summary values
-		long totalEvaluations = 0;
-		long totalValidEvaluations = 0;
-		long totalInvalidEvaluations = 0;
+		submittedCount.set(0);
+		completedCount.set(0);
+		invalidCount.set(0);
+
 		Instant startTime = Instant.now();
+		LOG.info("Starting evaluation run '{}' with {} file(s). Concurrency={}, BatchSize={}",
+				runContext.runName(), data.size(), maxConcurrentRequests, BATCH_SIZE);
 
 		try {
 			long runId = 0;
 			parquetService.init(outputParquet);
 
 			for (Path datum : data) {
+				LOG.info("Processing file: {}", datum.getFileName());
 				try (Stream<PiqiRequest> piqiRequests = dataParserService.parseCSVData(datum, runContext)) {
 					Iterator<PiqiRequest> iterator = piqiRequests.iterator();
 
@@ -78,28 +85,34 @@ public class EvaluateService {
 
 						completion.submit(() -> {
 							try {
-								counter.incrementAndGet();
 								return piqiService.sendRequestToPiqiEngine(runId, piqiRequest);
+							} catch (Exception ex) {
+								invalidCount.incrementAndGet();
+								LOG.warn("PIQI request failed for requestId={} (count invalid and continue): {}",
+										piqiRequest.messageID(), ex.toString());
+								return List.of();
 							} finally {
 								// Always release semaphore to prevent pool starvation
 								inFlight.release();
 							}
 						});
 
+						// Increment Submitted Count
+						submittedCount.incrementAndGet();
 						submittedInBatch++;
 
 						// 2. Intermittent draining: Drain when batch is full to control memory footprint
 						if (submittedInBatch >= BATCH_SIZE) {
-							drainCompletedResults(submittedInBatch);
+							drainCompletedResults(submittedInBatch, startTime);
 							submittedInBatch = 0; // Reset batch tracker
 						}
 					}
 
 					// 3. Clean up remaining tasks for the current file
 					if (submittedInBatch > 0) {
-						drainCompletedResults(submittedInBatch);
+						drainCompletedResults(submittedInBatch, startTime);
 					}
-
+					LOG.info("Finished processing file: {}", datum.getFileName());
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					throw new RuntimeException("Processing interrupted while reading file: " + datum, e);
@@ -113,25 +126,31 @@ public class EvaluateService {
 			throw new RuntimeException("Error processing data files", e);
 		} catch (ExecutionException e) {
 			Thread.currentThread().interrupt();
-			LOG.error("TOTAL PROCESSED: {}", counter.get());
 			throw new RuntimeException("Async execution failed during file processing", e);
 		} catch (SQLException e) {
 			throw new RuntimeException("Database error during orchestration", e);
 		} finally {
 			pool.shutdown();
 		}
+
+		long totalSubmitted = submittedCount.get();
+		long totalInvalid = invalidCount.get();
+		long totalCompleted = completedCount.get();
+		// A "valid" evaluation is one that completed without error.
+		long totalValid = totalCompleted - totalInvalid;
+
 		return new RunSummary(
 				runContext.runName(),
-				totalEvaluations,
-				totalValidEvaluations,
-				totalInvalidEvaluations,
+				totalSubmitted, // Total attempts
+				totalValid,
+				totalInvalid,
 				Duration.between(startTime, Instant.now()));
 	}
 
 	/**
 	 * Safely blocks and drains an exact number of completed futures, streaming them directly to Parquet.
 	 */
-	private void drainCompletedResults(long tasksToDrain) throws InterruptedException, ExecutionException, SQLException {
+	private void drainCompletedResults(long tasksToDrain, Instant startTime) throws InterruptedException, ExecutionException, SQLException {
 		for (long i = 0; i < tasksToDrain; i++) {
 			// completion.take() blocks until ANY background task finishes execution
 			Future<List<EvaluationResult>> completedFuture = completion.take();
@@ -139,6 +158,18 @@ public class EvaluateService {
 
 			// Immediately stream to disk storage, allowing GC to collect the Result object
 			parquetService.append(result);
+
+			// --- INCREMENT COMPLETED COUNT & LOG PROGRESS ---
+			long currentCompleted = completedCount.incrementAndGet();
+			logProgressIfNeeded(currentCompleted, submittedCount.get(), invalidCount.get(), startTime);
+		}
+	}
+
+	private void logProgressIfNeeded(long completed, long submitted, long invalid, Instant startTime) {
+		if (completed % LOG_EVERY == 0) {
+			long valid = completed - invalid;
+			LOG.info("Progress: submitted={}, completed={}, valid={}, invalid={}, inFlight={}",
+					submitted, completed, valid, invalid, inFlight.availablePermits());
 		}
 	}
 }
