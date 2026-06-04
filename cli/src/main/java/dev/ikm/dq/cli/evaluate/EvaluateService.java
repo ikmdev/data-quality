@@ -1,5 +1,6 @@
 package dev.ikm.dq.cli.evaluate;
 
+import dev.ikm.dq.cli.run.RunService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
@@ -28,7 +30,7 @@ public class EvaluateService {
 	Logger LOG = LoggerFactory.getLogger(EvaluateService.class);
 	private static final long LOG_EVERY = 10_000;
 
-	private final DatabaseService databaseService;
+	private final RunService runService;
 	private final DataParserService dataParserService;
 	private final PiqiService piqiService;
 	private final ParquetService parquetService;
@@ -37,18 +39,18 @@ public class EvaluateService {
 	CompletionService<List<EvaluationResult>> completion = new ExecutorCompletionService<>(pool);
 
 	private static final int BATCH_SIZE = 25000;
-	int maxConcurrentRequests = 64;
+	int maxConcurrentRequests = 16;
 	Semaphore inFlight = new Semaphore(maxConcurrentRequests);
 	private final AtomicLong submittedCount = new AtomicLong(0);
 	private final AtomicLong completedCount = new AtomicLong(0);
 	private final AtomicLong invalidCount = new AtomicLong(0);
 
 	@Autowired
-	public EvaluateService(DatabaseService databaseService,
+	public EvaluateService(RunService runService,
 	                       DataParserService dataParserService,
 	                       PiqiService piqiService,
 	                       ParquetService parquetService) {
-		this.databaseService = databaseService;
+		this.runService = runService;
 		this.dataParserService = dataParserService;
 		this.piqiService = piqiService;
 		this.parquetService = parquetService;
@@ -66,8 +68,14 @@ public class EvaluateService {
 		LOG.info("Starting evaluation run '{}' with {} file(s). Concurrency={}, BatchSize={}",
 				runContext.runName(), data.size(), maxConcurrentRequests, BATCH_SIZE);
 
+		AtomicLong runId = new AtomicLong(-1);
+		RunSummary summary = null;
+
 		try {
-			long runId = 0;
+			// CREATE THE RUN RECORD AND GET THE ID
+			runId.set(runService.createRun(runContext));
+			LOG.info("Created run record with ID: {}", runId);
+
 			parquetService.init(outputParquet);
 
 			for (Path datum : data) {
@@ -85,7 +93,7 @@ public class EvaluateService {
 
 						completion.submit(() -> {
 							try {
-								return piqiService.sendRequestToPiqiEngine(runId, piqiRequest);
+								return piqiService.sendRequestToPiqiEngine(runId.get(), piqiRequest);
 							} catch (Exception ex) {
 								invalidCount.incrementAndGet();
 								LOG.warn("PIQI request failed for requestId={} (count invalid and continue): {}",
@@ -131,20 +139,45 @@ public class EvaluateService {
 			throw new RuntimeException("Database error during orchestration", e);
 		} finally {
 			pool.shutdown();
+			try {
+				// Wait for up to 1 hour for the pool to terminate
+				if (!pool.awaitTermination(1, TimeUnit.HOURS)) {
+					LOG.warn("Executor pool did not terminate in the allotted time.");
+					// Optionally force shutdown
+					pool.shutdownNow();
+				}
+			} catch (InterruptedException e) {
+				LOG.error("Interrupted while waiting for pool termination.", e);
+				// Force shutdown on interrupt
+				pool.shutdownNow();
+				Thread.currentThread().interrupt();
+			}
+
+			// Now, close the ParquetService to release its resources
+			try {
+				parquetService.close();
+			} catch (Exception e) {
+				LOG.error("Failed to close ParquetService cleanly.", e);
+			}
 		}
 
-		long totalSubmitted = submittedCount.get();
-		long totalInvalid = invalidCount.get();
-		long totalCompleted = completedCount.get();
-		// A "valid" evaluation is one that completed without error.
-		long totalValid = totalCompleted - totalInvalid;
-
-		return new RunSummary(
+		// CREATE THE SUMMARY AND UPDATE THE RUN RECORD
+		summary = new RunSummary(
 				runContext.runName(),
-				totalSubmitted, // Total attempts
-				totalValid,
-				totalInvalid,
+				submittedCount.get(),
+				completedCount.get() - invalidCount.get(),
+				invalidCount.get(),
 				Duration.between(startTime, Instant.now()));
+
+		if (runId.get() != -1) {
+			try {
+				LOG.info("Completing run record {}...", runId);
+				runService.completeRun(runId.get(), summary);
+			} catch (SQLException e) {
+				LOG.error("Failed to update final status for run ID: {}", runId, e);
+			}
+		}
+		return summary;
 	}
 
 	/**

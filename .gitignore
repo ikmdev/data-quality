@@ -32,3 +32,5 @@ utility/node_modules/.bin
 utility/node_modules
 cli/logs
 reference_application/PIQI_Engine.Server/Logs
+data/.DS_Store
+data

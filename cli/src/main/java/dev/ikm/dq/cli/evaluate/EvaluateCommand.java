@@ -112,8 +112,8 @@ public class EvaluateCommand implements Runnable {
 		LOG.info("Evaluation completed for run '{}'", runName);
 		LOG.info("Data files: {}", data);
 		LOG.info("Total evaluations performed: {}", summary.totalEvaluations());
-		LOG.info("Total valid evaluations: {}", summary.totalValidEvaluations());
-		LOG.info("Total failed records: {}", summary.totalInvalidEvaluations());
+		LOG.info("Total completed evaluations: {}", summary.totalValidEvaluations());
+		LOG.info("Total failed evaluations: {}", summary.totalInvalidEvaluations());
 		LOG.info("Duration: {}", summary.evaluationDuration());
 		LOG.info("Failure rate: {}%", String.format("%.2f", summary.failureRate() * 100));
 	}
