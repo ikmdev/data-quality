@@ -1,5 +1,5 @@
 // Path: cli/src/main/java/dev/ikm/dq/cli/evaluate/PiqiResponseDtos.java
-package dev.ikm.dq.cli.evaluate;
+package dev.ikm.dq.cli.piqi;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

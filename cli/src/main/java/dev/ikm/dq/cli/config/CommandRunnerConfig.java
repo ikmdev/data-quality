@@ -1,7 +1,5 @@
 package dev.ikm.dq.cli.config;
 
-import dev.ikm.dq.cli.evaluate.EvaluateCommand;
-import dev.ikm.dq.cli.ingest.IngestCommand;
 import dev.ikm.dq.cli.pipeline.PipelineCommand;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.CommandLineRunner;
@@ -15,13 +13,9 @@ public class CommandRunnerConfig {
 	@Bean
 	CommandLineRunner commandLineRunner(ApplicationArguments appArgs,
 	                                    RootCommand rootCommand,
-										IngestCommand ingestCommand,
-	                                    EvaluateCommand evaluateCommand,
 										PipelineCommand pipelineCommand) {
 		return _ -> {
 			int exitCode = new CommandLine(rootCommand)
-					.addSubcommand(ingestCommand)
-					.addSubcommand(evaluateCommand)
 					.addSubcommand(pipelineCommand)
 					.execute(appArgs.getSourceArgs());
 			System.exit(exitCode);

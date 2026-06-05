@@ -5,7 +5,6 @@ import java.nio.file.Path;
 public record IngestContext(
 		Path duckDBScript,
 		Path sourceFile,
-		long runId,
 		String sourceId,
 		String providerId) {
 }

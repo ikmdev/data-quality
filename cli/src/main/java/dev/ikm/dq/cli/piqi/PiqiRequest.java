@@ -1,4 +1,4 @@
-package dev.ikm.dq.cli.evaluate;
+package dev.ikm.dq.cli.piqi;
 
 public record PiqiRequest(
 		String dataProviderID,

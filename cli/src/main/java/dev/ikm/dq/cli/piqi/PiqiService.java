@@ -1,6 +1,7 @@
-package dev.ikm.dq.cli.evaluate;
+package dev.ikm.dq.cli.piqi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.ikm.dq.cli.evaluate.EvaluationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static dev.ikm.dq.cli.evaluate.PiqiResponseDtos.*;
+import static dev.ikm.dq.cli.piqi.PiqiResponseDtos.*;
 
 @Service
 public class PiqiService {

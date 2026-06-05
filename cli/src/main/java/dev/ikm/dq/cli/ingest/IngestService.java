@@ -25,38 +25,6 @@ public class IngestService {
 	private final Path dbFile = Paths.get(System.getProperty("user.dir"), "target").resolve("evaluation_queue.duckdb");
 	private final static long BATCH_SIZE = 8_192; // Adjust if needed (multiples of 2,048)
 
-//	private Connection connection;
-//
-//	public void init() throws SQLException {
-//
-//		LOG.info("Initializing evaluation_queue  DuckDB database at: {}", dbFile.toAbsolutePath());
-//
-//		if (dbFile.toFile().exists()) {
-//			LOG.warn("Deleting existing evaluation_queue database file.");
-//			dbFile.toFile().delete();
-//		}
-//
-//		this.connection = DriverManager.getConnection("jdbc:duckdb:" + dbFile);
-//		connection.setAutoCommit(false);
-//
-//		try (Statement st = connection.createStatement()) {
-//			st.execute("""
-//					CREATE SEQUENCE IF NOT EXISTS seq_eval_queue_id;
-//
-//					CREATE TABLE IF NOT EXISTS evaluation_queue (
-//						id BIGINT PRIMARY KEY DEFAULT nextval('seq_eval_queue_id'),
-//						run_id BIGINT,
-//						payload_json JSON,
-//						status VARCHAR DEFAULT 'PENDING',
-//						retry_count INTEGER DEFAULT 0,
-//						error_message VARCHAR,
-//					 	created_at TIMESTAMP DEFAULT current_timestamp
-//					)
-//					""");
-//		}
-//		LOG.debug("Created 'evaluation_queue' table in DuckDB.");
-//	}
-
 	public IngestSummary performDataIngestion(IngestContext ingestContext, Consumer<VectorSchemaRoot> dataConsumer) {
 		long totalProcessed = 0;
 
