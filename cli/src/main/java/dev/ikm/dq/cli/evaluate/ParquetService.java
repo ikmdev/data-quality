@@ -18,6 +18,7 @@ import java.util.List;
 public class ParquetService implements AutoCloseable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ParquetService.class);
+	private final Path dbFile = Paths.get(System.getProperty("user.dir"), "target").resolve("evaluation_results.duckdb");
 	private static final int JDBC_BATCH_SIZE = 50_000;
 
 	private Connection connection;
@@ -27,12 +28,11 @@ public class ParquetService implements AutoCloseable {
 
 	public void init(Path parquetOutputPath) throws SQLException {
 		this.parquetOutputPath = parquetOutputPath;
-		Path dbFile = Paths.get(System.getProperty("user.dir"), "target").resolve("evaluation_results.duckdb");
 
-		LOG.info("Initializing temporary DuckDB database at: {}", dbFile.toAbsolutePath());
+		LOG.info("Initializing evaluation_results DuckDB database at: {}", dbFile.toAbsolutePath());
 
 		if (dbFile.toFile().exists()) {
-			LOG.warn("Deleting existing temporary database file.");
+			LOG.warn("Deleting existing evaluation_results database file.");
 			dbFile.toFile().delete();
 		}
 

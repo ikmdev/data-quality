@@ -19,6 +19,7 @@
 		<spring-dotenv.version>5.1.0</spring-dotenv.version>
 		<commons-csv.version>1.14.1</commons-csv.version>
 		<duckdb_jdbc.version>1.5.3.0</duckdb_jdbc.version>
+		<arrow-vector.version>19.0.0</arrow-vector.version>
 
 		<java.version>25</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,6 +49,25 @@
 				<groupId>org.duckdb</groupId>
 				<artifactId>duckdb_jdbc</artifactId>
 				<version>${duckdb_jdbc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.arrow</groupId>
+				<artifactId>arrow-vector</artifactId>
+				<version>${arrow-vector.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.arrow</groupId>
+				<artifactId>arrow-memory-netty</artifactId>
+				<version>${arrow-vector.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.arrow</groupId>
+				<artifactId>arrow-c-data</artifactId>
+				<version>${arrow-vector.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -97,6 +117,22 @@
 		<dependency>
 			<groupId>org.duckdb</groupId>
 			<artifactId>duckdb_jdbc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.arrow</groupId>
+			<artifactId>arrow-vector</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.arrow</groupId>
+			<artifactId>arrow-memory-netty</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.arrow</groupId>
+			<artifactId>arrow-c-data</artifactId>
 		</dependency>
 	</dependencies>
 
