@@ -18,8 +18,6 @@ public class EvaluateCommand implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EvaluateCommand.class);
 
-	private final EvaluateService evaluateService;
-
 	@CommandLine.Option(
 			names = {"-n", "--run-name"},
 			description = "Name of the run",
@@ -68,7 +66,7 @@ public class EvaluateCommand implements Runnable {
 			defaultValue = "false")
 	private boolean overrideOutput;
 
-
+	private final EvaluateService evaluateService;
 
 	@Autowired
 	public EvaluateCommand(EvaluateService evaluateService) {

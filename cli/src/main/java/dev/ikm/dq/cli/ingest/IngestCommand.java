@@ -22,13 +22,6 @@ public class IngestCommand implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IngestCommand.class);
 
-	private final IngestService ingestService;
-
-	@Autowired
-	public IngestCommand(IngestService ingestService) {
-		this.ingestService = ingestService;
-	}
-
 	@CommandLine.Option(
 			names = {"--source-data-file"},
 			description = "Source data to be ingested (e.g., CSV, JSON, Parquet)",
@@ -66,6 +59,13 @@ public class IngestCommand implements Runnable {
 			description = "Override existing output file if it already exists",
 			defaultValue = "false")
 	private boolean overrideOutput;
+
+	private final IngestService ingestService;
+
+	@Autowired
+	public IngestCommand(IngestService ingestService) {
+		this.ingestService = ingestService;
+	}
 
 	@Override
 	public void run() {
