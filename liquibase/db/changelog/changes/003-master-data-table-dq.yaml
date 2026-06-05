@@ -1,6 +1,6 @@
 databaseChangeLog:
     - changeSet:
-          id: create-master-data-table
+          id: create-source-lab-data-table
           author: ai-agent
           changes:
               - createTable:
@@ -74,7 +74,7 @@ databaseChangeLog:
                               type: DECIMAL(10,4)
                         - column:
                               name: RefLow
-                              type: DECIMAL(10,4)
+                              type: VARCHAR(50)
                         - column:
                               name: Device_ID
-                              type: DECIMAL(20,4)
+                              type: VARCHAR(50)
