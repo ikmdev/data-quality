@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -22,11 +20,9 @@ public class IngestService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IngestService.class);
 
-	private final Path dbFile = Paths.get(System.getProperty("user.dir"), "target").resolve("evaluation_queue.duckdb");
 	private final static long BATCH_SIZE = 8_192; // Adjust if needed (multiples of 2,048)
 
-	public IngestSummary performDataIngestion(IngestContext ingestContext, Consumer<VectorSchemaRoot> dataConsumer) {
-		long totalProcessed = 0;
+	public void performDataIngestion(IngestContext ingestContext, Consumer<VectorSchemaRoot> dataConsumer) {
 
 		// 1. Memory allocator for Arrow (tied to lifecycle of connection)
 		try (BufferAllocator allocator = new RootAllocator();
@@ -50,15 +46,11 @@ public class IngestService {
 					while (reader.loadNextBatch()) {
 						VectorSchemaRoot root = reader.getVectorSchemaRoot();
 						dataConsumer.accept(root);
-						totalProcessed += root.getRowCount();
 					}
 				}
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("DuckDB ingestion pipeline failed.", e);
 		}
-
-		// Return summary (assuming you want to add totalProcessed to it later)
-		return new IngestSummary(totalProcessed);
 	}
 }

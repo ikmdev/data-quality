@@ -81,5 +81,5 @@ SELECT json_object(
                'dataSourceID', '${SOURCE_ID}',
                'dataProviderID', '${PROVIDER_ID}',
                'messageID', Unique_ID
-       ) AS payload_json
+       ) AS payload_json, Unique_ID AS messageId
 FROM read_csv_auto('${SOURCE_FILE}', all_varchar = true);

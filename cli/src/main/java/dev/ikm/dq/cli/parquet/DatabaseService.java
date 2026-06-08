@@ -5,10 +5,9 @@ import org.duckdb.DuckDBAppender;
 import org.duckdb.DuckDBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,29 +15,35 @@ import java.sql.Statement;
 import java.util.List;
 
 @Service
-public class ParquetService implements AutoCloseable {
+public class DatabaseService implements AutoCloseable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ParquetService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DatabaseService.class);
 
 	private Connection connection;
 	private DuckDBAppender appender;
-	private Path parquetOutputPath;
 
-	public void init(Path parquetOutputPath) throws SQLException {
-		this.parquetOutputPath = parquetOutputPath;
+	@Value("${db.name}")
+	String pgDbName;
 
-		// 1. Delete output file if it somehow exists to prevent append conflicts initially
-		if (Files.exists(parquetOutputPath)) {
-			try {
-				Files.delete(parquetOutputPath);
-			} catch (Exception ignored) {
-			}
-		}
+	@Value("${db.user}")
+	String pgUser;
 
-		// 2. Initialize IN-MEMORY DuckDB instance (No massive lock files needed on disk)
+	@Value("${db.password}")
+	String pgPassword;
+
+	@Value("${db.host}")
+	String pgHost;
+
+	@Value("${db.port}")
+	int pgPort;
+
+
+	public void init() throws SQLException {
+
+		// 1. Initialize IN-MEMORY DuckDB instance (No massive lock files needed on disk)
 		this.connection = DriverManager.getConnection("jdbc:duckdb:");
 
-		// 3. We still create a table definition because the Appender needs a schema to latch onto
+		// 2. We still create a table definition because the Appender needs a schema to latch onto
 		try (Statement st = connection.createStatement()) {
 			st.execute("""
 					CREATE TABLE evaluation_results (
@@ -53,8 +58,23 @@ public class ParquetService implements AutoCloseable {
 					    effect VARCHAR
 					)
 					""");
+			LOG.debug("Created schema 'evaluation_results' in in-memory DuckDB.");
+
+
+			// Step 3: Install and Load the Postgres extension
+			st.execute("INSTALL postgres;");
+			st.execute("LOAD postgres;");
+
+			// Step 4: Attach the Postgres database!
+			// (duckdb will name the remote connection 'pg_db')
+			String attachCommand = String.format(
+					"ATTACH 'dbname=%s user=%s password=%s host=%s port=%s' AS pg_db (TYPE POSTGRES);",
+					pgDbName, pgUser, pgPassword, pgHost, pgPort
+			);
+			st.execute(attachCommand);
+
+			LOG.info("Successfully attached DuckDB to remote Postgres database: {}", pgDbName);
 		}
-		LOG.debug("Created schema 'evaluation_results' in in-memory DuckDB.");
 
 		// 4. Unwrap standard JDBC connection to unlock DuckDB-specific features
 		DuckDBConnection duckDBConn = (DuckDBConnection) connection;
@@ -82,10 +102,7 @@ public class ParquetService implements AutoCloseable {
 		// chunks and flushes when optimal, removing the need for JDBC_BATCH_SIZE counting.
 	}
 
-	/**
-	 * Flush Appender memory buffers to the database, then export to parquet file.
-	 */
-	public void exportToParquet() throws SQLException {
+	public void insertIntoPostgres() throws SQLException {
 		// 1. Close the appender — this forces any remaining C++ memory buffers to flush to the table
 		if (appender != null) {
 			LOG.debug("Flushing DuckDB Appender buffers...");
@@ -94,12 +111,16 @@ public class ParquetService implements AutoCloseable {
 		}
 
 		// 2. Export the highly optimized table out to the Parquet file
-		String path = parquetOutputPath.toAbsolutePath().toString();
-		LOG.info("Exporting database records to Parquet file: {}", path);
+		LOG.info("Inserting database records to Postgres piqi_evaluation_results table");
 		try (Statement st = connection.createStatement()) {
-			st.execute("COPY evaluation_results TO '" + path + "' (FORMAT PARQUET)");
+			st.execute("""
+					    INSERT INTO pg_db.public.piqi_evaluation_results (
+					        run_id, message_id, data_class, attribute_name, attribute_value, assessment, status, reason, effect
+					    )
+					    SELECT * FROM evaluation_results;
+					""");
 		}
-		LOG.info("Successfully exported data to Parquet.");
+		LOG.info("Successfully inserted data into Postgres.");
 	}
 
 	@Override

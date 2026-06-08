@@ -1,6 +1,6 @@
 package dev.ikm.dq.cli.evaluate;
 
-import dev.ikm.dq.cli.parquet.ParquetService;
+import dev.ikm.dq.cli.parquet.DatabaseService;
 import dev.ikm.dq.cli.piqi.PiqiRequest;
 import dev.ikm.dq.cli.piqi.PiqiService;
 import dev.ikm.dq.cli.run.RunContext;
@@ -22,108 +22,119 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
-public class EvaluateService {
+public class EvaluateService implements AutoCloseable {
 
 	Logger LOG = LoggerFactory.getLogger(EvaluateService.class);
 	private static final long LOG_EVERY = 10_000;
 
 	private final PiqiService piqiService;
-	private final ParquetService parquetService;
+	private final DatabaseService databaseService;
 
-	ExecutorService pool = Executors.newVirtualThreadPerTaskExecutor();
-	CompletionService<List<EvaluationResult>> completion = new ExecutorCompletionService<>(pool);
+	ExecutorService pool;
+	CompletionService<List<EvaluationResult>> completion;
 
-	private static final int BATCH_SIZE = 25000;
 	int maxConcurrentRequests = 16;
 	Semaphore inFlight = new Semaphore(maxConcurrentRequests);
-	private final AtomicLong submittedCount = new AtomicLong(0);
-	private final AtomicLong completedCount = new AtomicLong(0);
-	private final AtomicLong invalidCount = new AtomicLong(0);
+	private final AtomicReference<RunContext> runContext;
+	private final AtomicLong submittedCount;
+	private final AtomicLong completedCount;
+	private final AtomicLong invalidCount;
+	private final AtomicReference<Instant> startTime;
 
 	@Autowired
-	public EvaluateService(PiqiService piqiService, ParquetService parquetService) {
+	public EvaluateService(PiqiService piqiService, DatabaseService databaseService) {
 		this.piqiService = piqiService;
-		this.parquetService = parquetService;
+		this.databaseService = databaseService;
+
+		this.pool = Executors.newVirtualThreadPerTaskExecutor();
+		this.completion = new ExecutorCompletionService<>(pool);
+
+		this.runContext = new AtomicReference<>();
+		this.submittedCount = new AtomicLong(0);
+		this.completedCount = new AtomicLong(0);
+		this.invalidCount = new AtomicLong(0);
+		this.startTime = new AtomicReference<>(Instant.now());
 	}
 
-	public EvaluationSummary evaluateBatch(RunContext runContext,
-	                                       List<PiqiRequest> batchRequests,
-	                                       Path outputParquet) {
+	public void initializeEvaluation(RunContext runContext) {
+		try {
+			databaseService.init();
+			this.runContext.set(runContext);
+			submittedCount.set(0);
+			completedCount.set(0);
+			invalidCount.set(0);
+			startTime.set(Instant.now());
+		} catch (SQLException e) {
+			throw new RuntimeException("Failed to initialize ParquetService for evaluation.", e);
+		}
+
+	}
+
+	public void evaluateBatch(
+			List<PiqiRequest> batchRequests) {
 		// Initialize evaluation summary values
-		submittedCount.set(0);
-		completedCount.set(0);
-		invalidCount.set(0);
-		Instant startTime = Instant.now();
-		LOG.info("Starting evaluation run '{}' with {} requests. Concurrency={}, Client BatchSize={}",
-				runContext.runName(), batchRequests.size(), maxConcurrentRequests, BATCH_SIZE);
+		LOG.info("Starting evaluation batch with {} requests. Concurrency={}",  batchRequests.size(), maxConcurrentRequests);
 
 		try {
-			parquetService.init(outputParquet);
+			long batchSubmitted = 0;
 
-			long submittedInBatch = 0;
+			for (PiqiRequest piqiRequest : batchRequests) {
 
-			try {
-				for (PiqiRequest piqiRequest : batchRequests) {
+				// 1. Apply backpressure before submitting to the thread pool
+				inFlight.acquire();
 
-					// 1. Apply backpressure before submitting to the thread pool
-					inFlight.acquire();
-
-					completion.submit(() -> {
-						try {
-							return piqiService.sendRequestToPiqiEngine(runContext.runId(), piqiRequest);
-						} catch (Exception ex) {
-							invalidCount.incrementAndGet();
-							LOG.warn("PIQI request failed for requestId={} (count invalid and continue): {}",
-									piqiRequest.messageID(), ex.toString());
-							return List.of();
-						} finally {
-							// Always release semaphore to prevent pool starvation
-							inFlight.release();
-						}
-					});
-
-					// Increment Submitted Count
-					submittedCount.incrementAndGet();
-					submittedInBatch++;
-
-					// 2. Intermittent draining: Drain when batch is full to control memory footprint
-					if (submittedInBatch >= BATCH_SIZE) {
-						drainCompletedResults(submittedInBatch, startTime);
-						submittedInBatch = 0; // Reset batch tracker
+				completion.submit(() -> {
+					try {
+						return piqiService.sendRequestToPiqiEngine(runContext.get().runId(), piqiRequest);
+					} catch (Exception ex) {
+						invalidCount.incrementAndGet();
+						LOG.warn("PIQI request failed for requestId={} (count invalid and continue): {}",
+								piqiRequest.messageID(), ex.toString());
+						return List.of();
+					} finally {
+						// Always release semaphore to prevent pool starvation
+						inFlight.release();
 					}
+				});
 
-				}
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw new RuntimeException("Processing interrupted while iterating over request batch", e);
+				// Increment Submitted Count
+				submittedCount.incrementAndGet();
+
+				// Increatement local batch count
+				batchSubmitted++;
 			}
 
-			// Export only once all data from all files has been cleanly written
-			parquetService.exportToParquet();
+			if (batchSubmitted > 0) {
+				drainCompletedResults(batchSubmitted, startTime.get());
+			}
 
 		} catch (ExecutionException e) {
 			Thread.currentThread().interrupt();
 			throw new RuntimeException("Async execution failed during file processing", e);
 		} catch (SQLException e) {
 			throw new RuntimeException("Database error during orchestration", e);
-		} finally {
-			pool.shutdown();
-			// Now, close the ParquetService to release its resources
-			try {
-				parquetService.close();
-			} catch (Exception e) {
-				LOG.error("Failed to close ParquetService cleanly.", e);
-			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException("Processing interrupted while iterating over request batch", e);
 		}
+	}
 
+	public EvaluationSummary finalizeEvaluation() {
+		try {
+			databaseService.insertIntoPostgres();
+		} catch (SQLException e) {
+			throw new RuntimeException("Failed to insert results to postgres.", e);
+		}
 		return new EvaluationSummary(
-				runContext.runName(),
+				runContext.get().runName(),
 				submittedCount.get(),
 				completedCount.get() - invalidCount.get(),
 				invalidCount.get(),
-				Duration.between(startTime, Instant.now()));
+				Duration.between(startTime.get(), Instant.now())
+		);
 	}
 
 	/**
@@ -136,7 +147,7 @@ public class EvaluateService {
 			List<EvaluationResult> result = completedFuture.get();
 
 			// Immediately stream to parquet, allowing GC to collect the Result object
-			parquetService.append(result);
+			databaseService.append(result);
 
 			// --- INCREMENT COMPLETED COUNT & LOG PROGRESS ---
 			long currentCompleted = completedCount.incrementAndGet();
@@ -149,6 +160,17 @@ public class EvaluateService {
 			long valid = completed - invalid;
 			LOG.info("Progress: submitted={}, completed={}, valid={}, invalid={}, inFlight={}",
 					submitted, completed, valid, invalid, inFlight.availablePermits());
+		}
+	}
+
+	@Override
+	public void close() throws Exception {
+		LOG.info("Shutting down evaluation thread pool...");
+		pool.shutdown();
+		try {
+			databaseService.close();
+		} catch (Exception e) {
+			LOG.error("Failed to close ParquetService cleanly.", e);
 		}
 	}
 }
