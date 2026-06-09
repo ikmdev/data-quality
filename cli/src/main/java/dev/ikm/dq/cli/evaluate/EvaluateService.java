@@ -75,9 +75,6 @@ public class EvaluateService implements AutoCloseable {
 
 	public void evaluateBatch(
 			List<PiqiRequest> batchRequests) {
-		// Initialize evaluation summary values
-		LOG.info("Starting evaluation batch with {} requests. Concurrency={}",  batchRequests.size(), maxConcurrentRequests);
-
 		try {
 			long batchSubmitted = 0;
 

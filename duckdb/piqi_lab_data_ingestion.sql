@@ -15,6 +15,12 @@ SELECT json_object(
                                            END,
                                        'text', COALESCE(LabChemTestName, '')
                                                ),
+                                       'testName', json_object(
+                                               'text', COALESCE(LabChemTestName, '')
+                                                   ),
+                                       'deviceID', json_object(
+                                               'text', COALESCE("Device ID", '')
+                                                   ),
                                        'performingSite', json_object(
                                                'text', COALESCE(AccessioningInstitution, '')
                                                          ),
@@ -81,5 +87,8 @@ SELECT json_object(
                'dataSourceID', '${SOURCE_ID}',
                'dataProviderID', '${PROVIDER_ID}',
                'messageID', Unique_ID
-       ) AS payload_json, Unique_ID AS messageId
-FROM read_csv_auto('${SOURCE_FILE}', all_varchar = true);
+       )         AS payload_json,
+       Unique_ID AS messageId
+FROM read_csv_auto('${SOURCE_FILE}', all_varchar = true)
+WHERE Unique_ID IS NOT NULL
+  AND Unique_ID != '';

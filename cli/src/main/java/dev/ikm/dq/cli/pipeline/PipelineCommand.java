@@ -106,8 +106,17 @@ public class PipelineCommand implements Runnable {
 					// 2. Safely copy the strings out of Arrow memory into Java memory
 					List<PiqiRequest> batchRequests = new ArrayList<>(vectorSchemaRoot.getRowCount());
 					for (int row = 0; row < vectorSchemaRoot.getRowCount(); row++) {
-						String payload = payloadJsonVector.getObject(row).toString();
-						String messageId = messageIdVector.getObject(row).toString();
+						Object payloadObj = payloadJsonVector.getObject(row);
+						Object messageIdObj = messageIdVector.getObject(row);
+
+						// SKIP this row if the DuckDB query evaluated either field to a SQL NULL
+						if (payloadObj == null || messageIdObj == null) {
+							LOG.debug("Skipping row {} in batch: Null payload or messageId encountered", row);
+							continue;
+						}
+
+						String payload = payloadObj.toString();
+						String messageId = messageIdObj.toString();
 
 						batchRequests.add(new PiqiRequest(
 								context.dataProviderId(),
