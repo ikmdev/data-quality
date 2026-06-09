@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PIQI Lab MessageAudit Submission Client</title>
+    <!-- Map barren module names to CDN URLs -->
+    <script type="importmap">
+            {        "imports": {            "apache-arrow": "https://cdn.jsdelivr.net/npm/apache-arrow@16.1.0/+esm"        }    }
+    </script>
     <link rel="stylesheet" href="css/piqi-client.css">
 </head>
 
@@ -25,8 +29,8 @@
             </div>
         </div>
         <div class="button-group">
-            <button type="button" class="convert-btn" onclick="convertSpreadsheetToJSON()">Convert to JSON</button>
-            <button type="button" class="clear-btn" onclick="clearSpreadsheetInput()">Clear Paste Area</button>
+            <button type="button" class="convert-btn" id="btnConvert">Convert to JSON</button>
+            <button type="button" class="clear-btn" id="btnClearPaste">Clear Paste Area</button>
         </div>
         <div class="status-message" id="conversionStatus"></div>
     </div>
@@ -48,10 +52,6 @@
 
         <fieldset class="form-section">
             <legend>Configure PIQI Evaluation</legend>
-            <div class="form-group">
-                <label for="runName">Evaluation Run Name</label>
-                <input type="text" id="runName" placeholder="Run Name (required)" required>
-            </div>
             <div class="form-group">
                 <label for="piqiModelMnemonic">PIQI Model Mnemonic:</label>
                 <select id="piqiModelMnemonic" required>
@@ -82,9 +82,9 @@
         </fieldset>
 
         <div class="button-group">
-            <button type="submit" class="submit-btn">Submit Evaluation</button>
-            <button type="button" class="preview-btn" onclick="previewRequest()">Preview Evaluation Body</button>
-            <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
+            <button type="submit" class="submit-btn" id="btnSubmit">Submit Evaluation</button>
+            <button type="button" class="preview-btn" id="btnPreview">Preview Evaluation Body</button>
+            <button type="button" class="clear-btn" id="btnClearForm">Clear Form</button>
         </div>
         <div class="loading" id="loading">Sending evaluation...</div>
     </form>
@@ -97,7 +97,7 @@
     <div class="response-section" id="responseSection">
         <div class="response-header" id="responseHeader"></div>
         <div id="formattedResponseContainer"></div>
-        <button class="toggle-raw-btn" id="toggleRawBtn" onclick="toggleRawResponse()">Show Raw JSON Response</button>
+        <button class="toggle-raw-btn" id="toggleRawBtn">Show Raw JSON Response</button>
         <div class="raw-response" id="rawResponse">
             <h3>Raw JSON Response:</h3>
             <div class="response-content" id="responseContent"></div>
@@ -105,197 +105,23 @@
     </div>
 </div>
 
-<!--Page-specific functions for index.html-->
-<script>
-    // Generate a random session ID
-    function generateSessionID() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let sessionID = '';
-        for (let i = 0; i < 32; i++) {
-            sessionID += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return 'Session ID ' + sessionID;
-    }
-
-    // Initialize session IDs on page load
-    document.addEventListener('DOMContentLoaded', function () {
-        const sessionID = generateSessionID();
-        document.getElementById('dataProviderID').value = sessionID;
-        document.getElementById('dataSourceID').value = sessionID;
-        document.getElementById('piqiUrl').value = 'http://localhost//piqi/PIQI/ScoreAuditMessage';
-        document.getElementById('postgRestURL').value = 'http://localhost//postgres';
-
-    });
-
-    // Spreadsheet Column Map (0-indexed, tab-separated):
-    // 0:  UniqueID
-    // 1:  LongAccessionNumberUID
-    // 2:  LabChemTestSID
-    // 3:  LabChemTestName
-    // 4:  LabChemTestUrgencySID
-    // 5:  Urgency
-    // 6:  LabChemResultValue
-    // 7:  LabChemResultNumericValue
-    // 8:  TopographySID
-    // 9:  Topography
-    // 10: AccessionInstitutionSID
-    // 11: AccessioningInstitution
-    // 12: OrderingInstitutionSID
-    // 13: OrderingInstutionName
-    // 14: CollectingInstitutionSID
-    // 15: CollectingInstitutionName
-    // 16: LOINCSID
-    // 17: LOINC
-    // 18: Units
-    // 19: Abnormal
-    // 20: RefHigh
-    // 21: RefLow
-
-    function convertSpreadsheetToJSON() {
-        const input = document.getElementById('spreadsheetInput').value.trim();
-        if (!input) {
-            showStatus('Please paste spreadsheet rows first.', 'error');
-            return;
-        }
-
-        try {
-            // Split by newlines to handle multiple rows
-            const lines = input.split('\n').filter(line => line.trim().length > 0);
-            const messages = [];
-
-            lines.forEach((line, lineIndex) => {
-                const values = line.split('\t');
-
-                if (values.length < 22) {
-                    console.warn(`Row ${lineIndex + 1}: Expected 22 columns, but found ${values.length}`);
-                }
-
-                const unitsValue = values[18] || '';
-                const abFlagValue = values[19] || '';
-                const resValue = values[6] || '';
-                const labResult = {
-                    test: {codings: [], text: values[3] || ''},
-                    performingSite: {text: values[11] || ''},
-                    specimenType: {text: values[9] || ''},
-                    abnormalFlag: {
-                        codings: abFlagValue ? [{code: abFlagValue, display: abFlagValue, system: 'AbFlag'}] : [],
-                        text: abFlagValue
-                    },
-                    referenceRange: {text: (values[21] || '') + ' - ' + (values[20] || '')},
-                    resultValue: {
-                        codings: resValue ? [{ code: resValue, display: resValue, system: 'ResVal' }] : [],
-                        text: resValue
-                    },
-                    resultUnit: {
-                        codings: unitsValue ? [{code: unitsValue, display: unitsValue, system: 'UCUM'}] : [],
-                        text: unitsValue
-                    }
-                };
-
-                if (values[17]) {
-                    labResult.test.codings.push({
-                        code: values[17], display: values[3] || '', system: '2.16.840.1.113883.6.1'
-                    });
-                }
-
-                if (values[21]) labResult.referenceRange.lowValue = values[21];
-                if (values[20]) labResult.referenceRange.highValue = values[20];
-
-                labResult.interpretation = values[19] ? {
-                    codings: [{code: values[19], system: '2.16.840.1.113883.5.83'}], text: values[19]
-                } : {
-                    codings: [{code: 'N', system: '2.16.840.1.113883.5.83'}], text: 'N'
-                };
-
-                const uniqueID = values[0] || '';
-                const messageData = {
-                    messageId: uniqueID,
-                    formatID: '',
-                    useCaseID: '',
-                    patient: {labResults: [labResult], id: uniqueID},
-                    dataSourceID: document.getElementById('dataSourceID').value,
-                    dataProviderID: document.getElementById('dataProviderID').value,
-                    messageID: uniqueID
-                };
-
-                messages.push(messageData);
-            });
-
-            // Store as JSON array
-            document.getElementById('messageData').value = JSON.stringify(messages, null, 2);
-
-            showStatus(`✓ Successfully converted ${messages.length} spreadsheet row(s) to JSON!`, 'success');
-            document.getElementById('messageData').scrollIntoView({behavior: 'smooth', block: 'center'});
-
-        } catch (error) {
-            showStatus('Error converting spreadsheet data: ' + error.message, 'error');
-        }
-    }
-
-    function showStatus(message, type) {
-        const statusDiv = document.getElementById('conversionStatus');
-        statusDiv.textContent = message;
-        statusDiv.className = 'status-message show ' + type;
-        setTimeout(() => {
-            statusDiv.classList.remove('show');
-        }, 5000);
-    }
-
-    function clearSpreadsheetInput() {
-        document.getElementById('spreadsheetInput').value = '';
-        document.getElementById('conversionStatus').classList.remove('show');
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('messageData').value = '';
-    });
-
-    function buildRequestBody() {
-        const messageDataStr = document.getElementById('messageData').value;
-        let messageDataParsed;
-        try {
-            messageDataParsed = JSON.parse(messageDataStr);
-        } catch (parseError) {
-            throw new Error('Invalid JSON in Message Data field: ' + parseError.message);
-        }
-        const messageID = messageDataParsed.messageID || messageDataParsed.messageId || '';
-        return {
-            dataProviderID: document.getElementById('dataProviderID').value,
-            dataSourceID: document.getElementById('dataSourceID').value,
-            messageID: messageID,
-            piqiModelMnemonic: document.getElementById('piqiModelMnemonic').value,
-            evaluationRubricMnemonic: document.getElementById('evaluationRubricMnemonic').value,
-            messageData: JSON.stringify(messageDataParsed)
-        };
-    }
-
-    function clearForm() {
-        if (confirm('Are you sure you want to clear the form?')) {
-            document.getElementById('apiForm').reset();
-            document.getElementById('messageData').value = '';
-            document.getElementById('responseSection').classList.remove('show');
-            document.getElementById('previewSection').classList.remove('show');
-            document.getElementById('spreadsheetInput').value = '';
-            document.getElementById('conversionStatus').classList.remove('show');
-        }
-    }
-</script>
-<script src="js/piqi-config.js"></script>
-<script src="js/piqi-client.js"></script>
+<script type="module" src="js/ui-controller.js"></script>
+<script src="js/piqi-config.js" defer></script>
+<script src="js/piqi-client.js" defer></script>
 
 <!-- Value Modal Dialog -->
 <div id="valueModal" class="modal-overlay">
     <div class="modal-dialog">
         <div class="modal-header">
             <h2 class="modal-title">Attribute Value</h2>
-            <button class="modal-close-btn" onclick="closeValueModal()">&times;</button>
+            <button class="modal-close-btn">&times;</button>
         </div>
         <div class="modal-body">
             <div class="json-display" id="jsonDisplay"></div>
         </div>
         <div class="modal-footer">
-            <button class="modal-copy-btn" id="modalCopyBtn" onclick="copyToClipboard()">Copy to Clipboard</button>
-            <button class="modal-close-footer-btn" onclick="closeValueModal()">Close</button>
+            <button class="modal-copy-btn" id="modalCopyBtn">Copy to Clipboard</button>
+            <button class="modal-close-footer-btn">Close</button>
         </div>
     </div>
 </div>

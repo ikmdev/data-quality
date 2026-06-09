@@ -165,6 +165,7 @@ services:
         restart: unless-stopped
         volumes:
             - ./app:/usr/share/nginx/html
+            - ./duckdb:/usr/share/nginx/html/duckdb:ro
         depends_on:
             - piqi
 

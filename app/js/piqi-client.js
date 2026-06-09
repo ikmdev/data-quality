@@ -357,7 +357,7 @@ function formatMessageResults(messageResults) {
     return html;
 }
 
-async function formatDataClassResults(runId, dataClassResults, auditedMessage) {
+async function formatDataClassResults(dataClassResults, auditedMessage) {
     if (!dataClassResults || !Array.isArray(dataClassResults) || dataClassResults.length === 0) {
         return '';
     }
@@ -441,25 +441,6 @@ async function formatDataClassResults(runId, dataClassResults, auditedMessage) {
                 html += '<td class="reason-text">' + (item.reason || '-') + '</td>';
                 html += '<td class="effect-text">' + (item.effect || 'N/A') + '</td>';
                 html += '</tr>';
-
-                // Write Evaluation Result
-                if (runId) {
-                    const savedData = await saveEvaluationResult(
-                        runId,
-                        messageId,
-                        result.dataClassName,
-                        item.attributeName,
-                        item.attributeValue,
-                        item.assessment,
-                        item.status,
-                        item.reason,
-                        item.effect);
-
-                    if (savedData) {
-                        // You can now access savedData.id or savedData.created_at if you need them for the UI
-                        console.log("Successfully recorded attribute check at", savedData.created_at);
-                    }
-                }
             }
 
             html += '</tbody>';
@@ -658,13 +639,6 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
         let allResults = [];
         let formattedHTML = '';
 
-        // Write Evaluation Run
-        let runId = await startEvaluationRun(
-            document.getElementById('runName').value,
-            document.getElementById('piqiModelMnemonic').value,
-            document.getElementById('evaluationRubricMnemonic').value,
-            messages.length);
-
         // Process each message individually
         for (let i = 0; i < messages.length; i++) {
             const msg = messages[i];
@@ -717,7 +691,7 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
                                 formattedHTML += formatMessageResults(responseData.scoringData.messageResults);
                             }
                             if (responseData.scoringData.dataClassResults) {
-                                formattedHTML += await formatDataClassResults(runId, responseData.scoringData.dataClassResults, responseData.auditedMessage);
+                                formattedHTML += await formatDataClassResults(responseData.scoringData.dataClassResults, responseData.auditedMessage);
                             }
                         }
                         if (responseData.auditedMessage) {
@@ -797,16 +771,6 @@ document.getElementById('apiForm').addEventListener('submit', async function (e)
 
         responseSection.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 
-        const status = failCount > 0 ? 'FAILED' : 'COMPLETE';
-        if (runId) {
-            await finishEvaluationRun(
-                runId,
-                status,
-                successCount,
-                failCount);
-        }
-
-
     } catch (error) {
         responseSection.classList.add('show');
         responseHeader.innerHTML = '<span class="error">✗ Error</span>';
@@ -852,81 +816,6 @@ async function startEvaluationRun(name, modelMnemonic, rubricMnemonic, totalEval
 
     } catch (error) {
         console.error("Network or API error:", error);
-        return null;
-    }
-}
-
-async function finishEvaluationRun(runId, finalStatus, completedCount = 0, failedCount = 0) {
-    try {
-        // Notice the URL syntax: ?id=eq.123
-        // This is PostgREST's way of writing "WHERE id = 123"
-        const updateResult = await fetch(`http://localhost/postgrest/piqi_evaluation_run?id=eq.${runId}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation' // Tell Postgres to hand back the updated row
-            },
-            body: JSON.stringify({
-                status: finalStatus,
-                total_completed: completedCount,
-                total_failed: failedCount,
-                // Automatically stamp the finish time using the browser's ISO clock
-                completed_at: new Date().toISOString()
-            })
-        });
-
-        if (!updateResult.ok) {
-            const error = await updateResult.json();
-            console.error(`Failed to update Run ID ${runId}:`, error);
-            return null;
-        }
-
-        // Extract the fully updated row from the database response
-        const [updatedRun] = await updateResult.json();
-        console.log(`Success! Run ${runId} finalized with status: ${updatedRun.status}`);
-
-        return updatedRun;
-
-    } catch (error) {
-        console.error("Network or API error during update:", error);
-        return null;
-    }
-}
-
-async function saveEvaluationResult(runId,messageId,  dataClass, attributeName, attributeValue, assessment, status, reason, effect) {
-    try {
-        const response = await fetch('http://localhost/postgrest/piqi_evaluation_results', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify({
-                run_id: runId,
-                message_id: messageId,
-                data_class: dataClass,
-                attribute_name: attributeName,
-                attribute_value: attributeValue,
-                assessment: assessment,
-                status: status,
-                reason: reason,
-                effect: effect
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            console.error("Database Insert Rejected:", error);
-            return null;
-        }
-
-        const [savedRow] = await response.json();
-        console.log(`Result saved successfully with ID: ${savedRow.id}`);
-
-        return savedRow;
-
-    } catch (error) {
-        console.error("Network or API error while saving result:", error);
         return null;
     }
 }
