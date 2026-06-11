@@ -4,6 +4,11 @@
       "name": "Patient Clinical Model 1.0",
       "mnemonic": "PAT_CLINICAL_V1",
       "filePath": "ReferenceData/Models/PAT_CLINICAL_V1.json"
+    },
+    {
+      "name": "Patient Clinical Advanced Model 1.0",
+      "mnemonic": "PAT_CLINICAL_ADVANCED_V1",
+      "filePath": "ReferenceData/Models/PAT_CLINICAL_ADVANCED_V1.json"
     }
   ]
 }

@@ -1,0 +1,214 @@
+{
+  "name": "DIA_Advanced_VA_Lab",
+  "mnemonic": "Advanced_VA_Lab",
+  "description": "VA Lab",
+  "version": null,
+  "authorityName": "DIA",
+  "model": {
+    "name": "Patient Clinical Advanced Model 1.0",
+    "mnemonic": "PAT_CLINICAL_ADVANCED_V1",
+    "version": 1
+  },
+  "source": {
+    "name": "PIQI Alliance",
+    "mnemonic": "PIQI.ALLIANCE"
+  },
+  "criteria": [
+    {
+      "sequence": 1,
+      "description": "",
+      "entity": "LAB_TEST",
+      "samMnemonic": "CONCEPT_ISACTIVE",
+      "samNameOverride": "LOINC Code Active",
+      "failureNameOverride": "Inactive LOINC Code",
+      "conditionalSam": null,
+      "scoringEffect": "Informational",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 2,
+      "description": "",
+      "entity": "LAB_TEST",
+      "samMnemonic": "CONCEPT_ISVALIDMEMBER",
+      "samNameOverride": "Lab Test is LOINC",
+      "failureNameOverride": "Lab Test not LOINC",
+      "conditionalSam": null,
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": true,
+      "samParameters": [
+        {
+          "samParameterMnemonic": "CODE_SYSTEM_CSV",
+          "parameterValue": "REGEN_LOINC",
+          "parameterValueTypeName": "Code System",
+          "parameterName": "Code System CSV"
+        }
+      ],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 5,
+      "description": "",
+      "entity": "LAB_RESUOM",
+      "samMnemonic": "ATTR_INEXTERNALLIST",
+      "samNameOverride": "Result Unit is UCUM",
+      "failureNameOverride": "Result Unit not in UCUM",
+      "conditionalSam": "ATTR_ISPOPULATED",
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [
+        {
+          "samParameterMnemonic": "EXTERNAL_LIST_MNEMONIC",
+          "parameterValueTypeName": "Content Set",
+          "parameterName": "External List  Mnemonic",
+          "parameterValue": "UCUM"
+        }
+      ],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 49,
+      "description": "Checks if a lab result has a test name populated.",
+      "entity": "LAB_TEST",
+      "samMnemonic": "CONCEPT_HASDISPLAY",
+      "samNameOverride": "Lab result has test name",
+      "failureNameOverride": "Lab result does not have test name",
+      "conditionalSam": null,
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 50,
+      "description": "Checks that the lab peforming site is poopulated",
+      "entity": "LAB_PERFSITE",
+      "samMnemonic": "ATTR_ISPOPULATED",
+      "samNameOverride": "Peforming Site is populated",
+      "failureNameOverride": "Peforming Site is not populated",
+      "conditionalSam": null,
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 52,
+      "description": "Check if ref range has high and low values",
+      "entity": "LAB_REFRNG",
+      "samMnemonic": "RANGEVALUE_ISCOMPLETE",
+      "samNameOverride": "Ref Range has H and L",
+      "failureNameOverride": "Ref Range missing H and/or L",
+      "conditionalSam": "ATTR_ISPOPULATED",
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 53,
+      "description": "Checks if specimen type is populated.",
+      "entity": "LAB_SPECTYPE",
+      "samMnemonic": "ATTR_ISPOPULATED",
+      "samNameOverride": "Specimen Type is populated",
+      "failureNameOverride": "Specimen Type is NOT populated",
+      "conditionalSam": null,
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 55,
+      "description": "Checks if Abnormal Flag adheres to standard.",
+      "entity": "LAB_ABFLAG",
+      "samMnemonic": "ATTR_INEXTERNALLIST",
+      "samNameOverride": "Abnormal Flag adheres to standard.",
+      "failureNameOverride": "Abnormal Flag doesn't adhere to standard.",
+      "conditionalSam": "ATTR_ISPOPULATED",
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [
+        {
+          "samParameterMnemonic": "EXTERNAL_LIST_MNEMONIC",
+          "parameterName": "External List  Mnemonic",
+          "parameterValueTypeName": "Content Set",
+          "parameterValue": "AbFlag"
+        }
+      ],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 56,
+      "description": "Checks if Result Value adheres to standard.",
+      "entity": "LAB_RESVALUE",
+      "samMnemonic": "ATTR_INEXTERNALLIST",
+      "samNameOverride": "Qualitative Result Value adheres to standard",
+      "failureNameOverride": "Qualitative Result Value doesn't adhere to standard",
+      "conditionalSam": "ATTR_ISNONNUMERIC",
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [
+        {
+          "samParameterMnemonic": "EXTERNAL_LIST_MNEMONIC",
+          "parameterName": "External List  Mnemonic",
+          "parameterValueTypeName": "Content Set",
+          "parameterValue": "ResVal"
+        }
+      ],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 57,
+      "description": "Validates the Unit of Measure is plausible for the device used.",
+      "entity": "LAB_RESUOM",
+      "samMnemonic": "DEVICE_FIELD_VALIDATION",
+      "samNameOverride": "Plausible Result Unit for Device",
+      "failureNameOverride": "Implausible Result Unit for Device",
+      "conditionalSam": "ATTR_AND_DEVICE_PRESENT",
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 58,
+      "description": "Validates that the Specimen type is plausible for the device used.",
+      "entity": "LAB_SPECTYPE",
+      "samMnemonic": "SPECIMEN_TYPE_VALID_FOR_DEVICE",
+      "samNameOverride": "Plausible Specimen Type for Device",
+      "failureNameOverride": "Implausible Specimen Type for Device",
+      "conditionalSam": "ATTR_AND_DEVICE_PRESENT",
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
+    },
+    {
+      "sequence": 58,
+      "description": "Validates that the LOINC Code is plausible for the device used.",
+      "entity": "LAB_TEST",
+      "samMnemonic": "LOINC_CODE_VALID_FOR_DEVICE",
+      "samNameOverride": "Plausible LOINC Code for Device",
+      "failureNameOverride": "Implausible LOINC Code for Device",
+      "conditionalSam": "ATTR_AND_DEVICE_PRESENT",
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
+    }
+  ]
+}

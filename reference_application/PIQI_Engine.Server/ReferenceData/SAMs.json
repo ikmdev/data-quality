@@ -273,6 +273,66 @@
       }
     },
     {
+      "mnemonic": "RESULT_UNITS_VALID_FOR_DEVICE",
+      "name": "Result units valid for device",
+      "FailName": "Result units NOT valid for device",
+      "inputType": "ATR",
+      "prerequisiteSAMMnemonic": "ATTR_AND_DEVICE_PRESENT",
+      "HDQTDimensionMnemonic": "ACC_INVFMT",
+      "executionTypeMnemonic": "STANDALONE",
+      "createdDateTime": "2024-03-17T14:41:31.810",
+      "modifiedDateTime": "2025-03-24T10:47:05.323",
+      "Source": {
+        "Name": "PIQI Alliance",
+        "Mnemonic": "PIQI.ALLIANCE"
+      }
+    },
+    {
+      "mnemonic": "LOINC_CODE_VALID_FOR_DEVICE",
+      "name": "LOINC Code valid for Device",
+      "FailName": "LOINC Code NOT valid for device",
+      "inputType": "ATR",
+      "prerequisiteSAMMnemonic": "ATTR_AND_DEVICE_PRESENT",
+      "HDQTDimensionMnemonic": "ACC_INVFMT",
+      "executionTypeMnemonic": "STANDALONE",
+      "createdDateTime": "2024-03-17T14:41:31.810",
+      "modifiedDateTime": "2025-03-24T10:47:05.323",
+      "Source": {
+        "Name": "PIQI Alliance",
+        "Mnemonic": "PIQI.ALLIANCE"
+      }
+    },
+    {
+      "mnemonic": "SPECIMEN_TYPE_VALID_FOR_DEVICE",
+      "name": "Specimen Type Valid for Device",
+      "FailName": "Specimen Type NOT valid for device",
+      "inputType": "ATR",
+      "prerequisiteSAMMnemonic": "ATTR_AND_DEVICE_PRESENT",
+      "HDQTDimensionMnemonic": "ACC_INVFMT",
+      "executionTypeMnemonic": "STANDALONE",
+      "createdDateTime": "2024-03-17T14:41:31.810",
+      "modifiedDateTime": "2025-03-24T10:47:05.323",
+      "Source": {
+        "Name": "PIQI Alliance",
+        "Mnemonic": "PIQI.ALLIANCE"
+      }
+    },
+    {
+      "mnemonic": "ATTR_AND_DEVICE_PRESENT",
+      "name": "Device dependencies present",
+      "FailName": "Unpopulated data dependencies",
+      "inputType": "ATR",
+      "prerequisiteSAMMnemonic": "ATTR_ISPOPULATED",
+      "HDQTDimensionMnemonic": "ACC_INVFMT",
+      "executionTypeMnemonic": "STANDALONE",
+      "createdDateTime": "2026-06-10T11:12:00.000",
+      "modifiedDateTime": "2026-06-10T11:12:00.000",
+      "Source": {
+        "Name": "PIQI Alliance",
+        "Mnemonic": "PIQI.ALLIANCE"
+      }
+    },
+    {
       "mnemonic": "ATTR_ISPASTDATE",
       "name": "Attribute Is Past Date",
       "FailName": "invalid past date",
