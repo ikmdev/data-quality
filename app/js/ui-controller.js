@@ -1,5 +1,5 @@
 // app/js/ui-controller.js
-import { initDuckDB, run } from './ingest.js';
+import {initDuckDB, run} from './ingest.js';
 
 // ---- DOM Elements ----
 const els = {
@@ -48,21 +48,73 @@ async function handleConversion() {
     }
 
     try {
-        const lines = input.split('\n').filter(line => line.trim().length > 0);
+        const rawLines = input
+            .split(/\r?\n/)
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+
+        if (!rawLines.length) {
+            showStatus('No usable rows found.', 'error');
+            return;
+        }
+
+        function parseDelimitedLine(line, delimiter) {
+            const cells = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+
+                if (ch === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (ch === delimiter && !inQuotes) {
+                    cells.push(current);
+                    current = '';
+                } else {
+                    current += ch;
+                }
+            }
+            cells.push(current);
+            return cells;
+        }
+
+        function toCsvCell(value) {
+            const needsQuotes = /[",\n\r]/.test(value);
+            const escaped = value.replace(/"/g, '""');
+            return needsQuotes ? `"${escaped}"` : escaped;
+        }
+
+        function toCsvLine(cells) {
+            return cells.map(v => toCsvCell(v ?? '')).join(',');
+        }
+
+        // Detect per-line delimiter and normalize everything to CSV
+        const csvLines = rawLines.map((line) => {
+            const tabCount = (line.match(/\t/g) || []).length;
+            const commaCount = (line.match(/,/g) || []).length;
+            const delimiter = tabCount > commaCount ? '\t' : ',';
+            const cells = parseDelimitedLine(line, delimiter);
+            return toCsvLine(cells);
+        });
 
         const sourceId = els.dataSourceID.value;
         const providerId = els.dataProviderID.value;
 
-        // Route exclusively through DuckDB-WASM
-        const messages = await run(lines, sourceId, providerId);
+        // run() will now expect CSV rows
+        const messages = await run(csvLines, sourceId, providerId);
 
         els.messageData.value = JSON.stringify(messages, null, 2);
-        showStatus(`✓ Successfully converted ${messages.length} spreadsheet row(s) to JSON using DuckDB!`, 'success');
-        els.messageData.scrollIntoView({behavior: 'smooth', block: 'center'});
-
+        showStatus(`✓ Successfully converted ${messages.length} row(s) to JSON using DuckDB!`, 'success');
+        els.messageData.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch (error) {
         showStatus('DuckDB Error converting data: ' + error.message, 'error');
-        console.error("Conversion failed:", error);
+        console.error('Conversion failed:', error);
     }
 }
 
@@ -78,7 +130,7 @@ function handleClearForm() {
 }
 
 // Global hook if piqi-client.js requires it for sending evaluation builds
-window.buildRequestBody = function() {
+window.buildRequestBody = function () {
     let messageDataParsed;
     try {
         messageDataParsed = JSON.parse(els.messageData.value);

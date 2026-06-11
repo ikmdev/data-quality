@@ -23,11 +23,10 @@ export async function initDuckDB() {
     return dbInstance;
 }
 
-export async function run(tsvRows, sourceId, providerId) {
+export async function run(csvRows, sourceId, providerId) {
     const db = await initDuckDB();
     const conn = await db.connect();
 
-    // Fetch the SQL template exactly ONCE before the loop
     let sqlTemplate = "";
     try {
         const sqlResponse = await fetch('./duckdb/piqi_lab_data_ingestion.sql');
@@ -40,48 +39,102 @@ export async function run(tsvRows, sourceId, providerId) {
     }
 
     const allResults = [];
-    const fileName = 'input_row.tsv';
+    const fileName = 'input_row.csv';
 
-    const readCsvFlags = "all_varchar = true, header = true, sep = '\t'";
+    // NOTE: keep header names aligned with SQL, including "Device ID"
+    const header = [
+        "Unique_ID",
+        "LongAccessionNumberUID",
+        "LabChemTestSID",
+        "LabChemTestName",
+        "LabChemTestUrgencySID",
+        "Urgency",
+        "LabChemResultValue",
+        "LabChemResultNumericValue",
+        "TopographySID",
+        "Topography",
+        "AccessionInstitutionSID",
+        "AccessioningInstitution",
+        "OrderingInstitutionSID",
+        "OrderingInstutionName",
+        "CollectingInstitutionSID",
+        "CollectingInstitutionName",
+        "LOINCSID",
+        "LOINC",
+        "Units",
+        "Abnormal",
+        "RefHigh",
+        "RefLow",
+        "Device ID"
+    ];
 
-    // Apply the replacements to the string template globally
+    function parseCsvLine(line) {
+        const cells = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+
+            if (ch === '"') {
+                if (inQuotes && line[i + 1] === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (ch === ',' && !inQuotes) {
+                cells.push(current);
+                current = '';
+            } else {
+                current += ch;
+            }
+        }
+        cells.push(current);
+        return cells;
+    }
+
+    function toCsvCell(value) {
+        const s = String(value ?? '');
+        const escaped = s.replace(/"/g, '""');
+        return /[",\n\r]/.test(s) ? `"${escaped}"` : escaped;
+    }
+
+    function toCsvLine(cells) {
+        return cells.map(toCsvCell).join(',');
+    }
+
+    const expectedColumns = header.length;
+
+    // Ensure each row has the same number of columns as header
+    const paddedRows = csvRows.map((row) => {
+        const cols = parseCsvLine(row.replace(/\r/g, ''));
+        if (cols.length < expectedColumns) {
+            while (cols.length < expectedColumns) cols.push('');
+        } else if (cols.length > expectedColumns) {
+            cols.length = expectedColumns;
+        }
+        return toCsvLine(cols);
+    });
+
+    // Include header if caller did not provide one
+    const firstRowCols = paddedRows.length ? parseCsvLine(paddedRows[0]) : [];
+    const firstCell = (firstRowCols[0] || '').trim().replace(/^"|"$/g, '');
+    const isHeaderMissing = firstCell !== "Unique_ID";
+
+    const headerLine = toCsvLine(header);
+    const fullCsvText = (isHeaderMissing ? headerLine + "\n" : "") + paddedRows.join('\n');
+
+    // Apply placeholders in SQL template
     const finalSql = sqlTemplate
         .replace(/\$\{SOURCE_FILE\}/g, fileName)
         .replace(/\$\{SOURCE_ID\}/g, sourceId)
         .replace(/\$\{PROVIDER_ID\}/g, providerId);
 
-    // DuckDB WASM can process a giant block of TSV text directly.
-    // Instead of looping, map all rows into one TSV blob so DuckDB does it vectorized!
-    const header = "Unique_ID\tLongAccessionNumberUID\tLabChemTestSID\tLabChemTestName\tLabChemTestUrgencySID\tUrgency\tLabChemResultValue\tLabChemResultNumericValue\tTopographySID\tTopography\tAccessionInstitutionSID\tAccessioningInstitution\tOrderingInstitutionSID\tOrderingInstutionName\tCollectingInstitutionSID\tCollectingInstitutionName\tLOINCSID\tLOINC\tUnits\tAbnormal\tRefHigh\tRefLow\tDevice ID";
-
-    // Split the header strictly by tab to count the exact number of EXPECTED columns
-    const headerColumns = header.split('\t').length;
-    // Fix truncated rows by padding them with missing tabs!
-    const paddedRows = tsvRows.map(row => {
-        // Split row by tab, ignoring \r if present
-        const cols = row.replace(/\r/g, '').split('\t');
-
-        let paddedRow = row;
-        // If the row string has fewer columns than the header expects, dynamically tack on empty tabs
-        if (cols.length < headerColumns) {
-            const missingTabs = headerColumns - cols.length;
-            paddedRow += '\t'.repeat(missingTabs);
-        }
-        return paddedRow;
-    });
-
-    // Combine all inputs into a single text block
-    const isHeaderMissing = !paddedRows[0].startsWith("Unique_ID");
-    const fullTsvText = (isHeaderMissing ? header + "\n" : "") + paddedRows.join('\n');
-
-    // Register single virtual file
-    await db.registerFileText(fileName, fullTsvText);
+    await db.registerFileText(fileName, fullCsvText);
 
     try {
-        // Run the globally replaced SQL script exactly once!
         const result = await conn.query(finalSql);
-
-        // Convert the Arrow block back to JS
         result.toArray().forEach(row => {
             if (row.payload_json) {
                 allResults.push(JSON.parse(row.payload_json));
@@ -91,11 +144,9 @@ export async function run(tsvRows, sourceId, providerId) {
         console.error("DuckDB execution error:", error);
         throw error;
     } finally {
-        // Clean up WASM resources
         await db.dropFile(fileName);
         await conn.close();
     }
 
-    // Return the clean array to the caller
     return allResults;
 }
