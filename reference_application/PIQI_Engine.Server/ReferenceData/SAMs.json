@@ -322,7 +322,6 @@
       "name": "Device dependencies present",
       "FailName": "Unpopulated data dependencies",
       "inputType": "ATR",
-      "prerequisiteSAMMnemonic": "ATTR_ISPOPULATED",
       "HDQTDimensionMnemonic": "ACC_INVFMT",
       "executionTypeMnemonic": "STANDALONE",
       "createdDateTime": "2026-06-10T11:12:00.000",
