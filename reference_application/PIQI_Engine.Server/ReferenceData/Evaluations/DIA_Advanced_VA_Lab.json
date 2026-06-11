@@ -172,7 +172,7 @@
       "sequence": 57,
       "description": "Validates the Unit of Measure is plausible for the device used.",
       "entity": "LAB_RESUOM",
-      "samMnemonic": "DEVICE_FIELD_VALIDATION",
+      "samMnemonic": "RESULT_UNITS_VALID_FOR_DEVICE",
       "samNameOverride": "Plausible Result Unit for Device",
       "failureNameOverride": "Implausible Result Unit for Device",
       "conditionalSam": "ATTR_AND_DEVICE_PRESENT",
