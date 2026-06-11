@@ -30,7 +30,7 @@ export async function run(tsvRows, sourceId, providerId) {
     // Fetch the SQL template exactly ONCE before the loop
     let sqlTemplate = "";
     try {
-        const sqlResponse = await fetch('/duckdb/piqi_lab_data_ingestion.sql');
+        const sqlResponse = await fetch('./duckdb/piqi_lab_data_ingestion.sql');
         if (!sqlResponse.ok) throw new Error("Could not find piqi_lab_data_ingestion.sql file");
         sqlTemplate = await sqlResponse.text();
     } catch (e) {

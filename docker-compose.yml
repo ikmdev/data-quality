@@ -158,13 +158,13 @@ services:
             - postgres
 
     app:
-        build:
-            context: ./app
-            dockerfile: Dockerfile
+        image: nginx:alpine
         container_name: dq-app
         restart: unless-stopped
         volumes:
+            # Mount UI files directly
             - ./app:/usr/share/nginx/html
+            # Mount DuckDB SQL directly
             - ./duckdb:/usr/share/nginx/html/duckdb:ro
         depends_on:
             - piqi

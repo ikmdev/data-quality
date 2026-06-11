@@ -103,8 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sessionID = generateSessionID();
     els.dataProviderID.value = sessionID;
     els.dataSourceID.value = sessionID;
-    els.piqiUrl.value = 'http://localhost//piqi/PIQI/ScoreAuditMessage';
-    els.postgRestURL.value = 'http://localhost//postgres';
+    els.piqiUrl.value = 'http://10.16.129.84/piqi/PIQI/ScoreAuditMessage';
     els.messageData.value = '';
 
     // Pre-load DuckDB binaries silently in background
