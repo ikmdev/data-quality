@@ -65,7 +65,7 @@ namespace PIQI.CustomSAMs
                     // Evaluate if both Specimen Type and Device ID are present
                     if (!string.IsNullOrEmpty(deviceId) && !string.IsNullOrEmpty(specimenType))
                     {
-                        passed = DeviceValidationUtility.IsFuzzyMatch(deviceId, specimenType, "Specimen Concept FQN(s)");
+                        passed = DeviceValidationUtility.IsFuzzyMatch(deviceId, specimenType, DeviceTableColumn.SpecimenConceptFQN);
                     }
                 }
 

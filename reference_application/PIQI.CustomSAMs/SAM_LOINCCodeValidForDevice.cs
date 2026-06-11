@@ -76,7 +76,7 @@ namespace PIQI.CustomSAMs
                             // For this implementation, we'll check any LOINC codes found.
                             foreach (var loincCode in loincCodes)
                             {
-                                if (DeviceValidationUtility.IsDirectMatch(deviceId, loincCode, "LOINC Code Identifier(s)"))
+                                if (DeviceValidationUtility.IsDirectMatch(deviceId, loincCode, DeviceTableColumn.LoincCodeIdentifiers))
                                 {
                                     passed = true;
                                     break;

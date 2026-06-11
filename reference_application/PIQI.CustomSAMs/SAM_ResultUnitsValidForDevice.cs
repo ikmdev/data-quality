@@ -65,7 +65,7 @@ namespace PIQI.CustomSAMs
                     // Evaluate if both UOM and Device ID are present
                     if (!string.IsNullOrEmpty(deviceId) && !string.IsNullOrEmpty(uom))
                     {
-                        passed = DeviceValidationUtility.IsDirectMatch(deviceId, uom, "Units of Measure");
+                        passed = DeviceValidationUtility.IsDirectMatch(deviceId, uom, DeviceTableColumn.UnitsOfMeasure);
                     }
                 }
 

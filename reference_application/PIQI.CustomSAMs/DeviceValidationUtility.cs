@@ -5,10 +5,44 @@ using System.Linq;
 namespace PIQI.CustomSAMs
 {
     /// <summary>
+    /// Represents the columns available in the device mapping table.
+    /// </summary>
+    public enum DeviceTableColumn
+    {
+        DeviceName,
+        DeviceIdentifier,
+        DeviceConceptUUID,
+        TestPerformedSemanticUUID,
+        LoincCodeIdentifiers,
+        InstrumentConceptGlobalStandardsOneIdentifiers,
+        SpecimenConceptFQN,
+        UnitsOfMeasure,
+        PopulationReferenceRangeSemanticUUIDs,
+        QuantitativeAllowedResultsRangePatternUUIDs
+    }
+
+    /// <summary>
     /// Utility class for validating device-specific attributes against a mapping table.
     /// </summary>
     public static class DeviceValidationUtility
     {
+        /// <summary>
+        /// Maps the <see cref="DeviceTableColumn"/> enum to the exact header strings in the mapping table.
+        /// </summary>
+        private static readonly Dictionary<DeviceTableColumn, string> ColumnNames = new Dictionary<DeviceTableColumn, string>
+        {
+            { DeviceTableColumn.DeviceName, "Device Name" },
+            { DeviceTableColumn.DeviceIdentifier, "Device Identifier" },
+            { DeviceTableColumn.DeviceConceptUUID, "Device Concept UUID" },
+            { DeviceTableColumn.TestPerformedSemanticUUID, "Test Performed Semantic UUID" },
+            { DeviceTableColumn.LoincCodeIdentifiers, "LOINC Code Identifier(s)" },
+            { DeviceTableColumn.InstrumentConceptGlobalStandardsOneIdentifiers, "Instrument Concept Global Standards One Identifier(s)" },
+            { DeviceTableColumn.SpecimenConceptFQN, "Specimen Concept FQN(s)" },
+            { DeviceTableColumn.UnitsOfMeasure, "Units of Measure" },
+            { DeviceTableColumn.PopulationReferenceRangeSemanticUUIDs, "Population Reference Range Semantic UUID(s)" },
+            { DeviceTableColumn.QuantitativeAllowedResultsRangePatternUUIDs, "Quantitative Allowed Results Range Pattern UUID(s)" }
+        };
+
         /// <summary>
         /// The master mapping table containing valid attributes for various devices.
         /// Format: Markdown-style table with headers and data rows.
@@ -58,6 +92,15 @@ namespace PIQI.CustomSAMs
         }
 
         /// <summary>
+        /// Retrieves all unique values from a specific column in the device mapping table.
+        /// </summary>
+        /// <param name="deviceId">The identifier of the device.</param>
+        /// <param name="column">The column enum to retrieve values from.</param>
+        /// <returns>A list of string values from the specified column.</returns>
+        public static List<string> GetColumnValues(string deviceId, DeviceTableColumn column)
+            => GetColumnValues(deviceId, ColumnNames[column]);
+
+        /// <summary>
         /// Performs an exact, case-insensitive match for a value against a specific column in the device table.
         /// </summary>
         /// <param name="deviceId">The identifier of the device.</param>
@@ -71,6 +114,16 @@ namespace PIQI.CustomSAMs
         }
 
         /// <summary>
+        /// Performs an exact, case-insensitive match for a value against a specific column in the device table.
+        /// </summary>
+        /// <param name="deviceId">The identifier of the device.</param>
+        /// <param name="value">The value to validate.</param>
+        /// <param name="column">The column enum to check against.</param>
+        /// <returns>True if an exact match is found; otherwise, false.</returns>
+        public static bool IsDirectMatch(string deviceId, string value, DeviceTableColumn column)
+            => IsDirectMatch(deviceId, value, ColumnNames[column]);
+
+        /// <summary>
         /// Performs a substring match (contains) for a value against a specific column in the device table.
         /// </summary>
         /// <param name="deviceId">The identifier of the device.</param>
@@ -82,6 +135,16 @@ namespace PIQI.CustomSAMs
             return AnyMatch(deviceId, columnName, 
                 v => v.Contains(value, StringComparison.OrdinalIgnoreCase));
         }
+
+        /// <summary>
+        /// Performs a substring match (contains) for a value against a specific column in the device table.
+        /// </summary>
+        /// <param name="deviceId">The identifier of the device.</param>
+        /// <param name="value">The value to validate.</param>
+        /// <param name="column">The column enum to check against.</param>
+        /// <returns>True if the column value contains the test value; otherwise, false.</returns>
+        public static bool IsFuzzyMatch(string deviceId, string value, DeviceTableColumn column)
+            => IsFuzzyMatch(deviceId, value, ColumnNames[column]);
         
         /// <summary>
         /// Checks if any row in the device table matches the provided predicate for a specific column.
