@@ -89,6 +89,6 @@ SELECT json_object(
                'messageID', Unique_ID
        )         AS payload_json,
        Unique_ID AS messageId
-FROM read_csv_auto('${SOURCE_FILE}', all_varchar = true)
+FROM read_csv_auto('${SOURCE_FILE}', all_varchar = true, quote='"')
 WHERE Unique_ID IS NOT NULL
   AND Unique_ID != '';

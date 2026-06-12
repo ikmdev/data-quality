@@ -88,9 +88,10 @@ public class EvaluateService implements AutoCloseable {
 						return piqiService.sendRequestToPiqiEngine(runContext.get().runId(), piqiRequest);
 					} catch (Exception ex) {
 						invalidCount.incrementAndGet();
-						LOG.warn("PIQI request failed for requestId={} (count invalid and continue): {}",
-								piqiRequest.messageID(), ex.toString());
-						return List.of();
+						LOG.warn("PIQI request failed for requestId={}: {} \n{}",
+								piqiRequest.messageID(), piqiRequest.messageData(), ex.toString());
+						throw new RuntimeException("PIQI request failed for requestId=" + piqiRequest.messageID(), ex);
+//						return List.of();
 					} finally {
 						// Always release semaphore to prevent pool starvation
 						inFlight.release();

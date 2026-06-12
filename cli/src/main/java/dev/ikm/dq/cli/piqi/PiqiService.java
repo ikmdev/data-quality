@@ -64,7 +64,9 @@ public class PiqiService {
                 piqiRequest.dataProviderID(),
                 piqiRequest.dataSourceID(),
                 piqiRequest.messageID(),
-                piqiRequest.messageData()
+                piqiRequest.messageData(),
+                piqiRequest.piqiModelMnemonic(),
+                piqiRequest.evaluationRubricMnemonic()
         );
 
         // 1. Call the PIQI Engine
@@ -165,15 +167,15 @@ public class PiqiService {
      * Builds the JSON payload string for the PIQI Engine request.
      * This manual approach is kept from the original implementation for performance.
      */
-    public String buildEscapedPayload(String dataProviderID, String dataSourceID, String messageID, String innerJson) {
+    public String buildEscapedPayload(String dataProviderID, String dataSourceID, String messageID, String innerJson, String modelMnemonic, String rubricMnemonic) {
         String escapedInner = innerJson.replace("\\", "\\\\").replace("\"", "\\\"");
 
         StringBuilder sb = new StringBuilder(innerJson.length() + 500);
         sb.append("{ \"dataProviderID\": \"").append(dataProviderID).append("\", ");
         sb.append("\"dataSourceID\": \"").append(dataSourceID).append("\", ");
         sb.append("\"messageID\": \"").append(messageID).append("\", ");
-        sb.append("\"piqiModelMnemonic\": \"PAT_CLINICAL_V1\", ");
-        sb.append("\"evaluationRubricMnemonic\": \"Basic_VA_Lab\", ");
+        sb.append("\"piqiModelMnemonic\": \"").append(modelMnemonic).append("\", ");
+        sb.append("\"evaluationRubricMnemonic\": \"").append(rubricMnemonic).append("\", ");
         sb.append("\"messageData\": \"").append(escapedInner).append("\" }");
 
         return sb.toString();
