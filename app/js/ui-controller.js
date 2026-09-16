@@ -1,5 +1,6 @@
 // app/js/ui-controller.js
 import {initDuckDB, run} from './ingest.js';
+import {BASIC_ROWS, ADVANCED_ROWS} from './sample-data.js';
 
 // ---- DOM Elements ----
 const els = {
@@ -17,8 +18,15 @@ const els = {
     btnConvert: document.getElementById('btnConvert'),
     btnClearPaste: document.getElementById('btnClearPaste'),
     btnClearForm: document.getElementById('btnClearForm'),
+    placeholderDropdown: document.getElementById('placeholderDropdown'),
     // Note: btnSubmit and btnPreview handlers might already exist in your older piqi-client.js
     // If not, bind them here similarly.
+};
+
+const SAMPLE_DATA = {
+    all: [...BASIC_ROWS, ...ADVANCED_ROWS],
+    basic: BASIC_ROWS,
+    advanced: ADVANCED_ROWS,
 };
 
 // ---- UTILITY FUNCTIONS ----
@@ -168,4 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
         els.conversionStatus.classList.remove('show');
     });
     els.btnClearForm.addEventListener('click', handleClearForm);
+    els.placeholderDropdown.addEventListener('change', () => {
+        const rows = SAMPLE_DATA[els.placeholderDropdown.value];
+        if (!rows) return;
+        els.spreadsheetInput.value = rows.map(row => row.join('\t')).join('\n');
+        els.placeholderDropdown.selectedIndex = 0; // so the option can be picked again
+    });
 });
