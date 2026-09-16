@@ -151,11 +151,11 @@ window.buildRequestBody = function () {
 
 // ---- INIT / EVENT BINDING ----
 document.addEventListener('DOMContentLoaded', () => {
-    // Populate session data
+    // Populate session data. defaultValue so Clear Form (form.reset) keeps these instead of blanking them
     const sessionID = generateSessionID();
-    els.dataProviderID.value = sessionID;
-    els.dataSourceID.value = sessionID;
-    els.piqiUrl.value = 'http://10.16.129.84/piqi/PIQI/ScoreAuditMessage';
+    els.dataProviderID.defaultValue = sessionID;
+    els.dataSourceID.defaultValue = sessionID;
+    els.piqiUrl.defaultValue = 'http://10.16.129.84/piqi/PIQI/ScoreAuditMessage';
     els.messageData.value = '';
 
     // Pre-load DuckDB binaries silently in background
