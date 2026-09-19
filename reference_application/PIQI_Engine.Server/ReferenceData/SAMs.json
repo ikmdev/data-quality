@@ -303,6 +303,21 @@
       }
     },
     {
+      "mnemonic": "RESULT_VALUE_VALID_FOR_TEST_TYPE",
+      "name": "Result Value Valid for Test Type",
+      "FailName": "Result Value NOT Valid for Test Type",
+      "inputType": "ATR",
+      "prerequisiteSAMMnemonic": "ATTR_ISPOPULATED",
+      "HDQTDimensionMnemonic": "ACC_INVFMT",
+      "executionTypeMnemonic": "STANDALONE",
+      "createdDateTime": "2026-09-14T00:00:00.000",
+      "modifiedDateTime": "2026-09-14T00:00:00.000",
+      "Source": {
+        "Name": "PIQI Alliance",
+        "Mnemonic": "PIQI.ALLIANCE"
+      }
+    },
+    {
       "mnemonic": "SPECIMEN_TYPE_VALID_FOR_DEVICE",
       "name": "Specimen Type Valid for Device",
       "FailName": "Specimen Type NOT valid for device",

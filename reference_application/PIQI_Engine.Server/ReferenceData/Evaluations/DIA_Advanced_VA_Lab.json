@@ -209,6 +209,20 @@
       "criticalityIndicator": false,
       "samParameters": [],
       "conditionalSamParameters": []
+    },
+    {
+      "sequence": 59,
+      "description": "Validates that the result value is consistent with the test's Quantitative/Qualitative nature per its LOINC code.",
+      "entity": "LAB_RESVALUE",
+      "samMnemonic": "RESULT_VALUE_VALID_FOR_TEST_TYPE",
+      "samNameOverride": "Result Value Valid for Test Type",
+      "failureNameOverride": "Result Value NOT Valid for Test Type",
+      "conditionalSam": "ATTR_ISPOPULATED",
+      "scoringEffect": "Scoring",
+      "scoringWeight": 1,
+      "criticalityIndicator": false,
+      "samParameters": [],
+      "conditionalSamParameters": []
     }
   ]
 }
