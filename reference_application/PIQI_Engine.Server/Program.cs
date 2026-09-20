@@ -123,6 +123,7 @@ public partial class Program
         var loggerFactory = app.Services.GetService<ILoggerFactory>();
         var logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
         loggerFactory.AddSerilog(logger);
+        Log.Logger = logger;
 
         if (app.Environment.IsDevelopment())
         {
